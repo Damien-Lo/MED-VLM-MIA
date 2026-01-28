@@ -1,10 +1,14 @@
+
+CondaValueError: no package names supplied,
+       try "conda remove -h" for more details
+
 Collecting package metadata (current_repodata.json): ...working... DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/noarch/current_repodata.json HTTP/1.1" 304 0
 DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/r/noarch/current_repodata.json HTTP/1.1" 304 0
 DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/current_repodata.json HTTP/1.1" 304 0
-DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/noarch/current_repodata.json HTTP/1.1" 304 0
 DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/r/linux-64/current_repodata.json HTTP/1.1" 304 0
 done
 Solving environment: ...working... done
@@ -58,7 +62,7 @@ The following NEW packages will be INSTALLED:
   python             pkgs/main/linux-64::python-3.10.19-h6fa692b_0 
   readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0 
   setuptools         pkgs/main/linux-64::setuptools-80.9.0-py310h06a4308_0 
-  sqlite             pkgs/main/linux-64::sqlite-3.51.0-h2a70700_0 
+  sqlite             pkgs/main/linux-64::sqlite-3.51.1-he0a8d7e_0 
   tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0 
   tzdata             pkgs/main/noarch::tzdata-2025b-h04d1e81_0 
   wheel              pkgs/main/linux-64::wheel-0.45.1-py310h06a4308_0 
@@ -91,12 +95,15 @@ Collecting torch==2.4.0
 Collecting torchvision==0.19.0
   Using cached https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp310-cp310-linux_x86_64.whl (6.3 MB)
 Collecting filelock (from torch==2.4.0)
-  Using cached filelock-3.20.1-py3-none-any.whl.metadata (2.1 kB)
-Requirement already satisfied: typing-extensions>=4.8.0 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (4.14.0)
-Requirement already satisfied: sympy in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (1.14.0)
+  Using cached filelock-3.20.3-py3-none-any.whl.metadata (2.1 kB)
+Collecting typing-extensions>=4.8.0 (from torch==2.4.0)
+  Using cached https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy (from torch==2.4.0)
+  Using cached sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
 Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (3.4.2)
 Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (3.1.6)
-Requirement already satisfied: fsspec in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (2025.3.0)
+Collecting fsspec (from torch==2.4.0)
+  Using cached fsspec-2026.1.0-py3-none-any.whl.metadata (10 kB)
 Collecting nvidia-cuda-nvrtc-cu11==11.8.89 (from torch==2.4.0)
   Using cached nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
 Collecting nvidia-cuda-runtime-cu11==11.8.89 (from torch==2.4.0)
@@ -135,25 +142,31 @@ Using cached nvidia_curand_cu11-10.3.0.86-py3-none-manylinux2014_x86_64.whl (58.
 Using cached nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux2014_x86_64.whl (128.2 MB)
 Using cached nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux2014_x86_64.whl (204.1 MB)
 Using cached nvidia_nvtx_cu11-11.8.86-py3-none-manylinux2014_x86_64.whl (99 kB)
-Using cached filelock-3.20.1-py3-none-any.whl (16 kB)
+Using cached https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Using cached filelock-3.20.3-py3-none-any.whl (16 kB)
+Using cached fsspec-2026.1.0-py3-none-any.whl (201 kB)
 Using cached numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
-Installing collected packages: nvidia-nvtx-cu11, nvidia-nccl-cu11, nvidia-cusparse-cu11, nvidia-curand-cu11, nvidia-cufft-cu11, nvidia-cuda-runtime-cu11, nvidia-cuda-nvrtc-cu11, nvidia-cuda-cupti-cu11, nvidia-cublas-cu11, numpy, filelock, triton, nvidia-cusolver-cu11, nvidia-cudnn-cu11, torch, torchvision
+Using cached sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Installing collected packages: typing-extensions, sympy, nvidia-nvtx-cu11, nvidia-nccl-cu11, nvidia-cusparse-cu11, nvidia-curand-cu11, nvidia-cufft-cu11, nvidia-cuda-runtime-cu11, nvidia-cuda-nvrtc-cu11, nvidia-cuda-cupti-cu11, nvidia-cublas-cu11, numpy, fsspec, filelock, triton, nvidia-cusolver-cu11, nvidia-cudnn-cu11, torch, torchvision
 
 ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+fastapi 0.115.14 requires pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4, which is not installed.
 matplotlib 3.10.3 requires pyparsing>=2.3.1, which is not installed.
-Successfully installed filelock-3.20.1 numpy-2.2.6 nvidia-cublas-cu11-11.11.3.6 nvidia-cuda-cupti-cu11-11.8.87 nvidia-cuda-nvrtc-cu11-11.8.89 nvidia-cuda-runtime-cu11-11.8.89 nvidia-cudnn-cu11-9.1.0.70 nvidia-cufft-cu11-10.9.0.58 nvidia-curand-cu11-10.3.0.86 nvidia-cusolver-cu11-11.4.1.48 nvidia-cusparse-cu11-11.7.5.86 nvidia-nccl-cu11-2.20.5 nvidia-nvtx-cu11-11.8.86 torch-2.4.0+cu118 torchvision-0.19.0+cu118 triton-3.0.0
+typer 0.16.0 requires rich>=10.11.0, which is not installed.
+uvicorn 0.35.0 requires h11>=0.8, which is not installed.
+Successfully installed filelock-3.20.3 fsspec-2026.1.0 numpy-2.2.6 nvidia-cublas-cu11-11.11.3.6 nvidia-cuda-cupti-cu11-11.8.87 nvidia-cuda-nvrtc-cu11-11.8.89 nvidia-cuda-runtime-cu11-11.8.89 nvidia-cudnn-cu11-9.1.0.70 nvidia-cufft-cu11-10.9.0.58 nvidia-curand-cu11-10.3.0.86 nvidia-cusolver-cu11-11.4.1.48 nvidia-cusparse-cu11-11.7.5.86 nvidia-nccl-cu11-2.20.5 nvidia-nvtx-cu11-11.8.86 sympy-1.14.0 torch-2.4.0+cu118 torchvision-0.19.0+cu118 triton-3.0.0 typing-extensions-4.15.0
 Collecting flash-attn==2.7.3
   Using cached flash_attn-2.7.3.tar.gz (3.2 MB)
   Preparing metadata (pyproject.toml): started
   Preparing metadata (pyproject.toml): finished with status 'done'
 Requirement already satisfied: torch in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from flash-attn==2.7.3) (2.4.0+cu118)
 Requirement already satisfied: einops in /home/clo37/.local/lib/python3.10/site-packages (from flash-attn==2.7.3) (0.6.1)
-Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.20.1)
-Requirement already satisfied: typing-extensions>=4.8.0 in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (4.14.0)
-Requirement already satisfied: sympy in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (1.14.0)
+Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.20.3)
+Requirement already satisfied: typing-extensions>=4.8.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (4.15.0)
+Requirement already satisfied: sympy in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (1.14.0)
 Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.4.2)
 Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.1.6)
-Requirement already satisfied: fsspec in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (2025.3.0)
+Requirement already satisfied: fsspec in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (2026.1.0)
 Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.89)
 Requirement already satisfied: nvidia-cuda-runtime-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.89)
 Requirement already satisfied: nvidia-cuda-cupti-cu11==11.8.87 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.87)
@@ -197,8 +210,8 @@ Building wheels for collected packages: flash-attn
       
       running bdist_wheel
       Guessing wheel URL:  https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu11torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-      Raw wheel path /local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmp7wfdseor/.tmp-y5572nyd/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl
-      error: [Errno 18] Invalid cross-device link: 'flash_attn-2.7.3+cu11torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl' -> '/local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmp7wfdseor/.tmp-y5572nyd/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl'
+      Raw wheel path /local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmp12ounj01/.tmp-gjrvi4tf/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl
+      error: [Errno 18] Invalid cross-device link: 'flash_attn-2.7.3+cu11torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl' -> '/local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmp12ounj01/.tmp-gjrvi4tf/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl'
       [end of output]
   
   note: This error originates from a subprocess, and is likely not a problem with pip.
@@ -209,10 +222,10 @@ error: failed-wheel-build-for-install
 × Failed to build installable wheels for some pyproject.toml based projects
 ╰─> flash-attn
 Collecting transformers==4.51.2
-  Downloading transformers-4.51.2-py3-none-any.whl.metadata (38 kB)
+  Using cached transformers-4.51.2-py3-none-any.whl.metadata (38 kB)
 Collecting accelerate==1.7.0
-  Downloading accelerate-1.7.0-py3-none-any.whl.metadata (19 kB)
-Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from transformers==4.51.2) (3.20.1)
+  Using cached accelerate-1.7.0-py3-none-any.whl.metadata (19 kB)
+Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from transformers==4.51.2) (3.20.3)
 Collecting huggingface-hub<1.0,>=0.30.0 (from transformers==4.51.2)
   Using cached huggingface_hub-0.36.0-py3-none-any.whl.metadata (14 kB)
 Requirement already satisfied: numpy>=1.17 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from transformers==4.51.2) (2.2.6)
@@ -221,15 +234,16 @@ Requirement already satisfied: pyyaml>=5.1 in /home/clo37/.local/lib/python3.10/
 Requirement already satisfied: regex!=2019.12.17 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2) (2024.11.6)
 Requirement already satisfied: requests in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2) (2.32.4)
 Collecting tokenizers<0.22,>=0.21 (from transformers==4.51.2)
-  Downloading tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.7 kB)
+  Using cached tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.7 kB)
 Requirement already satisfied: safetensors>=0.4.3 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2) (0.5.3)
 Requirement already satisfied: tqdm>=4.27 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2) (4.67.1)
 Requirement already satisfied: psutil in /home/clo37/.local/lib/python3.10/site-packages (from accelerate==1.7.0) (7.0.0)
 Requirement already satisfied: torch>=2.0.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from accelerate==1.7.0) (2.4.0+cu118)
-Requirement already satisfied: fsspec>=2023.5.0 in /home/clo37/.local/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2) (2025.3.0)
-Requirement already satisfied: typing-extensions>=3.7.4.3 in /home/clo37/.local/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2) (4.14.0)
-Requirement already satisfied: hf-xet<2.0.0,>=1.1.3 in /home/clo37/.local/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2) (1.1.5)
-Requirement already satisfied: sympy in /home/clo37/.local/lib/python3.10/site-packages (from torch>=2.0.0->accelerate==1.7.0) (1.14.0)
+Requirement already satisfied: fsspec>=2023.5.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2) (2026.1.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2) (4.15.0)
+Collecting hf-xet<2.0.0,>=1.1.3 (from huggingface-hub<1.0,>=0.30.0->transformers==4.51.2)
+  Using cached hf_xet-1.2.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Requirement already satisfied: sympy in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch>=2.0.0->accelerate==1.7.0) (1.14.0)
 Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch>=2.0.0->accelerate==1.7.0) (3.4.2)
 Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch>=2.0.0->accelerate==1.7.0) (3.1.6)
 Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch>=2.0.0->accelerate==1.7.0) (11.8.89)
@@ -250,76 +264,74 @@ Requirement already satisfied: idna<4,>=2.5 in /home/clo37/.local/lib/python3.10
 Requirement already satisfied: urllib3<3,>=1.21.1 in /home/clo37/.local/lib/python3.10/site-packages (from requests->transformers==4.51.2) (2.5.0)
 Requirement already satisfied: certifi>=2017.4.17 in /home/clo37/.local/lib/python3.10/site-packages (from requests->transformers==4.51.2) (2025.6.15)
 Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/clo37/.local/lib/python3.10/site-packages (from sympy->torch>=2.0.0->accelerate==1.7.0) (1.3.0)
-Downloading transformers-4.51.2-py3-none-any.whl (10.4 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.4/10.4 MB 55.9 MB/s  0:00:00
-Downloading accelerate-1.7.0-py3-none-any.whl (362 kB)
+Using cached transformers-4.51.2-py3-none-any.whl (10.4 MB)
+Using cached accelerate-1.7.0-py3-none-any.whl (362 kB)
 Using cached huggingface_hub-0.36.0-py3-none-any.whl (566 kB)
-Downloading tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.1/3.1 MB 59.3 MB/s  0:00:00
-Installing collected packages: huggingface-hub, tokenizers, accelerate, transformers
+Using cached hf_xet-1.2.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+Using cached tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.1 MB)
+Installing collected packages: hf-xet, huggingface-hub, tokenizers, accelerate, transformers
 
-Successfully installed accelerate-1.7.0 huggingface-hub-0.36.0 tokenizers-0.21.4 transformers-4.51.2
+Successfully installed accelerate-1.7.0 hf-xet-1.2.0 huggingface-hub-0.36.0 tokenizers-0.21.4 transformers-4.51.2
 Collecting decord
   Using cached decord-0.6.0-py3-none-manylinux2010_x86_64.whl.metadata (422 bytes)
 Collecting ffmpeg-python
-  Downloading ffmpeg_python-0.2.0-py3-none-any.whl.metadata (1.7 kB)
+  Using cached ffmpeg_python-0.2.0-py3-none-any.whl.metadata (1.7 kB)
 Collecting imageio
-  Downloading imageio-2.37.2-py3-none-any.whl.metadata (9.7 kB)
+  Using cached imageio-2.37.2-py3-none-any.whl.metadata (9.7 kB)
 Collecting opencv-python
-  Using cached opencv_python-4.12.0.88-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (19 kB)
+  Using cached opencv_python-4.13.0.90-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (19 kB)
 Requirement already satisfied: numpy>=1.14.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from decord) (2.2.6)
 Collecting future (from ffmpeg-python)
-  Downloading future-1.0.0-py3-none-any.whl.metadata (4.0 kB)
+  Using cached future-1.0.0-py3-none-any.whl.metadata (4.0 kB)
 Requirement already satisfied: pillow>=8.3.2 in /home/clo37/.local/lib/python3.10/site-packages (from imageio) (10.4.0)
 Using cached decord-0.6.0-py3-none-manylinux2010_x86_64.whl (13.6 MB)
-Downloading ffmpeg_python-0.2.0-py3-none-any.whl (25 kB)
-Downloading imageio-2.37.2-py3-none-any.whl (317 kB)
-Using cached opencv_python-4.12.0.88-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (67.0 MB)
-Downloading future-1.0.0-py3-none-any.whl (491 kB)
+Using cached ffmpeg_python-0.2.0-py3-none-any.whl (25 kB)
+Using cached imageio-2.37.2-py3-none-any.whl (317 kB)
+Using cached opencv_python-4.13.0.90-cp37-abi3-manylinux_2_28_x86_64.whl (72.9 MB)
+Using cached future-1.0.0-py3-none-any.whl (491 kB)
 Installing collected packages: opencv-python, imageio, future, decord, ffmpeg-python
 
-Successfully installed decord-0.6.0 ffmpeg-python-0.2.0 future-1.0.0 imageio-2.37.2 opencv-python-4.12.0.88
+Successfully installed decord-0.6.0 ffmpeg-python-0.2.0 future-1.0.0 imageio-2.37.2 opencv-python-4.13.0.90
 Collecting nibabel
-  Downloading nibabel-5.3.3-py3-none-any.whl.metadata (9.1 kB)
+  Using cached nibabel-5.3.3-py3-none-any.whl.metadata (9.1 kB)
 Requirement already satisfied: importlib-resources>=5.12 in /home/clo37/.local/lib/python3.10/site-packages (from nibabel) (6.5.2)
 Requirement already satisfied: numpy>=1.22 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from nibabel) (2.2.6)
 Requirement already satisfied: packaging>=20 in /home/clo37/.local/lib/python3.10/site-packages (from nibabel) (25.0)
-Requirement already satisfied: typing-extensions>=4.6 in /home/clo37/.local/lib/python3.10/site-packages (from nibabel) (4.14.0)
-Downloading nibabel-5.3.3-py3-none-any.whl (3.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 40.9 MB/s  0:00:00
+Requirement already satisfied: typing-extensions>=4.6 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from nibabel) (4.15.0)
+Using cached nibabel-5.3.3-py3-none-any.whl (3.3 MB)
 Installing collected packages: nibabel
 Successfully installed nibabel-5.3.3
 Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cu118
-Requirement already satisfied: torch==2.4.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (2.4.0+cu118)
-Requirement already satisfied: torchvision==0.19.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 3)) (0.19.0+cu118)
-Collecting datasets==2.21.0 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4))
+Requirement already satisfied: torch==2.4.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (2.4.0+cu118)
+Requirement already satisfied: torchvision==0.19.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 3)) (0.19.0+cu118)
+Collecting datasets==2.21.0 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4))
   Downloading datasets-2.21.0-py3-none-any.whl.metadata (21 kB)
-Requirement already satisfied: transformers==4.51.2 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 5)) (4.51.2)
-Requirement already satisfied: tokenizers<0.22,>=0.21 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 6)) (0.21.4)
-Collecting deepspeed==0.15.4 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7))
+Requirement already satisfied: transformers==4.51.2 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 5)) (4.51.2)
+Requirement already satisfied: tokenizers<0.22,>=0.21 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 6)) (0.21.4)
+Collecting deepspeed==0.15.4 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7))
   Downloading deepspeed-0.15.4.tar.gz (1.4 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 29.4 MB/s  0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 44.9 MB/s  0:00:00
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
   Getting requirements to build wheel: started
   Getting requirements to build wheel: finished with status 'done'
   Preparing metadata (pyproject.toml): started
   Preparing metadata (pyproject.toml): finished with status 'done'
-Requirement already satisfied: accelerate==1.7.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 8)) (1.7.0)
-Collecting peft==0.4.0 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 9))
+Requirement already satisfied: accelerate==1.7.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 8)) (1.7.0)
+Collecting peft==0.4.0 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 9))
   Downloading peft-0.4.0-py3-none-any.whl.metadata (21 kB)
-Collecting nibabel==5.3.2 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 10))
+Collecting nibabel==5.3.2 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 10))
   Downloading nibabel-5.3.2-py3-none-any.whl.metadata (9.1 kB)
-Collecting timm==1.0.3 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 11))
+Collecting timm==1.0.3 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 11))
   Downloading timm-1.0.3-py3-none-any.whl.metadata (43 kB)
-Collecting numpy==1.24.4 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 12))
+Collecting numpy==1.24.4 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 12))
   Downloading numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.6 kB)
-Requirement already satisfied: decord==0.6.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 14)) (0.6.0)
-Collecting imageio==2.34.0 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 15))
+Requirement already satisfied: decord==0.6.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 14)) (0.6.0)
+Collecting imageio==2.34.0 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 15))
   Downloading imageio-2.34.0-py3-none-any.whl.metadata (4.9 kB)
-Collecting imageio-ffmpeg==0.4.9 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 16))
+Collecting imageio-ffmpeg==0.4.9 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 16))
   Downloading imageio_ffmpeg-0.4.9-py3-none-manylinux2010_x86_64.whl.metadata (1.7 kB)
-Collecting moviepy==1.0.3 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 17))
+Collecting moviepy==1.0.3 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 17))
   Downloading moviepy-1.0.3.tar.gz (388 kB)
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
@@ -327,215 +339,221 @@ Collecting moviepy==1.0.3 (from -r /local/scratch/clo37/models/Hulu-Med/requirem
   Getting requirements to build wheel: finished with status 'done'
   Preparing metadata (pyproject.toml): started
   Preparing metadata (pyproject.toml): finished with status 'done'
-Collecting opencv-python==4.6.0.66 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 18))
+Collecting opencv-python==4.6.0.66 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 18))
   Downloading opencv_python-4.6.0.66-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
-Requirement already satisfied: pyarrow in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 19)) (20.0.0)
-Collecting pysubs2 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 20))
+Requirement already satisfied: pyarrow in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 19)) (20.0.0)
+Collecting pysubs2 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 20))
   Downloading pysubs2-1.8.0-py3-none-any.whl.metadata (3.2 kB)
-Requirement already satisfied: ffmpeg-python in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 21)) (0.2.0)
-Collecting scikit-learn==1.2.2 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 23))
+Requirement already satisfied: ffmpeg-python in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 21)) (0.2.0)
+Collecting scikit-learn==1.2.2 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 23))
   Using cached scikit_learn-1.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
-Requirement already satisfied: huggingface_hub<1.0,>=0.30.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 24)) (0.36.0)
-Requirement already satisfied: sentencepiece==0.1.99 in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 25)) (0.1.99)
-Requirement already satisfied: shortuuid in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 26)) (1.0.13)
-Requirement already satisfied: einops==0.6.1 in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 27)) (0.6.1)
-Requirement already satisfied: einops-exts==0.0.4 in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 28)) (0.0.4)
-Collecting bitsandbytes==0.43.3 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 29))
+Requirement already satisfied: huggingface_hub<1.0,>=0.30.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 24)) (0.36.0)
+Requirement already satisfied: sentencepiece==0.1.99 in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 25)) (0.1.99)
+Requirement already satisfied: shortuuid in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 26)) (1.0.13)
+Requirement already satisfied: einops==0.6.1 in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 27)) (0.6.1)
+Requirement already satisfied: einops-exts==0.0.4 in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 28)) (0.0.4)
+Collecting bitsandbytes==0.43.3 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 29))
   Downloading bitsandbytes-0.43.3-py3-none-manylinux_2_24_x86_64.whl.metadata (3.5 kB)
-Requirement already satisfied: pydantic>=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 30)) (2.11.7)
-Collecting gradio==3.50.0 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32))
+Collecting pydantic>=2.0 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 30))
+  Downloading pydantic-2.12.5-py3-none-any.whl.metadata (90 kB)
+Collecting gradio==3.50.0 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32))
   Downloading gradio-3.50.0-py3-none-any.whl.metadata (17 kB)
-Collecting gradio_client==0.6.1 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 33))
+Collecting gradio_client==0.6.1 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 33))
   Downloading gradio_client-0.6.1-py3-none-any.whl.metadata (7.1 kB)
-Collecting httpx==0.24.1 (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34))
+Collecting httpx==0.24.1 (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34))
   Downloading httpx-0.24.1-py3-none-any.whl.metadata (7.4 kB)
-Requirement already satisfied: requests in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 35)) (2.32.4)
-Collecting openai (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 36))
-  Using cached openai-2.14.0-py3-none-any.whl.metadata (29 kB)
-Requirement already satisfied: uvicorn in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 37)) (0.35.0)
-Requirement already satisfied: fastapi in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 38)) (0.115.14)
-Collecting tensorboard (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
+Requirement already satisfied: requests in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 35)) (2.32.4)
+Collecting openai (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 36))
+  Downloading openai-2.15.0-py3-none-any.whl.metadata (29 kB)
+Requirement already satisfied: uvicorn in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 37)) (0.35.0)
+Requirement already satisfied: fastapi in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 38)) (0.115.14)
+Collecting tensorboard (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
   Downloading tensorboard-2.20.0-py3-none-any.whl.metadata (1.8 kB)
-Collecting wandb (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
-  Downloading wandb-0.23.1-py3-none-manylinux_2_28_x86_64.whl.metadata (12 kB)
-Collecting swanlab (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
-  Downloading swanlab-0.7.5-py3-none-any.whl.metadata (43 kB)
-Collecting tabulate (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 42))
-  Using cached tabulate-0.9.0-py3-none-any.whl.metadata (34 kB)
-Collecting Levenshtein (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 43))
+Collecting wandb (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
+  Downloading wandb-0.24.0-py3-none-manylinux_2_28_x86_64.whl.metadata (12 kB)
+Collecting swanlab (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
+  Downloading swanlab-0.7.6-py3-none-any.whl.metadata (44 kB)
+Collecting tabulate (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 42))
+  Downloading tabulate-0.9.0-py3-none-any.whl.metadata (34 kB)
+Collecting Levenshtein (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 43))
   Downloading levenshtein-0.27.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.7 kB)
-Requirement already satisfied: markdown2[all] in /home/clo37/.local/lib/python3.10/site-packages (from -r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 31)) (2.5.3)
-Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (3.20.1)
-Requirement already satisfied: typing-extensions>=4.8.0 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (4.14.0)
-Requirement already satisfied: sympy in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (1.14.0)
-Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (3.4.2)
-Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (3.1.6)
-Requirement already satisfied: fsspec in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (2025.3.0)
-Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.8.89)
-Requirement already satisfied: nvidia-cuda-runtime-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.8.89)
-Requirement already satisfied: nvidia-cuda-cupti-cu11==11.8.87 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.8.87)
-Requirement already satisfied: nvidia-cudnn-cu11==9.1.0.70 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (9.1.0.70)
-Requirement already satisfied: nvidia-cublas-cu11==11.11.3.6 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.11.3.6)
-Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (10.9.0.58)
-Requirement already satisfied: nvidia-curand-cu11==10.3.0.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (10.3.0.86)
-Requirement already satisfied: nvidia-cusolver-cu11==11.4.1.48 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.4.1.48)
-Requirement already satisfied: nvidia-cusparse-cu11==11.7.5.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.7.5.86)
-Requirement already satisfied: nvidia-nccl-cu11==2.20.5 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (2.20.5)
-Requirement already satisfied: nvidia-nvtx-cu11==11.8.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (11.8.86)
-Requirement already satisfied: triton==3.0.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (3.0.0)
-Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from torchvision==0.19.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 3)) (10.4.0)
-Requirement already satisfied: dill<0.3.9,>=0.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (0.3.8)
-Requirement already satisfied: pandas in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (2.3.0)
-Requirement already satisfied: tqdm>=4.66.3 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (4.67.1)
-Requirement already satisfied: xxhash in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (3.5.0)
-Requirement already satisfied: multiprocess in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (0.70.16)
-Collecting fsspec (from torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2))
+Requirement already satisfied: markdown2[all] in /home/clo37/.local/lib/python3.10/site-packages (from -r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 31)) (2.5.3)
+Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (3.20.3)
+Requirement already satisfied: typing-extensions>=4.8.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (4.15.0)
+Requirement already satisfied: sympy in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (1.14.0)
+Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (3.4.2)
+Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (3.1.6)
+Requirement already satisfied: fsspec in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (2026.1.0)
+Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.8.89)
+Requirement already satisfied: nvidia-cuda-runtime-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.8.89)
+Requirement already satisfied: nvidia-cuda-cupti-cu11==11.8.87 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.8.87)
+Requirement already satisfied: nvidia-cudnn-cu11==9.1.0.70 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (9.1.0.70)
+Requirement already satisfied: nvidia-cublas-cu11==11.11.3.6 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.11.3.6)
+Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (10.9.0.58)
+Requirement already satisfied: nvidia-curand-cu11==10.3.0.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (10.3.0.86)
+Requirement already satisfied: nvidia-cusolver-cu11==11.4.1.48 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.4.1.48)
+Requirement already satisfied: nvidia-cusparse-cu11==11.7.5.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.7.5.86)
+Requirement already satisfied: nvidia-nccl-cu11==2.20.5 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (2.20.5)
+Requirement already satisfied: nvidia-nvtx-cu11==11.8.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (11.8.86)
+Requirement already satisfied: triton==3.0.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from torchvision==0.19.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 3)) (10.4.0)
+Requirement already satisfied: dill<0.3.9,>=0.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (0.3.8)
+Requirement already satisfied: pandas in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (2.3.0)
+Requirement already satisfied: tqdm>=4.66.3 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (4.67.1)
+Requirement already satisfied: xxhash in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (3.5.0)
+Requirement already satisfied: multiprocess in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (0.70.16)
+Collecting fsspec (from torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2))
   Downloading fsspec-2024.6.1-py3-none-any.whl.metadata (11 kB)
-Requirement already satisfied: aiohttp in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (3.12.13)
-Requirement already satisfied: packaging in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (25.0)
-Requirement already satisfied: pyyaml>=5.1 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (6.0.2)
-Requirement already satisfied: regex!=2019.12.17 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 5)) (2024.11.6)
-Requirement already satisfied: safetensors>=0.4.3 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 5)) (0.5.3)
-Collecting hjson (from deepspeed==0.15.4->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7))
+Requirement already satisfied: aiohttp in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (3.12.13)
+Requirement already satisfied: packaging in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (25.0)
+Requirement already satisfied: pyyaml>=5.1 in /home/clo37/.local/lib/python3.10/site-packages (from datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (6.0.2)
+Requirement already satisfied: regex!=2019.12.17 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 5)) (2024.11.6)
+Requirement already satisfied: safetensors>=0.4.3 in /home/clo37/.local/lib/python3.10/site-packages (from transformers==4.51.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 5)) (0.5.3)
+Collecting hjson (from deepspeed==0.15.4->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7))
   Downloading hjson-3.1.0-py3-none-any.whl.metadata (2.6 kB)
-Collecting msgpack (from deepspeed==0.15.4->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7))
-  Using cached msgpack-1.1.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
-Collecting ninja (from deepspeed==0.15.4->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7))
-  Using cached ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.1 kB)
-Requirement already satisfied: psutil in /home/clo37/.local/lib/python3.10/site-packages (from deepspeed==0.15.4->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7)) (7.0.0)
-Collecting py-cpuinfo (from deepspeed==0.15.4->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 7))
-  Using cached py_cpuinfo-9.0.0-py3-none-any.whl.metadata (794 bytes)
-Requirement already satisfied: importlib-resources>=5.12 in /home/clo37/.local/lib/python3.10/site-packages (from nibabel==5.3.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 10)) (6.5.2)
-Requirement already satisfied: setuptools in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from imageio-ffmpeg==0.4.9->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 16)) (80.9.0)
-Collecting decorator<5.0,>=4.0.2 (from moviepy==1.0.3->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 17))
+Collecting msgpack (from deepspeed==0.15.4->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7))
+  Downloading msgpack-1.1.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting ninja (from deepspeed==0.15.4->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7))
+  Downloading ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.1 kB)
+Requirement already satisfied: psutil in /home/clo37/.local/lib/python3.10/site-packages (from deepspeed==0.15.4->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7)) (7.0.0)
+Collecting py-cpuinfo (from deepspeed==0.15.4->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 7))
+  Downloading py_cpuinfo-9.0.0-py3-none-any.whl.metadata (794 bytes)
+Requirement already satisfied: importlib-resources>=5.12 in /home/clo37/.local/lib/python3.10/site-packages (from nibabel==5.3.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 10)) (6.5.2)
+Requirement already satisfied: setuptools in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from imageio-ffmpeg==0.4.9->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 16)) (80.9.0)
+Collecting decorator<5.0,>=4.0.2 (from moviepy==1.0.3->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 17))
   Downloading decorator-4.4.2-py2.py3-none-any.whl.metadata (4.2 kB)
-Collecting proglog<=1.0.0 (from moviepy==1.0.3->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 17))
+Collecting proglog<=1.0.0 (from moviepy==1.0.3->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 17))
   Downloading proglog-0.1.12-py3-none-any.whl.metadata (794 bytes)
-Requirement already satisfied: scipy>=1.3.2 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 23)) (1.15.3)
-Requirement already satisfied: joblib>=1.1.1 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 23)) (1.5.1)
-Requirement already satisfied: threadpoolctl>=2.0.0 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 23)) (3.6.0)
-Requirement already satisfied: aiofiles<24.0,>=22.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (23.2.1)
-Requirement already satisfied: altair<6.0,>=4.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (5.5.0)
-Requirement already satisfied: ffmpy in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.6.0)
-Requirement already satisfied: markupsafe~=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (2.1.5)
-Requirement already satisfied: matplotlib~=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (3.10.3)
-Requirement already satisfied: orjson~=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (3.10.18)
-Requirement already satisfied: pydub in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.25.1)
-Requirement already satisfied: python-multipart in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.0.20)
-Requirement already satisfied: semantic-version~=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (2.10.0)
-Collecting websockets<12.0,>=10.0 (from gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32))
+Requirement already satisfied: scipy>=1.3.2 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 23)) (1.15.3)
+Requirement already satisfied: joblib>=1.1.1 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 23)) (1.5.1)
+Requirement already satisfied: threadpoolctl>=2.0.0 in /home/clo37/.local/lib/python3.10/site-packages (from scikit-learn==1.2.2->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 23)) (3.6.0)
+Requirement already satisfied: aiofiles<24.0,>=22.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (23.2.1)
+Requirement already satisfied: altair<6.0,>=4.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (5.5.0)
+Requirement already satisfied: ffmpy in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.6.0)
+Requirement already satisfied: markupsafe~=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (2.1.5)
+Requirement already satisfied: matplotlib~=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (3.10.3)
+Requirement already satisfied: orjson~=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (3.10.18)
+Requirement already satisfied: pydub in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.25.1)
+Requirement already satisfied: python-multipart in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.0.20)
+Requirement already satisfied: semantic-version~=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (2.10.0)
+Collecting websockets<12.0,>=10.0 (from gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32))
   Using cached websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
-Requirement already satisfied: certifi in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34)) (2025.6.15)
-Collecting httpcore<0.18.0,>=0.15.0 (from httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34))
+Requirement already satisfied: certifi in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34)) (2025.6.15)
+Collecting httpcore<0.18.0,>=0.15.0 (from httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34))
   Using cached httpcore-0.17.3-py3-none-any.whl.metadata (18 kB)
-Requirement already satisfied: idna in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34)) (3.10)
-Requirement already satisfied: sniffio in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34)) (1.3.1)
-Requirement already satisfied: hf-xet<2.0.0,>=1.1.3 in /home/clo37/.local/lib/python3.10/site-packages (from huggingface_hub<1.0,>=0.30.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 24)) (1.1.5)
-Requirement already satisfied: annotated-types>=0.6.0 in /home/clo37/.local/lib/python3.10/site-packages (from pydantic>=2.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 30)) (0.7.0)
-Requirement already satisfied: pydantic-core==2.33.2 in /home/clo37/.local/lib/python3.10/site-packages (from pydantic>=2.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 30)) (2.33.2)
-Requirement already satisfied: typing-inspection>=0.4.0 in /home/clo37/.local/lib/python3.10/site-packages (from pydantic>=2.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 30)) (0.4.1)
-Requirement already satisfied: charset_normalizer<4,>=2 in /home/clo37/.local/lib/python3.10/site-packages (from requests->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 35)) (3.4.2)
-Requirement already satisfied: urllib3<3,>=1.21.1 in /home/clo37/.local/lib/python3.10/site-packages (from requests->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 35)) (2.5.0)
-Requirement already satisfied: jsonschema>=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from altair<6.0,>=4.2.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (4.24.0)
-Requirement already satisfied: narwhals>=1.14.2 in /home/clo37/.local/lib/python3.10/site-packages (from altair<6.0,>=4.2.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (1.45.0)
-Collecting h11<0.15,>=0.13 (from httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34))
+Requirement already satisfied: idna in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34)) (3.10)
+Requirement already satisfied: sniffio in /home/clo37/.local/lib/python3.10/site-packages (from httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34)) (1.3.1)
+Requirement already satisfied: hf-xet<2.0.0,>=1.1.3 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from huggingface_hub<1.0,>=0.30.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 24)) (1.2.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /home/clo37/.local/lib/python3.10/site-packages (from pydantic>=2.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 30)) (0.7.0)
+Collecting pydantic-core==2.41.5 (from pydantic>=2.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 30))
+  Downloading pydantic_core-2.41.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+Collecting typing-inspection>=0.4.2 (from pydantic>=2.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 30))
+  Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/clo37/.local/lib/python3.10/site-packages (from requests->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 35)) (3.4.2)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/clo37/.local/lib/python3.10/site-packages (from requests->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 35)) (2.5.0)
+Requirement already satisfied: jsonschema>=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from altair<6.0,>=4.2.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (4.24.0)
+Requirement already satisfied: narwhals>=1.14.2 in /home/clo37/.local/lib/python3.10/site-packages (from altair<6.0,>=4.2.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (1.45.0)
+Collecting h11<0.15,>=0.13 (from httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34))
   Using cached h11-0.14.0-py3-none-any.whl.metadata (8.2 kB)
-Requirement already satisfied: anyio<5.0,>=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34)) (4.9.0)
-Requirement already satisfied: exceptiongroup>=1.0.2 in /home/clo37/.local/lib/python3.10/site-packages (from anyio<5.0,>=3.0->httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 34)) (1.3.0)
-Requirement already satisfied: contourpy>=1.0.1 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (1.3.2)
-Requirement already satisfied: cycler>=0.10 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.12.1)
-Requirement already satisfied: fonttools>=4.22.0 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (4.58.4)
-Requirement already satisfied: kiwisolver>=1.3.1 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (1.4.8)
-Collecting pyparsing>=2.3.1 (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32))
+Requirement already satisfied: anyio<5.0,>=3.0 in /home/clo37/.local/lib/python3.10/site-packages (from httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34)) (4.9.0)
+Requirement already satisfied: exceptiongroup>=1.0.2 in /home/clo37/.local/lib/python3.10/site-packages (from anyio<5.0,>=3.0->httpcore<0.18.0,>=0.15.0->httpx==0.24.1->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 34)) (1.3.0)
+Requirement already satisfied: contourpy>=1.0.1 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (1.3.2)
+Requirement already satisfied: cycler>=0.10 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (4.58.4)
+Requirement already satisfied: kiwisolver>=1.3.1 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (1.4.8)
+Collecting pyparsing>=2.3.1 (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32))
   Downloading pyparsing-3.3.1-py3-none-any.whl.metadata (5.6 kB)
-Requirement already satisfied: python-dateutil>=2.7 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (2.9.0.post0)
-Requirement already satisfied: pytz>=2020.1 in /home/clo37/.local/lib/python3.10/site-packages (from pandas->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (2025.2)
-Requirement already satisfied: tzdata>=2022.7 in /home/clo37/.local/lib/python3.10/site-packages (from pandas->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (2025.2)
-Requirement already satisfied: future in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from ffmpeg-python->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 21)) (1.0.0)
-Requirement already satisfied: pygments>=2.7.3 in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 31)) (2.19.2)
-Requirement already satisfied: wavedrom in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 31)) (2.0.3.post3)
-Requirement already satisfied: latex2mathml in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 31)) (3.78.0)
-Collecting distro<2,>=1.7.0 (from openai->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 36))
-  Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
-Collecting jiter<1,>=0.10.0 (from openai->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 36))
-  Using cached jiter-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
-Requirement already satisfied: click>=7.0 in /home/clo37/.local/lib/python3.10/site-packages (from uvicorn->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 37)) (8.2.1)
-Requirement already satisfied: starlette<0.47.0,>=0.40.0 in /home/clo37/.local/lib/python3.10/site-packages (from fastapi->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 38)) (0.46.2)
-Collecting absl-py>=0.4 (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
+Requirement already satisfied: python-dateutil>=2.7 in /home/clo37/.local/lib/python3.10/site-packages (from matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /home/clo37/.local/lib/python3.10/site-packages (from pandas->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in /home/clo37/.local/lib/python3.10/site-packages (from pandas->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (2025.2)
+Requirement already satisfied: future in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from ffmpeg-python->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 21)) (1.0.0)
+Requirement already satisfied: pygments>=2.7.3 in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 31)) (2.19.2)
+Requirement already satisfied: wavedrom in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 31)) (2.0.3.post3)
+Requirement already satisfied: latex2mathml in /home/clo37/.local/lib/python3.10/site-packages (from markdown2[all]->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 31)) (3.78.0)
+Collecting distro<2,>=1.7.0 (from openai->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 36))
+  Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting jiter<1,>=0.10.0 (from openai->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 36))
+  Downloading jiter-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+Requirement already satisfied: click>=7.0 in /home/clo37/.local/lib/python3.10/site-packages (from uvicorn->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 37)) (8.2.1)
+Requirement already satisfied: starlette<0.47.0,>=0.40.0 in /home/clo37/.local/lib/python3.10/site-packages (from fastapi->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 38)) (0.46.2)
+Collecting absl-py>=0.4 (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
   Downloading absl_py-2.3.1-py3-none-any.whl.metadata (3.3 kB)
-Collecting grpcio>=1.48.2 (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
+Collecting grpcio>=1.48.2 (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
   Downloading grpcio-1.76.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.7 kB)
-Collecting markdown>=2.6.8 (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
+Collecting markdown>=2.6.8 (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
   Downloading markdown-3.10-py3-none-any.whl.metadata (5.1 kB)
-Requirement already satisfied: protobuf!=4.24.0,>=3.19.6 in /home/clo37/.local/lib/python3.10/site-packages (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39)) (6.31.1)
-Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
+Requirement already satisfied: protobuf!=4.24.0,>=3.19.6 in /home/clo37/.local/lib/python3.10/site-packages (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39)) (6.31.1)
+Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
   Downloading tensorboard_data_server-0.7.2-py3-none-manylinux_2_31_x86_64.whl.metadata (1.1 kB)
-Collecting werkzeug>=1.0.1 (from tensorboard->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 39))
-  Downloading werkzeug-3.1.4-py3-none-any.whl.metadata (4.0 kB)
-Collecting gitpython!=3.1.29,>=1.0.0 (from wandb->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
-  Using cached gitpython-3.1.45-py3-none-any.whl.metadata (13 kB)
-Collecting platformdirs (from wandb->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
+Collecting werkzeug>=1.0.1 (from tensorboard->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 39))
+  Downloading werkzeug-3.1.5-py3-none-any.whl.metadata (4.0 kB)
+Collecting gitpython!=3.1.29,>=1.0.0 (from wandb->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
+  Downloading gitpython-3.1.46-py3-none-any.whl.metadata (13 kB)
+Collecting platformdirs (from wandb->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
   Downloading platformdirs-4.5.1-py3-none-any.whl.metadata (12 kB)
-Collecting sentry-sdk>=2.0.0 (from wandb->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
-  Using cached sentry_sdk-2.48.0-py2.py3-none-any.whl.metadata (10 kB)
-Collecting nvidia-ml-py (from swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
-  Using cached nvidia_ml_py-13.590.44-py3-none-any.whl.metadata (9.8 kB)
-Collecting pyecharts>=2.0.0 (from swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
+Collecting sentry-sdk>=2.0.0 (from wandb->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
+  Downloading sentry_sdk-2.49.0-py2.py3-none-any.whl.metadata (10 kB)
+Collecting nvidia-ml-py (from swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
+  Downloading nvidia_ml_py-13.590.44-py3-none-any.whl.metadata (9.8 kB)
+Collecting pyecharts>=2.0.0 (from swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
   Downloading pyecharts-2.0.9-py3-none-any.whl.metadata (1.6 kB)
-Collecting rich<14.0.0,>=13.6.0 (from swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
+Collecting rich<14.0.0,>=13.6.0 (from swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
   Downloading rich-13.9.4-py3-none-any.whl.metadata (18 kB)
-Collecting wrapt>=1.17.0 (from swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
+Collecting wrapt>=1.17.0 (from swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
   Downloading wrapt-2.0.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (9.0 kB)
-Requirement already satisfied: markdown-it-py>=2.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from rich<14.0.0,>=13.6.0->swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41)) (3.0.0)
-Collecting rapidfuzz<4.0.0,>=3.9.0 (from Levenshtein->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 43))
+Requirement already satisfied: markdown-it-py>=2.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from rich<14.0.0,>=13.6.0->swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41)) (3.0.0)
+Collecting rapidfuzz<4.0.0,>=3.9.0 (from Levenshtein->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 43))
   Downloading rapidfuzz-3.14.3-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (12 kB)
-Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (2.6.1)
-Requirement already satisfied: aiosignal>=1.1.2 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (1.3.2)
-Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (5.0.1)
-Requirement already satisfied: attrs>=17.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (25.3.0)
-Requirement already satisfied: frozenlist>=1.1.1 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (1.7.0)
-Requirement already satisfied: multidict<7.0,>=4.5 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (6.6.3)
-Requirement already satisfied: propcache>=0.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (0.3.2)
-Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 4)) (1.20.1)
-Collecting gitdb<5,>=4.0.1 (from gitpython!=3.1.29,>=1.0.0->wandb->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
-  Using cached gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
-Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython!=3.1.29,>=1.0.0->wandb->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 40))
-  Using cached smmap-5.0.2-py3-none-any.whl.metadata (4.3 kB)
-Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (2025.4.1)
-Requirement already satisfied: referencing>=0.28.4 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.36.2)
-Requirement already satisfied: rpds-py>=0.7.1 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32)) (0.26.0)
-Requirement already satisfied: mdurl~=0.1 in /home/clo37/.local/lib/python3.10/site-packages (from markdown-it-py>=2.2.0->rich<14.0.0,>=13.6.0->swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41)) (0.1.2)
-Collecting prettytable (from pyecharts>=2.0.0->swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.1.2 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (1.3.2)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (25.3.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (1.7.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (6.6.3)
+Requirement already satisfied: propcache>=0.2.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (0.3.2)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/clo37/.local/lib/python3.10/site-packages (from aiohttp->datasets==2.21.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 4)) (1.20.1)
+Collecting gitdb<5,>=4.0.1 (from gitpython!=3.1.29,>=1.0.0->wandb->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
+  Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython!=3.1.29,>=1.0.0->wandb->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 40))
+  Downloading smmap-5.0.2-py3-none-any.whl.metadata (4.3 kB)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (2025.4.1)
+Requirement already satisfied: referencing>=0.28.4 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.36.2)
+Requirement already satisfied: rpds-py>=0.7.1 in /home/clo37/.local/lib/python3.10/site-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32)) (0.26.0)
+Requirement already satisfied: mdurl~=0.1 in /home/clo37/.local/lib/python3.10/site-packages (from markdown-it-py>=2.2.0->rich<14.0.0,>=13.6.0->swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41)) (0.1.2)
+Collecting prettytable (from pyecharts>=2.0.0->swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
   Downloading prettytable-3.17.0-py3-none-any.whl.metadata (34 kB)
-Collecting simplejson (from pyecharts>=2.0.0->swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
+Collecting simplejson (from pyecharts>=2.0.0->swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
   Downloading simplejson-3.20.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.2 kB)
-Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib~=3.0->gradio==3.50.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 32))
+Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib~=3.0->gradio==3.50.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 32))
   Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
-Collecting wcwidth (from prettytable->pyecharts>=2.0.0->swanlab->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 41))
-  Using cached wcwidth-0.2.14-py2.py3-none-any.whl.metadata (15 kB)
-Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/clo37/.local/lib/python3.10/site-packages (from sympy->torch==2.4.0->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 2)) (1.3.0)
-Requirement already satisfied: svgwrite in /home/clo37/.local/lib/python3.10/site-packages (from wavedrom->markdown2[all]->-r /local/scratch/clo37/models/Hulu-Med/requirements.txt (line 31)) (1.4.3)
+Collecting wcwidth (from prettytable->pyecharts>=2.0.0->swanlab->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 41))
+  Downloading wcwidth-0.2.14-py2.py3-none-any.whl.metadata (15 kB)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/clo37/.local/lib/python3.10/site-packages (from sympy->torch==2.4.0->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 2)) (1.3.0)
+Requirement already satisfied: svgwrite in /home/clo37/.local/lib/python3.10/site-packages (from wavedrom->markdown2[all]->-r /home/clo37/priv/MED-VLM-MIA/requirements.txt (line 31)) (1.4.3)
 Downloading datasets-2.21.0-py3-none-any.whl (527 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 527.3/527.3 kB 24.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 527.3/527.3 kB 36.5 MB/s  0:00:00
 Downloading numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.3/17.3 MB 81.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.3/17.3 MB 111.0 MB/s  0:00:00
 Downloading peft-0.4.0-py3-none-any.whl (72 kB)
 Downloading nibabel-5.3.2-py3-none-any.whl (3.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 86.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 56.6 MB/s  0:00:00
 Downloading timm-1.0.3-py3-none-any.whl (2.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 61.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 96.9 MB/s  0:00:00
 Downloading imageio-2.34.0-py3-none-any.whl (313 kB)
 Downloading imageio_ffmpeg-0.4.9-py3-none-manylinux2010_x86_64.whl (26.9 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26.9/26.9 MB 71.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26.9/26.9 MB 102.9 MB/s  0:00:00
 Downloading opencv_python-4.6.0.66-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (60.9 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.9/60.9 MB 81.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.9/60.9 MB 100.6 MB/s  0:00:00
 Using cached scikit_learn-1.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (9.6 MB)
 Downloading bitsandbytes-0.43.3-py3-none-manylinux_2_24_x86_64.whl (137.5 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.5/137.5 MB 78.4 MB/s  0:00:01
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.5/137.5 MB 66.9 MB/s  0:00:02
 Downloading gradio-3.50.0-py3-none-any.whl (20.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20.3/20.3 MB 66.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20.3/20.3 MB 98.8 MB/s  0:00:00
 Downloading gradio_client-0.6.1-py3-none-any.whl (299 kB)
 Downloading httpx-0.24.1-py3-none-any.whl (75 kB)
+Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+Downloading pydantic_core-2.41.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 110.4 MB/s  0:00:00
 Downloading decorator-4.4.2-py2.py3-none-any.whl (9.2 kB)
 Downloading fsspec-2024.6.1-py3-none-any.whl (177 kB)
 Using cached httpcore-0.17.3-py3-none-any.whl (74 kB)
@@ -543,70 +561,68 @@ Using cached h11-0.14.0-py3-none-any.whl (58 kB)
 Downloading proglog-0.1.12-py3-none-any.whl (6.3 kB)
 Using cached websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (129 kB)
 Downloading pysubs2-1.8.0-py3-none-any.whl (43 kB)
-Using cached openai-2.14.0-py3-none-any.whl (1.1 MB)
-Using cached distro-1.9.0-py3-none-any.whl (20 kB)
-Using cached jiter-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (364 kB)
+Downloading openai-2.15.0-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 63.8 MB/s  0:00:00
+Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading jiter-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (364 kB)
 Downloading tensorboard-2.20.0-py3-none-any.whl (5.5 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 137.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 120.9 MB/s  0:00:00
 Downloading tensorboard_data_server-0.7.2-py3-none-manylinux_2_31_x86_64.whl (6.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 111.8 MB/s  0:00:00
-Downloading wandb-0.23.1-py3-none-manylinux_2_28_x86_64.whl (22.9 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.9/22.9 MB 86.2 MB/s  0:00:00
-Downloading swanlab-0.7.5-py3-none-any.whl (315 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 111.0 MB/s  0:00:00
+Downloading wandb-0.24.0-py3-none-manylinux_2_28_x86_64.whl (22.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.8/22.8 MB 122.7 MB/s  0:00:00
+Downloading swanlab-0.7.6-py3-none-any.whl (325 kB)
 Downloading rich-13.9.4-py3-none-any.whl (242 kB)
-Using cached tabulate-0.9.0-py3-none-any.whl (35 kB)
+Downloading tabulate-0.9.0-py3-none-any.whl (35 kB)
 Downloading levenshtein-0.27.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (153 kB)
 Downloading rapidfuzz-3.14.3-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (3.2 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 52.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 110.7 MB/s  0:00:00
 Downloading absl_py-2.3.1-py3-none-any.whl (135 kB)
-Using cached gitpython-3.1.45-py3-none-any.whl (208 kB)
-Using cached gitdb-4.0.12-py3-none-any.whl (62 kB)
-Using cached smmap-5.0.2-py3-none-any.whl (24 kB)
+Downloading gitpython-3.1.46-py3-none-any.whl (208 kB)
+Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+Downloading smmap-5.0.2-py3-none-any.whl (24 kB)
 Downloading grpcio-1.76.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 74.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 117.3 MB/s  0:00:00
 Downloading markdown-3.10-py3-none-any.whl (107 kB)
 Downloading platformdirs-4.5.1-py3-none-any.whl (18 kB)
 Downloading pyecharts-2.0.9-py3-none-any.whl (153 kB)
 Downloading pyparsing-3.3.1-py3-none-any.whl (121 kB)
-Using cached sentry_sdk-2.48.0-py2.py3-none-any.whl (414 kB)
+Downloading sentry_sdk-2.49.0-py2.py3-none-any.whl (415 kB)
 Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
-Downloading werkzeug-3.1.4-py3-none-any.whl (224 kB)
+Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Downloading werkzeug-3.1.5-py3-none-any.whl (225 kB)
 Downloading wrapt-2.0.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (113 kB)
 Downloading hjson-3.1.0-py3-none-any.whl (54 kB)
-Using cached msgpack-1.1.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (406 kB)
-Using cached ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (180 kB)
-Using cached nvidia_ml_py-13.590.44-py3-none-any.whl (50 kB)
+Downloading msgpack-1.1.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (406 kB)
+Downloading ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (180 kB)
+Downloading nvidia_ml_py-13.590.44-py3-none-any.whl (50 kB)
 Downloading prettytable-3.17.0-py3-none-any.whl (34 kB)
-Using cached py_cpuinfo-9.0.0-py3-none-any.whl (22 kB)
+Downloading py_cpuinfo-9.0.0-py3-none-any.whl (22 kB)
 Downloading simplejson-3.20.2-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (138 kB)
-Using cached wcwidth-0.2.14-py2.py3-none-any.whl (37 kB)
+Downloading wcwidth-0.2.14-py2.py3-none-any.whl (37 kB)
 Building wheels for collected packages: deepspeed, moviepy
   Building wheel for deepspeed (pyproject.toml): started
   Building wheel for deepspeed (pyproject.toml): finished with status 'done'
-  Created wheel for deepspeed: filename=deepspeed-0.15.4-py3-none-any.whl size=1527921 sha256=4772e2137ca27df9d0f01605e2ca165ff832d787a0d37b6ae97a59c37e71c4d7
+  Created wheel for deepspeed: filename=deepspeed-0.15.4-py3-none-any.whl size=1527922 sha256=6aa52799bdf14681a0c646e6e2d0564cf3fad4c6d9e96697a9564e3a4b7dca47
   Stored in directory: /local/scratch/clo37/.cache/pip/wheels/74/bc/b6/836d7c3e3093e25502fa9248e0be9e943db245f2806ba1cd19
   Building wheel for moviepy (pyproject.toml): started
   Building wheel for moviepy (pyproject.toml): finished with status 'done'
-  Created wheel for moviepy: filename=moviepy-1.0.3-py3-none-any.whl size=110797 sha256=503d1e5bf18c3149d0b5a9ae7d80896bbd1c7072968307dde60023218f53180b
+  Created wheel for moviepy: filename=moviepy-1.0.3-py3-none-any.whl size=110797 sha256=dceadb2bd889dad024b648c67f075d21a8304d0c81a7775943e769dd91137aa9
   Stored in directory: /local/scratch/clo37/.cache/pip/wheels/96/32/2d/e10123bd88fbfc02fed53cc18c80a171d3c87479ed845fa7c1
 Successfully built deepspeed moviepy
-Installing collected packages: py-cpuinfo, nvidia-ml-py, hjson, wrapt, werkzeug, websockets, wcwidth, tensorboard-data-server, tabulate, smmap, six, simplejson, sentry-sdk, rapidfuzz, pysubs2, pyparsing, proglog, platformdirs, numpy, ninja, msgpack, markdown, jiter, imageio-ffmpeg, h11, grpcio, fsspec, distro, decorator, absl-py, tensorboard, rich, prettytable, opencv-python, nibabel, Levenshtein, imageio, gitdb, scikit-learn, pyecharts, moviepy, httpcore, gitpython, deepspeed, bitsandbytes, wandb, timm, swanlab, httpx, peft, openai, gradio_client, datasets, gradio
+Installing collected packages: py-cpuinfo, nvidia-ml-py, hjson, wrapt, werkzeug, websockets, wcwidth, typing-inspection, tensorboard-data-server, tabulate, smmap, six, simplejson, sentry-sdk, rapidfuzz, pysubs2, pyparsing, pydantic-core, proglog, platformdirs, numpy, ninja, msgpack, markdown, jiter, imageio-ffmpeg, h11, grpcio, fsspec, distro, decorator, absl-py, tensorboard, rich, pydantic, prettytable, opencv-python, nibabel, Levenshtein, imageio, gitdb, scikit-learn, pyecharts, moviepy, httpcore, gitpython, deepspeed, bitsandbytes, wandb, timm, swanlab, httpx, peft, openai, gradio_client, datasets, gradio
   Attempting uninstall: numpy
     Found existing installation: numpy 2.2.6
     Uninstalling numpy-2.2.6:
       Successfully uninstalled numpy-2.2.6
   Attempting uninstall: fsspec
-    Found existing installation: fsspec 2025.3.0
-    Uninstalling fsspec-2025.3.0:
-      Successfully uninstalled fsspec-2025.3.0
-  Attempting uninstall: rich
-    Found existing installation: rich 14.0.0
-    Uninstalling rich-14.0.0:
-      Successfully uninstalled rich-14.0.0
+    Found existing installation: fsspec 2026.1.0
+    Uninstalling fsspec-2026.1.0:
+      Successfully uninstalled fsspec-2026.1.0
   Attempting uninstall: opencv-python
-    Found existing installation: opencv-python 4.12.0.88
-    Uninstalling opencv-python-4.12.0.88:
-      Successfully uninstalled opencv-python-4.12.0.88
+    Found existing installation: opencv-python 4.13.0.90
+    Uninstalling opencv-python-4.13.0.90:
+      Successfully uninstalled opencv-python-4.13.0.90
   Attempting uninstall: nibabel
     Found existing installation: nibabel 5.3.3
     Uninstalling nibabel-5.3.3:
@@ -616,4 +632,4 @@ Installing collected packages: py-cpuinfo, nvidia-ml-py, hjson, wrapt, werkzeug,
     Uninstalling ImageIO-2.37.2:
       Successfully uninstalled ImageIO-2.37.2
 
-Successfully installed Levenshtein-0.27.3 absl-py-2.3.1 bitsandbytes-0.43.3 datasets-2.21.0 decorator-4.4.2 deepspeed-0.15.4 distro-1.9.0 fsspec-2024.6.1 gitdb-4.0.12 gitpython-3.1.45 gradio-3.50.0 gradio_client-0.6.1 grpcio-1.76.0 h11-0.14.0 hjson-3.1.0 httpcore-0.17.3 httpx-0.24.1 imageio-2.34.0 imageio-ffmpeg-0.4.9 jiter-0.12.0 markdown-3.10 moviepy-1.0.3 msgpack-1.1.2 nibabel-5.3.2 ninja-1.13.0 numpy-1.24.4 nvidia-ml-py-13.590.44 openai-2.14.0 opencv-python-4.6.0.66 peft-0.4.0 platformdirs-4.5.1 prettytable-3.17.0 proglog-0.1.12 py-cpuinfo-9.0.0 pyecharts-2.0.9 pyparsing-3.3.1 pysubs2-1.8.0 rapidfuzz-3.14.3 rich-13.9.4 scikit-learn-1.2.2 sentry-sdk-2.48.0 simplejson-3.20.2 six-1.17.0 smmap-5.0.2 swanlab-0.7.5 tabulate-0.9.0 tensorboard-2.20.0 tensorboard-data-server-0.7.2 timm-1.0.3 wandb-0.23.1 wcwidth-0.2.14 websockets-11.0.3 werkzeug-3.1.4 wrapt-2.0.1
+Successfully installed Levenshtein-0.27.3 absl-py-2.3.1 bitsandbytes-0.43.3 datasets-2.21.0 decorator-4.4.2 deepspeed-0.15.4 distro-1.9.0 fsspec-2024.6.1 gitdb-4.0.12 gitpython-3.1.46 gradio-3.50.0 gradio_client-0.6.1 grpcio-1.76.0 h11-0.14.0 hjson-3.1.0 httpcore-0.17.3 httpx-0.24.1 imageio-2.34.0 imageio-ffmpeg-0.4.9 jiter-0.12.0 markdown-3.10 moviepy-1.0.3 msgpack-1.1.2 nibabel-5.3.2 ninja-1.13.0 numpy-1.24.4 nvidia-ml-py-13.590.44 openai-2.15.0 opencv-python-4.6.0.66 peft-0.4.0 platformdirs-4.5.1 prettytable-3.17.0 proglog-0.1.12 py-cpuinfo-9.0.0 pydantic-2.12.5 pydantic-core-2.41.5 pyecharts-2.0.9 pyparsing-3.3.1 pysubs2-1.8.0 rapidfuzz-3.14.3 rich-13.9.4 scikit-learn-1.2.2 sentry-sdk-2.49.0 simplejson-3.20.2 six-1.17.0 smmap-5.0.2 swanlab-0.7.6 tabulate-0.9.0 tensorboard-2.20.0 tensorboard-data-server-0.7.2 timm-1.0.3 typing-inspection-0.4.2 wandb-0.24.0 wcwidth-0.2.14 websockets-11.0.3 werkzeug-3.1.5 wrapt-2.0.1

@@ -6,6 +6,8 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=140G
 
+conda remove --name med_vlm_mia_venv
+
 conda create -n med_vlm_mia_venv python=3.10 -y
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
@@ -28,5 +30,17 @@ pip install decord ffmpeg-python imageio opencv-python
 # For 3D medical image processing (NIfTI files)
 pip install nibabel
 
+pip install -U hydra-core omegaconf
+
+pip install iopath -y
+
+pip install webdataset -y
+
+conda install -c conda-forge scikit-image
+
+pip install visual-genome
+
 # Install other dependencies
-pip install -r /local/scratch/clo37/models/Hulu-Med/requirements.txt
+# pip install -r /local/scratch/clo37/models/Hulu-Med/requirements.txt
+
+pip install -r /home/clo37/priv/MED-VLM-MIA/requirements.txt

@@ -1,0 +1,39 @@
+defaults:
+  - metrics@aug_kld : aug_kld
+  - metrics@max_k_renyi_1_entro : max_k_renyi_1_entro
+  - metrics@max_k_renyi_2_entro : max_k_renyi_2_entro
+  - metrics@max_k_renyi_05_entro : max_k_renyi_05_entro
+  - metrics@max_prob_gap : max_prob_gap
+  - metrics@min_k_renyi_1_entro : min_k_renyi_1_entro
+  - metrics@min_k_renyi_2_entro : min_k_renyi_2_entro
+  - metrics@min_k_renyi_05_entro : min_k_renyi_05_entro
+  - metrics@mink : mink
+  - metrics@mod_renyi_1_entro : mod_renyi_1_entro
+  - metrics@mod_renyi_2_entro : mod_renyi_2_entro
+  - metrics@mod_renyi_05_entro : mod_renyi_05_entro
+  - metrics@renyi_1 : renyi_1
+  - metrics@renyi_2 : renyi_2
+  - metrics@renyi_05 : renyi_05
+  - metrics@renyi_05_full : renyi_05_full
+  - metrics@cross_entropy_mink : cross_entropy_mink
+  - metrics@max_k_no_norn_kl_div: max_k_no_norn_kl_div
+  - metrics@max_k_renyi_05_kl_div: max_k_renyi_05_kl_div
+  - metrics@max_k_renyi_1_kl_div: max_k_renyi_1_kl_div
+  - metrics@max_k_renyi_2_kl_div: max_k_renyi_2_kl_div
+  - metrics@max_k_renyi_inf_kl_div: max_k_renyi_inf_kl_div
+  - metrics@max_k_renyi_divergence_025: max_k_renyi_divergence_025
+  - metrics@max_k_renyi_divergence_05: max_k_renyi_divergence_05
+  - metrics@max_k_renyi_divergence_2: max_k_renyi_divergence_2
+  - metrics@max_k_renyi_divergence_4: max_k_renyi_divergence_4
+
+metrics_to_use: ???
+parts: ???
+
+get_token_labels: 0
+get_raw_images: 0
+
+get_raw_meta_examples: 0
+get_raw_meta_metrics: ???
+
+get_proc_meta_examples: 0
+get_proc_meta_metrics: ???

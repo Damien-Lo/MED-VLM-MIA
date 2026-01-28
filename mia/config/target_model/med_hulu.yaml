@@ -1,0 +1,9 @@
+type: hulu_med
+# model_path: /local/scratch/clo37/models/Hulu-Med-32B
+model_path: ZJU-AI4H/Hulu-Med-32B
+
+
+
+# for hulu_med: 
+# member_set = /local/scratch/clo37/datasets/PubMedVision
+# nonmember_set = 
