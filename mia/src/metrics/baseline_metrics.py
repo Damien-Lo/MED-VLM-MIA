@@ -19,10 +19,11 @@ def aug_kl(probabilities, log_probabilities, cfg):
         for aug_name in aug_names:
             if aug_name == "orig":
                 continue
-            _kld.append(kl_divergence(_orig_prob,
-                                      _orig_log_prob,
-                                      probabilities[aug_name][0][_sample_idx]))
-                                     # change [0] to something else or add a new logic if we use multiple params for each augmentation.
+            for setting_idx in range(len(probabilities[aug_name])):
+                _kld.append(kl_divergence(_orig_prob,
+                                        _orig_log_prob,
+                                        probabilities[aug_name][setting_idx][_sample_idx]))
+                                        # change [0] to something else or add a new logic if we use multiple params for each augmentation.
         result.append(-statistics.mean(_kld).item())
     return result
 

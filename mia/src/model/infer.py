@@ -926,41 +926,36 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
         def compute_spans(tokenizer, inputs, vis_processor, inst: str, desc: str):
             n_img = visual_token_count_from_inputs(inputs, 0)
 
-            # These must EXACTLY match the string pieces used in prompt
-            # prompt = "<image>\n" + "<INST>"+inst+"</INST>\n" + "<DESC>"+desc+"</DESC>"
             before_img = "<IMG1>"
             after_img = "</IMG1>\n<INST>"
             between_inst_desc = "</INST>\n<DESC>"
             after_desc = "</DESC>"
 
-            # token lengths
-            after_image_len = enc_len(tokenizer, after_img)
-            inst_len        = enc_len(tokenizer, inst)
-            between_len     = enc_len(tokenizer, between_inst_desc)
-            desc_len        = enc_len(tokenizer, desc)
-            after_desc_len  = enc_len(tokenizer, after_desc)
+            before_len     = enc_len(tokenizer, before_img)
+            after_image_len= enc_len(tokenizer, after_img)
+            inst_len       = enc_len(tokenizer, inst)
+            between_len    = enc_len(tokenizer, between_inst_desc)
+            desc_len       = enc_len(tokenizer, desc)
+            after_desc_len = enc_len(tokenizer, after_desc)
 
             idx = 0
 
-            # 1) image run is first in the prompt
-            image_span = (idx, idx + n_img)     # [start, end)
+            # account for <IMG1>
+            idx += before_len
+
+            image_span = (idx, idx + n_img)
             idx += n_img
 
-            # 2) skip "\n<INST>"
             idx += after_image_len
 
-            # 3) instruction body
             inst_span = (idx, idx + inst_len)
             idx += inst_len
 
-            # 4) skip "</INST>\n<DESC>"
             idx += between_len
 
-            # 5) description body
             desc_span = (idx, idx + desc_len)
             idx += desc_len
 
-            # 6) skip "</DESC>" (not needed unless you want end alignment checks)
             idx += after_desc_len
 
             return image_span, inst_span, desc_span
@@ -972,6 +967,9 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
         
         seq = input_ids.tolist()
         image_span, inst_span, desc_span = compute_spans(tokenizer, inputs, vis_processor, sample_inst, sample_desc)
+        # print(f'image_span: {image_span}')
+        # print(f'inst_span: {inst_span}')
+        # print(f'desc_span: {desc_span}')
         
         # print(f"Image span: {image_span}")
         # print(f"Instruction span: {inst_span}")
@@ -1051,7 +1049,7 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
         
     
     if use_augmentation:
-        print('use_aug true')
+        # print('use_aug true')
         images_of_batch = batch["images"]
         aug_images_of_batch = batch["aug_images"]
         insts_of_batch = batch["inst"]
@@ -1092,6 +1090,19 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
             )
 
             inputs = vis_processor(images=[sample_images], text=prompt, return_tensors="pt")
+            
+            # def n_img_from_inputs(inputs):
+            #     gs = inputs["grid_sizes"][0]
+            #     ms = inputs["merge_sizes"][0]
+            #     ms = int(ms.item()) if hasattr(ms, "item") else int(ms)
+            #     T, H, W = [int(x) for x in gs.tolist()]
+            #     return (T if T > 1 else 1) * (H // ms) * (W // ms), (T, H, W), ms
+
+            # n_img, (T,H,W), ms = n_img_from_inputs(inputs)
+            # print('ORIGINAL')
+            # print("PIL size:", (sample_images.size if hasattr(sample_images, "size") else type(sample_images)))
+            # print("grid_sizes:", (T,H,W), "merge:", ms, "n_img:", n_img)
+            
             input_ids = inputs["input_ids"][0]
             
             # print("Printing input keys")
@@ -1115,6 +1126,7 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
             # print("Exiting")
             # sys.exit()
                 
+            # print('for orig')
             target_parts, labels_per_sample = _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc)
                 
             if len(total_parts["orig"]) == 0:
@@ -1135,6 +1147,8 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
                         total_parts[k] = [None for _ in range(len(aug_images))]
 
                     for _setting_idx, _aug_img in enumerate(aug_images):
+                        
+                        
                         conversation = [{
                             "role": "user",
                             "content": [
@@ -1155,6 +1169,13 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
                         )
 
                         inputs = vis_processor(images=[_aug_img], text=prompt, return_tensors="pt")
+                        # n_img, (T,H,W), ms = n_img_from_inputs(inputs)
+                        # print('AUG')
+                        # print("PIL size:", (_aug_img.size if hasattr(_aug_img, "size") else type(_aug_img)))
+                        # print("grid_sizes:", (T,H,W), "merge:", ms, "n_img:", n_img)
+                        
+                        # sys.exit()
+                        
                         input_ids = inputs["input_ids"][0]
                         
                         # print("Printing input keys")
@@ -1178,7 +1199,7 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
                         
                         # print("Exiting")
                         # sys.exit()
-                            
+                        # print(f"for aug: {k}")
                         target_parts, labels_per_sample = _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc)
                         
                         
@@ -1189,6 +1210,8 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
                                 # Insert (input_ids, probabilities, log_probabilities) from each part to the corresponding setting
                                 for _key in total_parts[k][_setting_idx][_part].keys():
                                     total_parts[k][_setting_idx][_part][_key].extend(target_parts[_part][_key]) 
+            # print('exiting')
+            # sys.exit()
                                     
         # print(f"total_parts['org'] length: {len(total_parts['orig'])}")
 

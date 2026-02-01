@@ -29,14 +29,14 @@ STD_SETS=(
 )
 
 
-out_dir='/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_01_25/baselines'
+out_dir='/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_01_25/baselines_with_orig_augs'
 python_path='/local/scratch/clo37/med_vlm_mia/'
 
 
 export PYTHONPATH=$PYTHONPATH:/local/scratch/clo37/vlm_large_mia/
 python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     job_meta_params.test_run=false \
-    job_meta_params.description="'Baselines for first full run of hulu'" \
+    job_meta_params.description="'Baselines for first full run of hulu with all augmentations'" \
     job_meta_params.job_type=evaluation \
     \
     path.output_dir=${out_dir}\
@@ -53,13 +53,18 @@ python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     data.reference_set_sample_distribution=[] \
     \
     img_metrics.parts=["img"] \
-    img_metrics.metrics_to_use=["mink","mod_renyi_1_entro","mod_renyi_05_entro","mod_renyi_2_entro","mod_renyi_05_entro","mod_renyi_2_entro","cross_entropy_mink","cross_entropy_diff_mink","per_token_CE_loss","aug_kl"] \
+    img_metrics.metrics_to_use=["mod_renyi_05_entro","aug_kl"] \
     img_metrics.get_raw_meta_metrics=[] \
     img_metrics.get_proc_meta_metrics=[] \
     \
-    img_metrics.get_proc_meta_examples=1000 \
-    img_metrics.get_token_labels=1000 \
+    img_metrics.get_proc_meta_examples=0 \
+    img_metrics.get_token_labels=0 \
     img_metrics.get_raw_images=0 \
-    img_metrics.get_raw_meta_examples=1000 \
+    img_metrics.get_raw_meta_examples=0 \
     \
+    data.augmentations.RandomResize.use=false \
+    data.augmentations.RandomRotation.use=true \
+    data.augmentations.GaussianNoise.use=false \
+    data.augmentations.RandomAffine.use=true \
+    data.augmentations.ColorJitter.use=true
     # data.pre_gen_descriptions='/local/scratch/clo37/MED-VLM-MIA-DATA/test_results/TEST_MIA1/datasets/generated_sentences.json' \

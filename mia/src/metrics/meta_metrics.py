@@ -93,7 +93,7 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
     # Here add our metrics
     meta_metrics["per_token_CE_loss"] = dict()
 
-    epsilon = 1e-10
+    epsilon = 1e-4
 
     for aug_type, aug_results in total_parts.items():
         meta_metrics["ppl"][aug_type] = [[] for _ in range(len(aug_results))]
@@ -160,9 +160,10 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                     token_log_probs = aug_result[part]["log_probabilities"][_batch_idx][_token_idx, :]
                     
                     token_probs_clamped = torch.clamp(token_probs, min=epsilon, max=1-epsilon)
-                    token_log_probs = torch.clamp(token_log_probs, min=epsilon, max=1-epsilon)
+                    token_log_probs_clamped = token_probs_clamped.log()
+                    
                     # Renyi_1
-                    entropy = -(token_probs * token_log_probs).sum().item()
+                    entropy = -(token_probs * token_log_probs_clamped).sum().item()
                     
                     meta_metrics["entropies"][aug_type][aug_idx][_batch_idx].append(entropy)
                     meta_metrics["renyi_1_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 1))
@@ -213,8 +214,8 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "max_probs" in cfg.img_metrics.get_raw_meta_metrics
                         or "renyi_inf_probs" in cfg.img_metrics.get_raw_meta_metrics
                     ):
-                        max_p = token_log_probs.max().item()
-                        second_p = token_log_probs[token_log_probs != token_log_probs.max()].max().item()
+                        max_p = token_log_probs_clamped.max().item()
+                        second_p = token_log_probs_clamped[token_log_probs_clamped != token_log_probs_clamped.max()].max().item()
                         gap_p = max_p - second_p
                         meta_metrics["gap_probs"][aug_type][aug_idx][_batch_idx].append(gap_p)
                         meta_metrics["max_probs"][aug_type][aug_idx][_batch_idx].append(max_p)
@@ -225,7 +226,7 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "all_prob" in cfg.img_metrics.get_raw_meta_metrics
                         or "losses" in cfg.img_metrics.get_raw_meta_metrics
                     ):
-                        min_k_p = token_log_probs[token_id].item()
+                        min_k_p = token_log_probs_clamped[token_id].item()
                         meta_metrics["all_prob"][aug_type][aug_idx][_batch_idx].append(min_k_p)
                         cross_entropy_loss = -min_k_p
                         meta_metrics["losses"][aug_type][aug_idx][_batch_idx].append(cross_entropy_loss)
@@ -238,7 +239,7 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "modified_entropies" in cfg.img_metrics.get_raw_meta_metrics
                     ):
                         p_y = token_probs_clamped[token_id].item()
-                        modified_entropy = -(1 - p_y) * torch.log(torch.tensor(p_y)) - (token_probs * torch.log(1 - token_probs_clamped)).sum().item() + p_y * torch.log(torch.tensor(1 - p_y)).item()
+                        modified_entropy = -(1 - p_y) * torch.log(torch.tensor(p_y)) - (token_probs_clamped * torch.log(1 - token_probs_clamped)).sum().item() + p_y * torch.log(torch.tensor(1 - p_y)).item()
                         meta_metrics["modified_entropies"][aug_type][aug_idx][_batch_idx].append(modified_entropy)
 
                     token_probs_remaining = torch.cat((token_probs_clamped[:token_id], token_probs_clamped[token_id+1:]))

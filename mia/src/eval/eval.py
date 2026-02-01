@@ -89,7 +89,6 @@ def evaluate(preds, labels, part, cfg):
             auc_low_results[_part] = dict()
         for _metric, _metric_val in _part_pred.items():
             if isinstance(_metric_val, list):
-                
                 auc_val, acc_val, auc_low_val = auc_acc_low(prediction=_metric_val, answers=used_labels)
                 auc_results[_part][_metric] = auc_val
                 acc_results[_part][_metric] = acc_val
@@ -100,7 +99,6 @@ def evaluate(preds, labels, part, cfg):
                 acc_results[_part][_metric] = dict()
                 auc_low_results[_part][_metric] = dict()
                 for _sub_metric, _sub_metric_val in _metric_val.items():
-                    
                     auc_val, acc_val, auc_low_val = auc_acc_low(prediction=_sub_metric_val, answers=used_labels)
                     auc_results[_part][_metric][_sub_metric] = format_to_json(auc_val)
                     acc_results[_part][_metric][_sub_metric] = format_to_json(acc_val)
