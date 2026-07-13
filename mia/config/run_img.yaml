@@ -1,0 +1,20 @@
+defaults:
+  - data: image
+  - target_model: llava-v1.5-7b.yaml
+  - reference_model: llava-v1.5-7b.yaml
+  - generation: generation
+  - inference: inference
+  - img_metrics: img_metrics
+  - prompt: image
+  - path: path
+  - wandb : wandb
+  - job_meta_params: job_meta_params
+
+
+
+hydra:
+  run:
+    dir: ${path.cache_dir}/hydra_outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${path.cache_dir}/hydra_multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}

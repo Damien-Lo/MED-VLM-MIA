@@ -1,0 +1,5 @@
+type: llava
+model_path: liuhaotian/llava-v1.5-7b
+model_base: null
+conv_mode: llava_v1
+gpu_id: 0

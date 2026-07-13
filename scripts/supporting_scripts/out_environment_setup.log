@@ -1,0 +1,1835 @@
+
+Remove all packages in environment /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv:
+
+Collecting package metadata (current_repodata.json): ...working... DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/r/linux-64/current_repodata.json HTTP/1.1" 304 0
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/r/noarch/current_repodata.json HTTP/1.1" 304 0
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/noarch/current_repodata.json HTTP/1.1" 304 0
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/current_repodata.json HTTP/1.1" 304 0
+done
+Solving environment: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 23.7.2
+  latest version: 26.1.0
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+Or to minimize the number of packages updated during conda update use
+
+     conda install conda=26.1.0
+
+
+
+## Package Plan ##
+
+  environment location: /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv
+
+  added / updated specs:
+    - pip
+    - python=3.10
+
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main 
+  _openmp_mutex      pkgs/main/linux-64::_openmp_mutex-5.1-1_gnu 
+  bzip2              pkgs/main/linux-64::bzip2-1.0.8-h5eee18b_6 
+  ca-certificates    pkgs/main/linux-64::ca-certificates-2025.12.2-h06a4308_0 
+  expat              pkgs/main/linux-64::expat-2.7.4-h7354ed3_0 
+  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.44-h153f514_2 
+  libexpat           pkgs/main/linux-64::libexpat-2.7.4-h7354ed3_0 
+  libffi             pkgs/main/linux-64::libffi-3.4.4-h6a678d5_1 
+  libgcc             pkgs/main/linux-64::libgcc-15.2.0-h69a1729_7 
+  libgcc-ng          pkgs/main/linux-64::libgcc-ng-15.2.0-h166f726_7 
+  libgomp            pkgs/main/linux-64::libgomp-15.2.0-h4751f2c_7 
+  libnsl             pkgs/main/linux-64::libnsl-2.0.0-h5eee18b_0 
+  libstdcxx          pkgs/main/linux-64::libstdcxx-15.2.0-h39759b7_7 
+  libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-15.2.0-hc03a8fd_7 
+  libuuid            pkgs/main/linux-64::libuuid-1.41.5-h5eee18b_0 
+  libxcb             pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0 
+  libzlib            pkgs/main/linux-64::libzlib-1.3.1-hb25bd0a_0 
+  ncurses            pkgs/main/linux-64::ncurses-6.5-h7934f7d_0 
+  openssl            pkgs/main/linux-64::openssl-3.0.19-h1b28b03_0 
+  packaging          pkgs/main/linux-64::packaging-25.0-py310h06a4308_1 
+  pip                pkgs/main/noarch::pip-26.0.1-pyhc872135_0 
+  pthread-stubs      pkgs/main/linux-64::pthread-stubs-0.3-h0ce48e5_1 
+  python             pkgs/main/linux-64::python-3.10.19-h6fa692b_0 
+  readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0 
+  setuptools         pkgs/main/linux-64::setuptools-80.10.2-py310h06a4308_0 
+  sqlite             pkgs/main/linux-64::sqlite-3.51.1-he0a8d7e_0 
+  tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0 
+  tzdata             pkgs/main/noarch::tzdata-2025c-he532380_0 
+  wheel              pkgs/main/linux-64::wheel-0.46.3-py310h06a4308_0 
+  xorg-libx11        pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1 
+  xorg-libxau        pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0 
+  xorg-libxdmcp      pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0 
+  xorg-xorgproto     pkgs/main/linux-64::xorg-xorgproto-2024.1-h5eee18b_1 
+  xz                 pkgs/main/linux-64::xz-5.6.4-h5eee18b_1 
+  zlib               pkgs/main/linux-64::zlib-1.3.1-hb25bd0a_0 
+
+
+
+Downloading and Extracting Packages
+
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+#
+# To activate this environment, use
+#
+#     $ conda activate med_vlm_mia_venv
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+Requirement already satisfied: pip in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (26.0.1)
+Requirement already satisfied: setuptools in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (80.10.2)
+Collecting setuptools
+  Using cached setuptools-82.0.0-py3-none-any.whl.metadata (6.6 kB)
+Requirement already satisfied: wheel in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (0.46.3)
+Requirement already satisfied: packaging>=24.0 in /home/clo37/.local/lib/python3.10/site-packages (from wheel) (25.0)
+Using cached setuptools-82.0.0-py3-none-any.whl (1.0 MB)
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 80.10.2
+    Uninstalling setuptools-80.10.2:
+      Successfully uninstalled setuptools-80.10.2
+Successfully installed setuptools-82.0.0
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 23.7.2
+  latest version: 26.1.0
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+Or to minimize the number of packages updated during conda update use
+
+     conda install conda=26.1.0
+
+
+
+## Package Plan ##
+
+  environment location: /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv
+
+  added / updated specs:
+    - numpy=1.24
+    - pandas
+    - pyarrow
+    - scikit-image
+    - scikit-learn=1.2
+    - scipy
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    arrow-cpp-21.0.0           |       hac1acdb_1        12.3 MB
+    aws-c-auth-0.9.0           |       hb25bd0a_2         119 KB
+    aws-c-cal-0.9.2            |       h3ff94e8_1          50 KB
+    aws-c-common-0.12.4        |       hb03c661_0         231 KB  conda-forge
+    aws-c-compression-0.3.1    |       h92c474e_6          22 KB  conda-forge
+    aws-c-event-stream-0.5.6   |       h4d13e43_1          57 KB  conda-forge
+    aws-c-http-0.10.4          |       hb25bd0a_0         220 KB
+    aws-c-io-0.21.4            |       h3eb0749_0         178 KB
+    aws-c-mqtt-0.13.3          |       h680d5b3_4         211 KB  conda-forge
+    aws-c-s3-0.8.7             |       h3ff94e8_0         133 KB
+    aws-c-sdkutils-0.2.4       |       h92c474e_1          58 KB  conda-forge
+    aws-checksums-0.2.7        |       h92c474e_2          75 KB  conda-forge
+    aws-crt-cpp-0.34.0         |       h7934f7d_0         383 KB
+    aws-sdk-cpp-1.11.638       |       hac3f51a_0         3.3 MB
+    c-ares-1.34.6              |       hb03c661_0         203 KB  conda-forge
+    gflags-2.2.2               |    h5888daf_1005         117 KB  conda-forge
+    glog-0.5.0                 |       h48cff8f_0         104 KB  conda-forge
+    krb5-1.22.2                |       ha1258a1_0         1.3 MB  conda-forge
+    libbrotlicommon-1.0.9      |       h166bdaf_9          69 KB  conda-forge
+    libbrotlidec-1.0.9         |       h166bdaf_9          32 KB  conda-forge
+    libbrotlienc-1.0.9         |       h166bdaf_9         259 KB  conda-forge
+    libcurl-8.18.0             |       hcf29cc6_1         453 KB  conda-forge
+    libev-4.33                 |       hd590300_2         110 KB  conda-forge
+    libevent-2.1.12            |       hf998b51_1         417 KB  conda-forge
+    libgrpc-1.71.0             |       he753a82_0         7.8 MB  conda-forge
+    libnghttp2-1.67.0          |       had1ee68_0         651 KB  conda-forge
+    libprotobuf-5.29.3         |       h501fc15_0         3.2 MB  conda-forge
+    libre2-11-2024.07.02       |       h6a678d5_0         222 KB
+    libssh2-1.11.1             |       hcf80075_0         298 KB  conda-forge
+    libthrift-0.22.0           |       h454ac66_1         414 KB  conda-forge
+    lz4-c-1.9.4                |       hcb278e6_0         140 KB  conda-forge
+    numpy-1.24.4               |  py310ha4c1d20_0         6.4 MB  conda-forge
+    orc-2.2.0                  |       h372e9aa_0         642 KB
+    pandas-2.3.3               |  py310h0158d43_2        11.8 MB  conda-forge
+    pyarrow-21.0.0             |  py310h86c3e14_1         8.3 MB
+    python-tzdata-2025.3       |     pyhd8ed1ab_0         140 KB  conda-forge
+    re2-2024.07.02             |       hdb19cb5_0          25 KB
+    s2n-1.5.14                 |       hdbd6064_0         372 KB
+    scikit-learn-1.2.2         |  py310hf7d194e_2         7.3 MB  conda-forge
+    snappy-1.2.2               |       h03e3b7b_1          45 KB  conda-forge
+    utf8proc-2.6.1             |       h5eee18b_1          93 KB
+    ------------------------------------------------------------
+                                           Total:        68.2 MB
+
+The following NEW packages will be INSTALLED:
+
+  aom                conda-forge/linux-64::aom-3.9.1-hac33072_0 
+  arrow-cpp          pkgs/main/linux-64::arrow-cpp-21.0.0-hac1acdb_1 
+  aws-c-auth         pkgs/main/linux-64::aws-c-auth-0.9.0-hb25bd0a_2 
+  aws-c-cal          pkgs/main/linux-64::aws-c-cal-0.9.2-h3ff94e8_1 
+  aws-c-common       conda-forge/linux-64::aws-c-common-0.12.4-hb03c661_0 
+  aws-c-compression  conda-forge/linux-64::aws-c-compression-0.3.1-h92c474e_6 
+  aws-c-event-stream conda-forge/linux-64::aws-c-event-stream-0.5.6-h4d13e43_1 
+  aws-c-http         pkgs/main/linux-64::aws-c-http-0.10.4-hb25bd0a_0 
+  aws-c-io           pkgs/main/linux-64::aws-c-io-0.21.4-h3eb0749_0 
+  aws-c-mqtt         conda-forge/linux-64::aws-c-mqtt-0.13.3-h680d5b3_4 
+  aws-c-s3           pkgs/main/linux-64::aws-c-s3-0.8.7-h3ff94e8_0 
+  aws-c-sdkutils     conda-forge/linux-64::aws-c-sdkutils-0.2.4-h92c474e_1 
+  aws-checksums      conda-forge/linux-64::aws-checksums-0.2.7-h92c474e_2 
+  aws-crt-cpp        pkgs/main/linux-64::aws-crt-cpp-0.34.0-h7934f7d_0 
+  aws-sdk-cpp        pkgs/main/linux-64::aws-sdk-cpp-1.11.638-hac3f51a_0 
+  c-ares             conda-forge/linux-64::c-ares-1.34.6-hb03c661_0 
+  cairo              pkgs/main/linux-64::cairo-1.18.4-h44eff21_0 
+  click              conda-forge/noarch::click-8.3.1-pyh8f84b5b_1 
+  cloudpickle        conda-forge/noarch::cloudpickle-3.1.2-pyhcf101f3_1 
+  cytoolz            conda-forge/linux-64::cytoolz-1.1.0-py310h7c4b9e2_1 
+  dask-core          conda-forge/noarch::dask-core-2026.1.2-pyhcf101f3_0 
+  dav1d              conda-forge/linux-64::dav1d-1.2.1-hd590300_0 
+  fontconfig         pkgs/main/linux-64::fontconfig-2.15.0-h2c49b7f_0 
+  freetype           conda-forge/linux-64::freetype-2.14.1-ha770c72_0 
+  fribidi            conda-forge/linux-64::fribidi-1.0.16-hb03c661_0 
+  fsspec             conda-forge/noarch::fsspec-2026.2.0-pyhd8ed1ab_0 
+  gflags             conda-forge/linux-64::gflags-2.2.2-h5888daf_1005 
+  glog               conda-forge/linux-64::glog-0.5.0-h48cff8f_0 
+  graphite2          conda-forge/linux-64::graphite2-1.3.14-hecca717_2 
+  harfbuzz           pkgs/main/linux-64::harfbuzz-12.3.0-h79d275a_1 
+  icu                conda-forge/linux-64::icu-73.2-h59595ed_0 
+  imageio            conda-forge/noarch::imageio-2.37.0-pyhfb79c49_0 
+  importlib-metadata conda-forge/noarch::importlib-metadata-8.7.0-pyhe01879c_1 
+  joblib             conda-forge/noarch::joblib-1.5.3-pyhd8ed1ab_0 
+  jpeg               conda-forge/linux-64::jpeg-9e-h0b41bf4_3 
+  keyutils           conda-forge/linux-64::keyutils-1.6.3-hb9d3cd8_0 
+  krb5               conda-forge/linux-64::krb5-1.22.2-ha1258a1_0 
+  lcms2              pkgs/main/linux-64::lcms2-2.17-heab6991_0 
+  lerc               conda-forge/linux-64::lerc-4.0.0-h0aef613_1 
+  libabseil          pkgs/main/linux-64::libabseil-20250127.0-cxx17_h6a678d5_0 
+  libavif            conda-forge/linux-64::libavif-1.3.0-h316e467_3 
+  libavif16          conda-forge/linux-64::libavif16-1.3.0-h316e467_3 
+  libblas            conda-forge/linux-64::libblas-3.11.0-5_h4a7cf45_openblas 
+  libbrotlicommon    conda-forge/linux-64::libbrotlicommon-1.0.9-h166bdaf_9 
+  libbrotlidec       conda-forge/linux-64::libbrotlidec-1.0.9-h166bdaf_9 
+  libbrotlienc       conda-forge/linux-64::libbrotlienc-1.0.9-h166bdaf_9 
+  libcblas           conda-forge/linux-64::libcblas-3.11.0-5_h0358290_openblas 
+  libcurl            conda-forge/linux-64::libcurl-8.18.0-hcf29cc6_1 
+  libdeflate         conda-forge/linux-64::libdeflate-1.22-hb9d3cd8_0 
+  libedit            conda-forge/linux-64::libedit-3.1.20250104-pl5321h7949ede_0 
+  libev              conda-forge/linux-64::libev-4.33-hd590300_2 
+  libevent           conda-forge/linux-64::libevent-2.1.12-hf998b51_1 
+  libfreetype        conda-forge/linux-64::libfreetype-2.14.1-ha770c72_0 
+  libfreetype6       conda-forge/linux-64::libfreetype6-2.14.1-h73754d4_0 
+  libgfortran        conda-forge/linux-64::libgfortran-15.2.0-h69a702a_18 
+  libgfortran5       conda-forge/linux-64::libgfortran5-15.2.0-h68bc16d_18 
+  libglib            pkgs/main/linux-64::libglib-2.86.3-h8b17d9a_0 
+  libgrpc            conda-forge/linux-64::libgrpc-1.71.0-he753a82_0 
+  libiconv           conda-forge/linux-64::libiconv-1.18-h3b78370_2 
+  liblapack          conda-forge/linux-64::liblapack-3.11.0-5_h47877c9_openblas 
+  libnghttp2         conda-forge/linux-64::libnghttp2-1.67.0-had1ee68_0 
+  libopenblas        conda-forge/linux-64::libopenblas-0.3.30-pthreads_h94d23a6_4 
+  libopenjpeg        pkgs/main/linux-64::libopenjpeg-2.5.4-hee96239_1 
+  libpng             conda-forge/linux-64::libpng-1.6.55-h421ea60_0 
+  libprotobuf        conda-forge/linux-64::libprotobuf-5.29.3-h501fc15_0 
+  libre2-11          pkgs/main/linux-64::libre2-11-2024.07.02-h6a678d5_0 
+  libssh2            conda-forge/linux-64::libssh2-1.11.1-hcf80075_0 
+  libthrift          conda-forge/linux-64::libthrift-0.22.0-h454ac66_1 
+  libtiff            pkgs/main/linux-64::libtiff-4.7.1-h029b1ac_0 
+  libwebp-base       conda-forge/linux-64::libwebp-base-1.6.0-hd42ef1d_0 
+  libxml2            pkgs/main/linux-64::libxml2-2.13.9-h2c43086_0 
+  locket             conda-forge/noarch::locket-1.0.0-pyhd8ed1ab_0 
+  lz4-c              conda-forge/linux-64::lz4-c-1.9.4-hcb278e6_0 
+  networkx           conda-forge/noarch::networkx-3.4.2-pyh267e887_2 
+  numpy              conda-forge/linux-64::numpy-1.24.4-py310ha4c1d20_0 
+  orc                pkgs/main/linux-64::orc-2.2.0-h372e9aa_0 
+  pandas             conda-forge/linux-64::pandas-2.3.3-py310h0158d43_2 
+  partd              conda-forge/noarch::partd-1.4.2-pyhd8ed1ab_0 
+  pcre2              conda-forge/linux-64::pcre2-10.46-h1321c63_0 
+  pillow             pkgs/main/linux-64::pillow-12.1.0-py310hd9fd23a_0 
+  pixman             conda-forge/linux-64::pixman-0.46.4-h54a6638_1 
+  pyarrow            pkgs/main/linux-64::pyarrow-21.0.0-py310h86c3e14_1 
+  python-dateutil    conda-forge/noarch::python-dateutil-2.9.0.post0-pyhe01879c_2 
+  python-tzdata      conda-forge/noarch::python-tzdata-2025.3-pyhd8ed1ab_0 
+  python_abi         conda-forge/linux-64::python_abi-3.10-2_cp310 
+  pytz               conda-forge/noarch::pytz-2025.2-pyhd8ed1ab_0 
+  pywavelets         pkgs/main/linux-64::pywavelets-1.8.0-py310h5eee18b_0 
+  pyyaml             conda-forge/linux-64::pyyaml-6.0.3-py310h3406613_1 
+  rav1e              conda-forge/linux-64::rav1e-0.7.1-h8fae777_3 
+  re2                pkgs/main/linux-64::re2-2024.07.02-hdb19cb5_0 
+  s2n                pkgs/main/linux-64::s2n-1.5.14-hdbd6064_0 
+  scikit-image       conda-forge/linux-64::scikit-image-0.19.3-py310h769672d_2 
+  scikit-learn       conda-forge/linux-64::scikit-learn-1.2.2-py310hf7d194e_2 
+  scipy              conda-forge/linux-64::scipy-1.15.2-py310h1d65ade_0 
+  six                conda-forge/noarch::six-1.17.0-pyhe01879c_1 
+  snappy             conda-forge/linux-64::snappy-1.2.2-h03e3b7b_1 
+  svt-av1            conda-forge/linux-64::svt-av1-4.0.0-hecca717_0 
+  threadpoolctl      conda-forge/noarch::threadpoolctl-3.6.0-pyhecae5ae_0 
+  tifffile           pkgs/main/linux-64::tifffile-2025.2.18-py310h06a4308_0 
+  toolz              conda-forge/noarch::toolz-1.1.0-pyhd8ed1ab_1 
+  utf8proc           pkgs/main/linux-64::utf8proc-2.6.1-h5eee18b_1 
+  xorg-libxext       conda-forge/linux-64::xorg-libxext-1.3.7-hb03c661_0 
+  xorg-libxrender    conda-forge/linux-64::xorg-libxrender-0.9.12-hb9d3cd8_0 
+  yaml               conda-forge/linux-64::yaml-0.2.5-h280c20c_3 
+  zipp               conda-forge/noarch::zipp-3.23.0-pyhcf101f3_1 
+  zstd               conda-forge/linux-64::zstd-1.5.7-hb78ec9c_6 
+
+The following packages will be UPDATED:
+
+  ca-certificates    pkgs/main/linux-64::ca-certificates-2~ --> conda-forge/noarch::ca-certificates-2026.1.4-hbd8a1cb_0 
+  openssl              pkgs/main::openssl-3.0.19-h1b28b03_0 --> conda-forge::openssl-3.6.1-h35e630c_1 
+
+
+
+Downloading and Extracting Packages
+
+libevent-2.1.12      | 417 KB    |            |   0% 
+
+s2n-1.5.14           | 372 KB    |            |   0% [A
+
+
+libbrotlidec-1.0.9   | 32 KB     |            |   0% [A[A
+
+
+
+aws-c-compression-0. | 22 KB     |            |   0% [A[A[A
+
+
+
+
+numpy-1.24.4         | 6.4 MB    |            |   0% [A[A[A[A
+
+
+
+
+
+aws-crt-cpp-0.34.0   | 383 KB    |            |   0% [A[A[A[A[A
+
+
+
+
+
+
+python-tzdata-2025.3 | 140 KB    |            |   0% [A[A[A[A[A[A
+
+
+
+
+
+
+
+c-ares-1.34.6        | 203 KB    |            |   0% [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    |            |   0% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 45 KB     |            |   0% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+orc-2.2.0            | 642 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+libev-4.33           | 110 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+utf8proc-2.6.1       | 93 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 25 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-sdkutils-0.2.4 | 58 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libprotobuf-5.29.3   | 3.2 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-io-0.21.4      | 178 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): conda.anaconda.org:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): conda.anaconda.org:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): conda.anaconda.org:443
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): conda.anaconda.org:443
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libbrotlidec-1.0.9-h166bdaf_9.conda HTTP/1.1" 200 32567
+
+
+
+libbrotlidec-1.0.9   | 32 KB     | #####      |  50% [A[ADEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+
+
+
+libbrotlidec-1.0.9   | 32 KB     | ########## | 100% [A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/s2n-1.5.14-hdbd6064_0.conda HTTP/1.1" 200 380896
+
+
+s2n-1.5.14           | 372 KB    | 4          |   4% [ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libevent-2.1.12-hf998b51_1.conda HTTP/1.1" 200 427426
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): conda.anaconda.org:443
+
+libevent-2.1.12      | 417 KB    | 3          |   4% 
+
+s2n-1.5.14           | 372 KB    | ########## | 100% [ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-c-compression-0.3.1-h92c474e_6.conda HTTP/1.1" 200 22116
+
+
+
+
+aws-c-compression-0. | 22 KB     | #######4   |  74% [A[A[A
+
+
+
+aws-c-compression-0. | 22 KB     | ########## | 100% [A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/c-ares-1.34.6-hb03c661_0.conda HTTP/1.1" 200 207882
+
+
+
+
+
+
+
+
+c-ares-1.34.6        | 203 KB    | 7          |   8% [A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-crt-cpp-0.34.0-h7934f7d_0.conda HTTP/1.1" 200 392242
+
+
+
+
+
+
+aws-crt-cpp-0.34.0   | 383 KB    | 4          |   4% [A[A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/noarch/python-tzdata-2025.3-pyhd8ed1ab_0.conda HTTP/1.1" 200 143542
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/numpy-1.24.4-py310ha4c1d20_0.conda HTTP/1.1" 200 6751237
+
+
+
+
+
+numpy-1.24.4         | 6.4 MB    |            |   0% [A[A[A[A
+
+
+
+
+
+
+python-tzdata-2025.3 | 140 KB    | #1         |  11% [A[A[A[A[A[A
+libevent-2.1.12      | 417 KB    | ########## | 100% 
+libevent-2.1.12      | 417 KB    | ########## | 100% DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/snappy-1.2.2-h03e3b7b_1.conda HTTP/1.1" 200 45829
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/scikit-learn-1.2.2-py310hf7d194e_2.conda HTTP/1.1" 200 7671604
+
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 45 KB     | ###5       |  36% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    |            |   0% [A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libev-4.33-hd590300_2.conda HTTP/1.1" 200 112766
+
+
+
+
+
+
+
+
+
+
+
+
+libev-4.33           | 110 KB    | #4         |  15% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+numpy-1.24.4         | 6.4 MB    | #6         |  17% [A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/utf8proc-2.6.1-h5eee18b_1.conda HTTP/1.1" 200 94982
+
+
+
+
+
+
+
+
+
+
+
+
+
+utf8proc-2.6.1       | 93 KB     | #7         |  17% [A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/orc-2.2.0-h372e9aa_0.conda HTTP/1.1" 200 657024
+
+
+
+
+
+
+
+
+
+
+
+orc-2.2.0            | 642 KB    | 2          |   2% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    | ###1       |  32% [A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-c-sdkutils-0.2.4-h92c474e_1.conda HTTP/1.1" 200 59146
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/re2-2024.07.02-hdb19cb5_0.conda HTTP/1.1" 200 25569
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-sdkutils-0.2.4 | 58 KB     | ##7        |  28% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 25 KB     | ######4    |  64% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+aws-crt-cpp-0.34.0   | 383 KB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+
+aws-crt-cpp-0.34.0   | 383 KB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+numpy-1.24.4         | 6.4 MB    | #####3     |  54% [A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libgrpc-1.71.0-he753a82_0.conda HTTP/1.1" 200 8228423
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 45 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+snappy-1.2.2         | 45 KB     | ########## | 100% [A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/pyarrow-21.0.0-py310h86c3e14_1.conda HTTP/1.1" 200 8658147
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    | ######2    |  63% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+c-ares-1.34.6        | 203 KB    | ########## | 100% [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+libev-4.33           | 110 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+c-ares-1.34.6        | 203 KB    | ########## | 100% [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+libev-4.33           | 110 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+numpy-1.24.4         | 6.4 MB    | #########  |  91% [A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libprotobuf-5.29.3-h501fc15_0.conda HTTP/1.1" 200 3352450
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libprotobuf-5.29.3   | 3.2 MB    |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+
+
+
+
+
+
+
+
+
+
+
+
+
+utf8proc-2.6.1       | 93 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+utf8proc-2.6.1       | 93 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    | ##4        |  24% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    | ##6        |  26% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-sdkutils-0.2.4 | 58 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-sdkutils-0.2.4 | 58 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    | #########3 |  93% [A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): repo.anaconda.com:443
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 25 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+re2-2024.07.02       | 25 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libprotobuf-5.29.3   | 3.2 MB    | ######2    |  63% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    | #####3     |  54% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    | #####9     |  60% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-c-io-0.21.4-h3eb0749_0.conda HTTP/1.1" 200 181778
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-io-0.21.4      | 178 KB    | 9          |   9% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/libre2-11-2024.07.02-h6a678d5_0.conda HTTP/1.1" 200 226848
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+orc-2.2.0            | 642 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+orc-2.2.0            | 642 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-c-s3-0.8.7-h3ff94e8_0.conda HTTP/1.1" 200 136562
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    | ########5  |  85% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    | #########2 |  93% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[ADEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-c-mqtt-0.13.3-h680d5b3_4.conda HTTP/1.1" 200 216066
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-c-auth-0.9.0-hb25bd0a_2.conda HTTP/1.1" 200 121693
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/arrow-cpp-21.0.0-hac1acdb_1.conda HTTP/1.1" 200 12884207
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-c-cal-0.9.2-h3ff94e8_1.conda HTTP/1.1" 200 51704
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libthrift-0.22.0-h454ac66_1.conda HTTP/1.1" 200 424208
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-sdk-cpp-1.11.638-hac3f51a_0.conda HTTP/1.1" 200 3496262
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libnghttp2-1.67.0-had1ee68_0.conda HTTP/1.1" 200 666600
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libbrotlienc-1.0.9-h166bdaf_9.conda HTTP/1.1" 200 265202
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/lz4-c-1.9.4-hcb278e6_0.conda HTTP/1.1" 200 143402
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/krb5-1.22.2-ha1258a1_0.conda HTTP/1.1" 200 1386730
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libssh2-1.11.1-hcf80075_0.conda HTTP/1.1" 200 304790
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-c-common-0.12.4-hb03c661_0.conda HTTP/1.1" 200 236420
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libcurl-8.18.0-hcf29cc6_1.conda HTTP/1.1" 200 463621
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-checksums-0.2.7-h92c474e_2.conda HTTP/1.1" 200 76748
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/pandas-2.3.3-py310h0158d43_2.conda HTTP/1.1" 200 12391209
+DEBUG:urllib3.connectionpool:https://repo.anaconda.com:443 "GET /pkgs/main/linux-64/aws-c-http-0.10.4-hb25bd0a_0.conda HTTP/1.1" 200 225766
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/gflags-2.2.2-h5888daf_1005.conda HTTP/1.1" 200 119654
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/libbrotlicommon-1.0.9-h166bdaf_9.conda HTTP/1.1" 200 71065
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/glog-0.5.0-h48cff8f_0.tar.bz2 HTTP/1.1" 200 106887
+DEBUG:urllib3.connectionpool:https://conda.anaconda.org:443 "GET /conda-forge/linux-64/aws-c-event-stream-0.5.6-h4d13e43_1.conda HTTP/1.1" 200 58627
+
+
+
+
+
+
+
+python-tzdata-2025.3 | 140 KB    | ########## | 100% [A[A[A[A[A[A
+
+
+
+
+
+
+python-tzdata-2025.3 | 140 KB    | ########## | 100% [A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libprotobuf-5.29.3   | 3.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libprotobuf-5.29.3   | 3.2 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-io-0.21.4      | 178 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws-c-io-0.21.4      | 178 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+numpy-1.24.4         | 6.4 MB    | ########## | 100% [A[A[A[A
+
+
+
+
+
+
+
+
+scikit-learn-1.2.2   | 7.3 MB    | ########## | 100% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+libgrpc-1.71.0       | 7.8 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pyarrow-21.0.0       | 8.3 MB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+                                                     
+
+                                                     [A
+
+
+                                                     [A[A
+
+
+
+                                                     [A[A[A
+
+
+
+
+                                                     [A[A[A[A
+
+
+
+
+
+                                                     [A[A[A[A[A
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+[A
+
+
+[A[A
+
+
+
+[A[A[A
+
+
+
+
+[A[A[A[A
+
+
+
+
+
+[A[A[A[A[A
+
+
+
+
+
+
+[A[A[A[A[A[A
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+[A
+
+
+[A[A
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cu118
+Collecting torch==2.4.0
+  Using cached https://download.pytorch.org/whl/cu118/torch-2.4.0%2Bcu118-cp310-cp310-linux_x86_64.whl (857.7 MB)
+Collecting torchvision==0.19.0
+  Using cached https://download.pytorch.org/whl/cu118/torchvision-0.19.0%2Bcu118-cp310-cp310-linux_x86_64.whl (6.3 MB)
+Collecting filelock (from torch==2.4.0)
+  Using cached filelock-3.24.2-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.8.0 (from torch==2.4.0)
+  Using cached https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy (from torch==2.4.0)
+  Using cached sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (3.4.2)
+Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch==2.4.0) (3.1.6)
+Requirement already satisfied: fsspec in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch==2.4.0) (2026.2.0)
+Collecting nvidia-cuda-nvrtc-cu11==11.8.89 (from torch==2.4.0)
+  Using cached nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-cuda-runtime-cu11==11.8.89 (from torch==2.4.0)
+  Using cached nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-cuda-cupti-cu11==11.8.87 (from torch==2.4.0)
+  Using cached nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux2014_x86_64.whl.metadata (1.6 kB)
+Collecting nvidia-cudnn-cu11==9.1.0.70 (from torch==2.4.0)
+  Using cached https://download.pytorch.org/whl/cu118/nvidia_cudnn_cu11-9.1.0.70-py3-none-manylinux2014_x86_64.whl (663.9 MB)
+Collecting nvidia-cublas-cu11==11.11.3.6 (from torch==2.4.0)
+  Using cached nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-cufft-cu11==10.9.0.58 (from torch==2.4.0)
+  Using cached nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-curand-cu11==10.3.0.86 (from torch==2.4.0)
+  Using cached nvidia_curand_cu11-10.3.0.86-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-cusolver-cu11==11.4.1.48 (from torch==2.4.0)
+  Using cached nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux2014_x86_64.whl.metadata (1.6 kB)
+Collecting nvidia-cusparse-cu11==11.7.5.86 (from torch==2.4.0)
+  Using cached nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting nvidia-nccl-cu11==2.20.5 (from torch==2.4.0)
+  Using cached https://download.pytorch.org/whl/cu118/nvidia_nccl_cu11-2.20.5-py3-none-manylinux2014_x86_64.whl (142.9 MB)
+Collecting nvidia-nvtx-cu11==11.8.86 (from torch==2.4.0)
+  Using cached nvidia_nvtx_cu11-11.8.86-py3-none-manylinux2014_x86_64.whl.metadata (1.7 kB)
+Collecting triton==3.0.0 (from torch==2.4.0)
+  Using cached https://download.pytorch.org/whl/triton-3.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (209.4 MB)
+Requirement already satisfied: numpy in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torchvision==0.19.0) (1.24.4)
+Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /home/clo37/.local/lib/python3.10/site-packages (from torchvision==0.19.0) (10.4.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from jinja2->torch==2.4.0) (2.1.5)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/clo37/.local/lib/python3.10/site-packages (from sympy->torch==2.4.0) (1.3.0)
+Using cached nvidia_cublas_cu11-11.11.3.6-py3-none-manylinux2014_x86_64.whl (417.9 MB)
+Using cached nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux2014_x86_64.whl (13.1 MB)
+Using cached nvidia_cuda_nvrtc_cu11-11.8.89-py3-none-manylinux2014_x86_64.whl (23.2 MB)
+Using cached nvidia_cuda_runtime_cu11-11.8.89-py3-none-manylinux2014_x86_64.whl (875 kB)
+Using cached nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux2014_x86_64.whl (168.4 MB)
+Using cached nvidia_curand_cu11-10.3.0.86-py3-none-manylinux2014_x86_64.whl (58.1 MB)
+Using cached nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux2014_x86_64.whl (128.2 MB)
+Using cached nvidia_cusparse_cu11-11.7.5.86-py3-none-manylinux2014_x86_64.whl (204.1 MB)
+Using cached nvidia_nvtx_cu11-11.8.86-py3-none-manylinux2014_x86_64.whl (99 kB)
+Using cached https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Using cached filelock-3.24.2-py3-none-any.whl (24 kB)
+Using cached sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Installing collected packages: typing-extensions, sympy, nvidia-nvtx-cu11, nvidia-nccl-cu11, nvidia-cusparse-cu11, nvidia-curand-cu11, nvidia-cufft-cu11, nvidia-cuda-runtime-cu11, nvidia-cuda-nvrtc-cu11, nvidia-cuda-cupti-cu11, nvidia-cublas-cu11, filelock, triton, nvidia-cusolver-cu11, nvidia-cudnn-cu11, torch, torchvision
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+fastapi 0.115.14 requires pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4, which is not installed.
+typer 0.16.0 requires rich>=10.11.0, which is not installed.
+uvicorn 0.35.0 requires h11>=0.8, which is not installed.
+Successfully installed filelock-3.24.2 nvidia-cublas-cu11-11.11.3.6 nvidia-cuda-cupti-cu11-11.8.87 nvidia-cuda-nvrtc-cu11-11.8.89 nvidia-cuda-runtime-cu11-11.8.89 nvidia-cudnn-cu11-9.1.0.70 nvidia-cufft-cu11-10.9.0.58 nvidia-curand-cu11-10.3.0.86 nvidia-cusolver-cu11-11.4.1.48 nvidia-cusparse-cu11-11.7.5.86 nvidia-nccl-cu11-2.20.5 nvidia-nvtx-cu11-11.8.86 sympy-1.14.0 torch-2.4.0+cu118 torchvision-0.19.0+cu118 triton-3.0.0 typing-extensions-4.15.0
+Collecting flash-attn==2.7.3
+  Using cached flash_attn-2.7.3.tar.gz (3.2 MB)
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: torch in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from flash-attn==2.7.3) (2.4.0+cu118)
+Requirement already satisfied: einops in /home/clo37/.local/lib/python3.10/site-packages (from flash-attn==2.7.3) (0.6.1)
+Requirement already satisfied: filelock in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.24.2)
+Requirement already satisfied: typing-extensions>=4.8.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (4.15.0)
+Requirement already satisfied: sympy in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (1.14.0)
+Requirement already satisfied: networkx in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.4.2)
+Requirement already satisfied: jinja2 in /home/clo37/.local/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.1.6)
+Requirement already satisfied: fsspec in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (2026.2.0)
+Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.89)
+Requirement already satisfied: nvidia-cuda-runtime-cu11==11.8.89 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.89)
+Requirement already satisfied: nvidia-cuda-cupti-cu11==11.8.87 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.87)
+Requirement already satisfied: nvidia-cudnn-cu11==9.1.0.70 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (9.1.0.70)
+Requirement already satisfied: nvidia-cublas-cu11==11.11.3.6 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.11.3.6)
+Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (10.9.0.58)
+Requirement already satisfied: nvidia-curand-cu11==10.3.0.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (10.3.0.86)
+Requirement already satisfied: nvidia-cusolver-cu11==11.4.1.48 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.4.1.48)
+Requirement already satisfied: nvidia-cusparse-cu11==11.7.5.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.7.5.86)
+Requirement already satisfied: nvidia-nccl-cu11==2.20.5 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (2.20.5)
+Requirement already satisfied: nvidia-nvtx-cu11==11.8.86 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (11.8.86)
+Requirement already satisfied: triton==3.0.0 in /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages (from torch->flash-attn==2.7.3) (3.0.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/clo37/.local/lib/python3.10/site-packages (from jinja2->torch->flash-attn==2.7.3) (2.1.5)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/clo37/.local/lib/python3.10/site-packages (from sympy->torch->flash-attn==2.7.3) (1.3.0)
+Building wheels for collected packages: flash-attn
+  Building wheel for flash-attn (pyproject.toml): started
+  Building wheel for flash-attn (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Building wheel for flash-attn (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [25 lines of output]
+      /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+        warn(
+      fatal: not a git repository (or any of the parent directories): .git
+      /local/scratch/clo37/anaconda3/envs/med_vlm_mia_venv/lib/python3.10/site-packages/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+      !!
+      
+              ********************************************************************************
+              Please consider removing the following classifiers in favor of a SPDX license expression:
+      
+              License :: OSI Approved :: BSD License
+      
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+      
+      !!
+        self._finalize_license_expression()
+      
+      
+      torch.__version__  = 2.4.0+cu118
+      
+      
+      running bdist_wheel
+      Guessing wheel URL:  https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu11torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+      Raw wheel path /local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmpu0f4abub/.tmp-o6nmtu_g/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl
+      error: [Errno 18] Invalid cross-device link: 'flash_attn-2.7.3+cu11torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl' -> '/local/scratch/clo37/.cache/pip/wheels/85/d7/10/a74c9fe5ffe6ff306b27a220b2bf2f37d907b68fdcd138cdda/tmpu0f4abub/.tmp-o6nmtu_g/flash_attn-2.7.3-cp310-cp310-linux_x86_64.whl'
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for flash-attn
+Failed to build flash-attn
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> flash-attn

@@ -1,0 +1,3 @@
+use_augmentation: false
+batch_size: 4
+num_gen_tokens: 32

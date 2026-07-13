@@ -1,0 +1,6 @@
+type: llava
+model_path:
+model_base: lmsys/vicuna-7b-v1.5
+model_name: llava_v1.5
+conv_mode: llava_v1
+gpu_id: 0

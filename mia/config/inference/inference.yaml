@@ -1,0 +1,4 @@
+use_augmentation: true
+batch_size: 1
+test_number_of_batches: 5
+fpr_threshs: [0.01,0.05]
