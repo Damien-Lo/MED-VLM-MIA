@@ -12,8 +12,8 @@ from llava.model.builder import load_pretrained_model
 from src.misc import load_conversation_template
 
 
-def generate_descriptions(cfg, _dataset, out_path=None):
-    target_model = load_target_model(cfg)
+def generate_descriptions(cfg, target_model, _dataset, out_path=None):
+    # target_model = load_target_model(cfg)
     text = cfg.prompt.text
     if cfg.target_model.type == "llava":
         model, tokenizer, image_processor, conv_mode = target_model

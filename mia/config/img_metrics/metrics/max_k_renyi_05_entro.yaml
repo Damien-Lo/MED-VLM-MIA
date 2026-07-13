@@ -1,4 +1,4 @@
-name: max_k_renyi_05_ratio
+name: max_k_renyi_05_entro
 alpha: 0.5
 suffix: renyi_05
 ratio:

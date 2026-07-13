@@ -21,19 +21,28 @@ defaults:
   - metrics@max_k_renyi_1_kl_div: max_k_renyi_1_kl_div
   - metrics@max_k_renyi_2_kl_div: max_k_renyi_2_kl_div
   - metrics@max_k_renyi_inf_kl_div: max_k_renyi_inf_kl_div
+  - metrics@max_k_no_norn_kl_div_ripple: max_k_no_norn_kl_div_ripple
+  - metrics@max_k_renyi_05_kl_div_ripple: max_k_renyi_05_kl_div_ripple
+  - metrics@max_k_renyi_1_kl_div_ripple: max_k_renyi_1_kl_div_ripple
+  - metrics@max_k_renyi_2_kl_div_ripple: max_k_renyi_2_kl_div_ripple
+  - metrics@max_k_renyi_inf_kl_div_ripple: max_k_renyi_inf_kl_div_ripple
   - metrics@max_k_renyi_divergence_025: max_k_renyi_divergence_025
   - metrics@max_k_renyi_divergence_05: max_k_renyi_divergence_05
   - metrics@max_k_renyi_divergence_2: max_k_renyi_divergence_2
   - metrics@max_k_renyi_divergence_4: max_k_renyi_divergence_4
+  - metrics@max_k_renyi_divergence_025_ripple: max_k_renyi_divergence_025_ripple
+  - metrics@max_k_renyi_divergence_05_ripple: max_k_renyi_divergence_05_ripple
+  - metrics@max_k_renyi_divergence_2_ripple: max_k_renyi_divergence_2_ripple
+  - metrics@max_k_renyi_divergence_4_ripple: max_k_renyi_divergence_4_ripple
+
 
 metrics_to_use: ???
 parts: ???
 
 get_token_labels: 0
 get_raw_images: 0
+num_of_slices: 3
 
-get_raw_meta_examples: 0
+get_meta_examples: 0
 get_raw_meta_metrics: ???
-
-get_proc_meta_examples: 0
 get_proc_meta_metrics: ???

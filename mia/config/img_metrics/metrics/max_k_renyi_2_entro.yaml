@@ -1,4 +1,4 @@
-name: max_k_renyi_2_ratio
+name: max_k_renyi_2_entro
 alpha: 2
 suffix: renyi_2
 ratio:

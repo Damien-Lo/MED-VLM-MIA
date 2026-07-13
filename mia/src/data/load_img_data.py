@@ -309,7 +309,7 @@ def convert_to_aug_generation_input_ids(examples, tokenizer, image_processor, in
     all_orig_image_tensors = list()
     all_image_sizes = list()
     all_aug_images = list()
-    aug_dict = get_augmentations(cfg)
+    aug_dict, _ = get_augmentations(cfg)
     for _image_path, _indices in zip(image_paths, indices):
         image = load_image(_image_path)  # Loading just one image
         orig_image_tensor = process_images(
@@ -365,20 +365,16 @@ def convert_to_generation_raw(examples, instruction):
     
 def convert_to_generation_raw_hulu(examples, instruction):
     # Not working as dataset has no column 'images' defined in mia.py line 169
-    image_paths = examples["image"]
+    image_paths = examples["image_paths"]
     all_image_paths = list()
     all_images = list()
     all_texts = list()
     for _image_path in image_paths:
-        # images = load_images([_image_path])
         all_image_paths.append(_image_path)
-        # all_images.append(images)
         all_texts.append(instruction)
 
     return {
         "indices": examples["indices"],
-        # "images": all_images,
-        # "image_paths": all_image_paths,
         "texts": all_texts
     }
     
@@ -490,7 +486,7 @@ def convert_to_augmentation_mod_infer(examples, tokenizer, image_processor, inst
     all_prompt_1 = list()
     all_desc_shape = list()
     
-    aug_dict = get_augmentations(cfg)
+    aug_dict, _ = get_augmentations(cfg)
 
     for _indices, _image_path, _description in zip(indices, image_paths, descriptions):
         
@@ -585,7 +581,7 @@ def convert_to_augmentation_mod_infer_minigpt(examples, instruction, cfg, image_
     all_texts = list()
     
 
-    aug_dict = get_augmentations(cfg)
+    aug_dict, _ = get_augmentations(cfg)
 
     for _image_path, _desc in zip(examples["image"], examples["desc"]):
         images = load_images([_image_path])
@@ -615,7 +611,7 @@ def convert_to_augmentation_mod_infer_minigpt(examples, instruction, cfg, image_
     
     
 def convert_to_mod_infer_hulu(examples, instruction):
-    image_paths = examples["image"]
+    image_paths = examples["image_paths"]
     all_images = list()
     all_texts = list()
     all_descriptions = list()
@@ -632,34 +628,67 @@ def convert_to_mod_infer_hulu(examples, instruction):
     }
 
 def convert_to_augmentation_mod_infer_hulu(examples, instruction, cfg, image_sampled_indicies):
-    image_paths = examples["image"]
+    image_path_lists_for_all_samples = examples["image_paths"]
     all_orig_images = list()
     all_aug_images = list()
     all_texts = list()
     
 
-    aug_dict = get_augmentations(cfg)
+    aug_dict, _ = get_augmentations(cfg)
 
-    for _image_path, _desc in zip(examples["image"], examples["desc"]):
-        images = load_images([_image_path])
+    # For every image_paths set for each example
+    for _image_path_list, _desc in zip(image_path_lists_for_all_samples, examples["desc"]):
+
+        sample_orig_images = load_images(_image_path_list)
+        all_orig_images.append(sample_orig_images)
         
-        aug_imgs = dict()
+        sample_aug_images = dict()
+
         for k, aug_f_list in aug_dict.items():
-            _aug_img_list = list()
+            if k not in sample_aug_images:
+                sample_aug_images[k] = list()
+            
+            #For each setting
             for _aug_f in aug_f_list:
-                _aug_img = _aug_f(images[0])
-                if isinstance(_aug_img, dict):
-                    raise ValueError("dict")
-                _aug_img_list.append(_aug_img)
-            aug_imgs[k] = _aug_img_list
-        all_orig_images.append(images[0])
-        all_aug_images.append(aug_imgs)
+                all_images_of_setting = list()
+                for image in sample_orig_images:
+                    _aug_img = _aug_f(image)
+                    if isinstance(_aug_img, dict):
+                        raise ValueError("dict")
+                    all_images_of_setting.append(_aug_img)
+                sample_aug_images[k].append(all_images_of_setting)
+        
+        # Foe each sample, append the dictionary of augmentations with values: 2D array [setting][images_in_sample]
+        all_aug_images.append(sample_aug_images)
         all_texts.append(instruction)
+        
+        
+        
+        
+        
+        
+        # for images_of_sample in _image_paths:
+        #     images = load_images(images_of_sample)
+            
+        #     # For augmentation in full list
+        #     for k, aug_f_list in aug_dict.items():
+        #         if k not in sample_aug_images:
+        #             sample_aug_images[k] = list()
+        #         # For setting in augmentation
+        #         for _aug_f in aug_f_list:
+        #             _aug_img = _aug_f(image)
+        #             if isinstance(_aug_img, dict):
+        #                 raise ValueError("dict")
+        #             sample_aug_images[k].append(_aug_img)
+        #         aug_imgs[k] = _aug_img_list
+        #     sample_orig_images.append(images[0])
+        #     sample_aug_images.append(aug_imgs)
+            
+        # sys.exit()
+        
 
     return {
         "indices": examples["indices"],
-        "orig_images": all_orig_images,
-        "aug_images": all_aug_images,
         "orig_raw_images": all_orig_images,
         "aug_raw_images": all_aug_images,
         "inst": all_texts,

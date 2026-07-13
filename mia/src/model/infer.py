@@ -6,6 +6,7 @@ from minigpt.minigpt4.conversation.interact import Interact
 from torchvision.transforms.functional import to_pil_image
 import sys
 import numpy as np
+from typing import Dict, Any, List, Tuple, Optional
 
 
 class BatchProcessor:
@@ -313,16 +314,30 @@ class BatchProcessor_hulu:
                 batch_end = batch_begin + self.batch_size
 
             for _idx in range(batch_begin, batch_end):
-                _orig_img = self.dataset[_idx]["orig_raw_images"]
-                if isinstance(_orig_img, dict):
-                    _orig_img = Image.open(BytesIO(_orig_img["bytes"])).convert("RGB")
-                images.append(_orig_img)
-                _aug_img = self.dataset[_idx]["aug_raw_images"]
-                for k, v in _aug_img.items():
-                    for _vi in range(len(v)):
-                        if isinstance(v[_vi], dict):
-                            v[_vi] = Image.open(BytesIO(v[_vi]["bytes"])).convert("RGB")
-                aug_images.append(_aug_img)
+                sample_loaded_orig_imgs = list()
+                sample_loaded_aug_imgs = dict()
+                # The raw images of the sample
+                _orig_imgs = self.dataset[_idx]["orig_raw_images"]
+                for image in _orig_imgs:
+                    if isinstance(image, dict):
+                        image = Image.open(BytesIO(image["bytes"])).convert("RGB")
+                    sample_loaded_orig_imgs.append(image)
+                
+                _aug_imgs = self.dataset[_idx]["aug_raw_images"]
+                for aug_name, aug_matrix in _aug_imgs.items():
+                    if aug_name not in sample_loaded_aug_imgs:
+                        sample_loaded_aug_imgs[aug_name] = list()
+                    for image_list in aug_matrix:
+                        all_images_of_setting = list()
+                        for image in image_list:
+                            if isinstance(image, dict):
+                                image = Image.open(BytesIO(image["bytes"])).convert("RGB")
+                            all_images_of_setting.append(image)
+                        sample_loaded_aug_imgs[aug_name].append(all_images_of_setting)
+                        
+                
+                images.append(sample_loaded_orig_imgs)
+                aug_images.append(sample_loaded_aug_imgs)
                 inst.append(self.dataset[_idx]["inst"])
                 desc.append(self.dataset[_idx]["desc"])             
             self.current_batch+=1
@@ -688,214 +703,6 @@ def mod_infer_batch_minigpt(model, vis_processor, batch, parts, chat_state, gpu_
 
 
 
-# def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augmentation):
-#     print("Begining mod_infer_batch_hulu")
-
-#     def _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits,
-#                                    tokenizer, vis_processor, parts, sample_inst, sample_desc):
-
-#         def visual_token_count_from_inputs(inputs, image_index) -> int:
-#             gs = inputs["grid_sizes"][image_index]     # [T,H,W] or [1,H,W]
-#             ms = inputs["merge_sizes"][image_index]    # scalar
-#             if hasattr(ms, "item"):
-#                 ms = int(ms.item())
-#             T, H, W = [int(x) for x in gs.tolist()]
-#             return (T if T > 1 else 1) * (H // ms) * (W // ms)
-
-#         def find_runs(haystack, token_id):
-#             runs = []
-#             i, n = 0, len(haystack)
-#             while i < n:
-#                 if haystack[i] == token_id:
-#                     j = i + 1
-#                     while j < n and haystack[j] == token_id:
-#                         j += 1
-#                     runs.append((i, j))
-#                     i = j
-#                 else:
-#                     i += 1
-#             return runs
-
-#         def find_subseq(haystack, needle, start=0, end=None):
-#             if end is None:
-#                 end = len(haystack)
-#             m = len(needle)
-#             if m == 0:
-#                 return (start, start)
-#             for i in range(start, end - m + 1):
-#                 if haystack[i:i + m] == needle:
-#                     return (i, i + m)
-#             return None
-
-#         def get_spans_multi_image(input_ids, inputs, tokenizer, vis_processor, sample_inst, sample_desc):
-#             seq = input_ids.tolist() if hasattr(input_ids, "tolist") else list(input_ids)
-#             image_token_id = vis_processor.image_token_id
-
-#             # expected placeholder counts per image
-#             n_images = len(inputs["grid_sizes"])
-#             expected = [visual_token_count_from_inputs(inputs, k) for k in range(n_images)]
-
-#             # actual runs of image placeholder tokens
-#             runs = find_runs(seq, image_token_id)
-#             if len(runs) == 0:
-#                 raise ValueError("No image_token_id run found in input_ids")
-#             if len(runs) < n_images:
-#                 # common edge case: processor may merge all images into one long run
-#                 # If there is a single run, split it using expected lengths.
-#                 if len(runs) == 1 and n_images > 1:
-#                     s0, e0 = runs[0]
-#                     total_expected = sum(expected)
-#                     if (e0 - s0) < total_expected:
-#                         raise ValueError(
-#                             f"Single image run length {e0-s0} < sum(expected) {total_expected}. "
-#                             f"expected={expected}"
-#                         )
-#                     image_spans = []
-#                     cur = s0
-#                     for exp_len in expected:
-#                         image_spans.append((cur, cur + exp_len))
-#                         cur += exp_len
-#                 else:
-#                     raise ValueError(f"Found {len(runs)} image-token runs, expected {n_images}")
-#             else:
-#                 # Greedy match runs to expected lengths in order
-#                 image_spans = []
-#                 run_idx = 0
-#                 for k, exp_len in enumerate(expected):
-#                     while run_idx < len(runs) and (runs[run_idx][1] - runs[run_idx][0]) != exp_len:
-#                         run_idx += 1
-#                     if run_idx >= len(runs):
-#                         raise ValueError(
-#                             f"Could not match image {k} with expected len {exp_len}. "
-#                             f"expected={expected}, runs={[r[1]-r[0] for r in runs]}"
-#                         )
-#                     image_spans.append(runs[run_idx])
-#                     run_idx += 1
-
-#             # Search for inst/desc after last image span (fallback to whole seq if needed)
-#             text_search_start = image_spans[-1][1]
-
-#             inst_ids = tokenizer.encode(sample_inst, add_special_tokens=False)
-#             desc_ids = tokenizer.encode(sample_desc, add_special_tokens=False)
-
-#             inst_span = find_subseq(seq, inst_ids, start=text_search_start)
-#             if inst_span is None:
-#                 inst_span = find_subseq(seq, inst_ids, start=0)
-#             if inst_span is None:
-#                 raise ValueError("Could not locate instruction text tokens in input_ids")
-
-#             desc_span = find_subseq(seq, desc_ids, start=inst_span[1])
-#             if desc_span is None:
-#                 desc_span = find_subseq(seq, desc_ids, start=0)
-#             if desc_span is None:
-#                 raise ValueError("Could not locate description text tokens in input_ids")
-
-#             return image_spans, inst_span, desc_span
-
-#         # ---- use new span function here ----
-#         seq = input_ids.tolist() if hasattr(input_ids, "tolist") else list(input_ids)
-#         image_spans, inst_span, desc_span = get_spans_multi_image(
-#             input_ids, inputs, tokenizer, vis_processor, sample_inst, sample_desc
-#         )
-
-#         print(f"Image spans: {image_spans}")
-#         print(f"Instruction span: {inst_span}")
-#         print(f"Desc span: {desc_span}")
-
-#         # Sanity check each image span is all image tokens
-#         image_token_id = vis_processor.image_token_id
-#         for i, (s, e) in enumerate(image_spans):
-#             assert all(t == image_token_id for t in seq[s:e]), f"image span {i} mismatch"
-
-#         inst_dec = tokenizer.decode(seq[inst_span[0]:inst_span[1]], skip_special_tokens=False)
-#         desc_dec = tokenizer.decode(seq[desc_span[0]:desc_span[1]], skip_special_tokens=False)
-
-#         print(f"Sample Instruction: {sample_inst}")
-#         print("inst slice preview:", inst_dec[:200])
-#         print(f"Sample Description: {sample_desc}")
-#         print("desc slice preview:", desc_dec[:200])
-
-#         print("Exiting")
-#         sys.exit()
-
-#         # TODO: replace with your actual return format once debugging is done
-#         # return target_parts, labels_per_sample
-
-#     # ---------------- main loop (kept as close to your structure as possible) ----------------
-#     if use_augmentation:
-#         images_of_batch = batch["images"]
-#         aug_images_of_batch = batch["aug_images"]
-#         insts_of_batch = batch["inst"]
-#         descs_of_batch = batch["desc"]
-
-#         for sample_images, sample_aug_image, sample_inst, sample_desc in zip(
-#             images_of_batch, aug_images_of_batch, insts_of_batch, descs_of_batch
-#         ):
-#             conversation = [{
-#                 "role": "user",
-#                 "content": [
-#                     {"type": "image", "text_part": "image1", "data": None},
-#                     {"type": "text", "text_part": "inst", "text": "<INST>" + sample_inst + "</INST>"},
-#                     {"type": "text", "text_part": "desc", "text": "<DESC>" + sample_desc + "</DESC>"},
-#                 ]
-#             }]
-
-#             # FIX: you were missing '+' between string literals
-#             prompt = (
-#                 "<IMG1>" + "<image>" + "</IMG1>\n"
-#                 + "<IMG2>" + "<image>" + "</IMG2>\n"
-#                 + "<INST>" + sample_inst + "</INST>\n"
-#                 + "<DESC>" + sample_desc + "</DESC>"
-#             )
-
-#             # If sample_images is a single image, pass it directly; if it's a list, pass the list.
-#             images_arg = [sample_images, sample_images]
-#             inputs = vis_processor(images=images_arg, text=prompt, return_tensors="pt")
-#             input_ids = inputs["input_ids"][0]
-
-#             print("Printing input keys")
-#             print(inputs.keys())
-#             print(f"Input_ids shape: {np.array(inputs['input_ids']).shape}")
-
-#             conversation[0]["content"][0]["data"] = sample_images  # temp
-
-#             inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
-#             if "pixel_values" in inputs:
-#                 inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
-
-#             with torch.inference_mode():
-#                 out = model(**inputs, return_dict=True)
-#                 logits = out.logits
-
-#             print(f"Logits shape: {logits.size()}")
-
-#             target_parts, labels_per_sample = _get_parts_from_one_sample(
-#                 conversation, prompt, input_ids, inputs, logits,
-#                 tokenizer, vis_processor, parts, sample_inst, sample_desc
-#             )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -908,211 +715,88 @@ def mod_infer_batch_minigpt(model, vis_processor, batch, parts, chat_state, gpu_
 
 
 def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augmentation):
-    def _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc):
-        def visual_token_count_from_inputs(inputs, image_index=0) -> int:
-            gs = inputs["grid_sizes"][image_index]     # tensor like [T, H, W] or [1, H, W]
-            ms = inputs["merge_sizes"][image_index]    # int or tensor scalar
-
-            if hasattr(ms, "item"):
-                ms = int(ms.item())
-
-            T, H, W = [int(x) for x in gs.tolist()]    # e.g. [1, 48, 48]
-            # processor logic: if T==1 => one image; if T>1 => video/3d treated like multiple frames
-            return (T if T > 1 else 1) * (H // ms) * (W // ms)
-        
-        def enc_len(tokenizer, s: str) -> int:
-            return len(tokenizer.encode(s, add_special_tokens=False))
-        
-        def compute_spans(tokenizer, inputs, vis_processor, inst: str, desc: str):
-            n_img = visual_token_count_from_inputs(inputs, 0)
-
-            before_img = "<IMG1>"
-            after_img = "</IMG1>\n<INST>"
-            between_inst_desc = "</INST>\n<DESC>"
-            after_desc = "</DESC>"
-
-            before_len     = enc_len(tokenizer, before_img)
-            after_image_len= enc_len(tokenizer, after_img)
-            inst_len       = enc_len(tokenizer, inst)
-            between_len    = enc_len(tokenizer, between_inst_desc)
-            desc_len       = enc_len(tokenizer, desc)
-            after_desc_len = enc_len(tokenizer, after_desc)
-
-            idx = 0
-
-            # account for <IMG1>
-            idx += before_len
-
-            image_span = (idx, idx + n_img)
-            idx += n_img
-
-            idx += after_image_len
-
-            inst_span = (idx, idx + inst_len)
-            idx += inst_len
-
-            idx += between_len
-
-            desc_span = (idx, idx + desc_len)
-            idx += desc_len
-
-            idx += after_desc_len
-
-            return image_span, inst_span, desc_span
-
-        
-        n_img = visual_token_count_from_inputs(inputs, 0)
-        image_token_id = vis_processor.image_token_id
-        
-        
-        seq = input_ids.tolist()
-        image_span, inst_span, desc_span = compute_spans(tokenizer, inputs, vis_processor, sample_inst, sample_desc)
-        # print(f'image_span: {image_span}')
-        # print(f'inst_span: {inst_span}')
-        # print(f'desc_span: {desc_span}')
-        
-        # print(f"Image span: {image_span}")
-        # print(f"Instruction span: {inst_span}")
-        # print(f"Desc span: {desc_span}")
-
-
-        # # 1) Image region should be entirely <image> tokens
-        # # assert all(t == image_token_id for t in seq[image_span[0]:image_span[1]]), "image span mismatch"
-
-        # # 2) Decode inst/desc slices should match (mostly) your inst/desc
-        # inst_dec = tokenizer.decode(seq[inst_span[0]:inst_span[1]], skip_special_tokens=False)
-        # desc_dec = tokenizer.decode(seq[desc_span[0]:desc_span[1]], skip_special_tokens=False)
-        # print(f"Sample Instruction: {sample_inst}")
-        # print("inst slice preview:", inst_dec)
-        # print(f"Sample Description: {sample_desc}")
-        # print("desc slice preview:", desc_dec)
-
-                            
-        # print("Exiting")
-        # sys.exit()
-
-        # standardize tensors
-        # input_ids is [seq] (because you pass inputs["input_ids"][0])
-        
-        if isinstance(input_ids, list):
-            input_ids = torch.tensor(input_ids, device=logits.device)
-        else:
-            input_ids = input_ids.to(logits.device)
-
-        # logits is [1, seq, vocab] from Hulu
-        if logits.dim() == 3:
-            logits_2d = logits[0]   # [seq, vocab]
-        else:
-            logits_2d = logits      # assume already [seq, vocab]
+    def split_logit_by_parts(input_ids, logits, parts, image_token_id):
+        if input_ids.dim() != 1:
+            raise ValueError(f"input_ids must be 1D [seq_len], got {tuple(input_ids.shape)}")
+        if logits.dim() != 3:
+            raise ValueError(f"logits must be 3D [batch, seq_len, vocab], got {tuple(logits.shape)}")
+        if logits.size(0) < 1:
+            raise ValueError("logits batch dimension is empty")
+        if logits.size(1) != input_ids.numel():
+            raise ValueError(f"seq_len mismatch: logits.size(1)={logits.size(1)} vs input_ids={input_ids.numel()}")
 
         seq_len = input_ids.numel()
-        assert logits_2d.size(0) == seq_len, f"seq mismatch: input_ids={seq_len}, logits={logits_2d.size(0)}"
+        device = input_ids.device
 
-        img_s, img_e = image_span
-        inst_s, inst_e = inst_span
-        desc_s, desc_e = desc_span
+        img_mask = (input_ids == image_token_id)
+        img_slice = torch.nonzero(img_mask, as_tuple=False).squeeze(-1)
+        inst_desc_slice = torch.nonzero(~img_mask, as_tuple=False).squeeze(-1)
+        full_slice = torch.arange(seq_len, device=device)
 
-        # ---------------- build target_parts like original ----------------
+        slices = {
+            "img": img_slice,
+            "inst_desc": inst_desc_slice,
+            "img_inst_desc": full_slice,
+        }
+
+        # Build per-token labels (for this single sample)
+        labels = ["inst_desc"] * seq_len
+        for idx in img_slice.tolist():
+            labels[idx] = "img"
+
         target_parts = {}
         for p in parts:
+            if p not in slices:
+                raise ValueError(f"Unsupported goal split {p}. Supported: {list(slices.keys())}")
+
+            sl = slices[p]
+
             if p not in target_parts:
                 target_parts[p] = {"input_ids": [], "probabilities": [], "log_probabilities": []}
 
-            if p == "img":
-                _slice = slice(img_s, img_e)
-            elif p == "inst_desp":
-                _slice = slice(inst_s, desc_e)   # inst + (markers between) + desc? (if you want ONLY bodies, change)
-            elif p == "inst":
-                _slice = slice(inst_s, inst_e)
-            elif p in ["desp", "desc"]:
-                _slice = slice(desc_s, desc_e)
-            else:
-                raise ValueError(f"Not supported goal {p}")
+            # ids for this slice
+            target_parts[p]["input_ids"].append(input_ids[sl])
 
-            # input_ids for that part
-            target_parts[p]["input_ids"].append(input_ids[_slice])
+            # logits slice: [batch, seq_len, vocab] -> [L, vocab] for batch 0
+            logits_slice = logits[0, sl, :]
 
-            # logits for that part
-            part_logits = logits_2d[_slice, :]  # [part_len, vocab]
-            target_parts[p]["probabilities"].append(torch.nn.functional.softmax(part_logits, dim=-1))
-            target_parts[p]["log_probabilities"].append(torch.nn.functional.log_softmax(part_logits, dim=-1))
+            target_parts[p]["probabilities"].append(torch.nn.functional.softmax(logits_slice, dim=-1))
+            target_parts[p]["log_probabilities"].append(torch.nn.functional.log_softmax(logits_slice, dim=-1))
 
-        # ---------------- labels_per_sample like original ----------------
-        labels = [''] * seq_len
-        labels[img_s:img_e]   = ['img']  * (img_e - img_s)
-        labels[inst_s:inst_e] = ['inst'] * (inst_e - inst_s)
-        labels[desc_s:desc_e] = ['desc'] * (desc_e - desc_s)
-
-        return target_parts, [labels]
-
-            
+        return target_parts, labels
         
     
+    
+    
     if use_augmentation:
-        # print('use_aug true')
         images_of_batch = batch["images"]
         aug_images_of_batch = batch["aug_images"]
         insts_of_batch = batch["inst"]
         descs_of_batch = batch["desc"]
         
         total_parts = {
-        "orig":  list()   
+            "orig":  list()   
         }
 
         total_token_labels = list()
         
+        # Need to know the special token used for image, don't know if it violates blackbox
+        image_token_id = vis_processor.image_token_id 
         
 
-        
-        for sample_images, sample_aug_image, sample_inst, sample_desc in zip(images_of_batch, aug_images_of_batch, insts_of_batch, descs_of_batch):
-            # Need to change to accept other modes not just image
-            conversation = list()
-            
-            # for img in sample_images
-            
-            conversation = [{
-                "role": "user",
-                "content": [
-                    {"type": "image", "text_part": "image1", "data": None},
-                    {"type": "text", "text_part": "inst", "text": "<INST>" + sample_inst + "</INST>"},
-                    {"type": "text", "text_part": "desc", "text": "<DESC>" + sample_desc + "</DESC>"},
-                ]
-            }]
-            
+        for sample_images, sample_aug_images, sample_inst, sample_desc in zip(images_of_batch, aug_images_of_batch, insts_of_batch, descs_of_batch):            
+            # Loop through and add each oriignal image to the conversation
+            conversation = [
+            {"role": "user", "content": []},   # images
+            {"role": "user", "content": [{"type": "text", "text": sample_inst}]},
+            {"role": "user", "content": [{"type": "text", "text": sample_desc}]},
+            ]
+    
+            for _ in sample_images:
+                conversation[0]["content"].append({"type": "image"})
 
-            
-            # Need to change so it accepts multiple images
-            # Format of encoder special tokens
-            prompt = (
-                "<IMG1>" + "<image>" + "</IMG1>\n"
-                "<INST>" + sample_inst + "</INST>\n"
-                "<DESC>" + sample_desc + "</DESC>"
-            )
+            inputs = vis_processor(conversation=conversation, images=sample_images, return_tensors="pt")
 
-            inputs = vis_processor(images=[sample_images], text=prompt, return_tensors="pt")
-            
-            # def n_img_from_inputs(inputs):
-            #     gs = inputs["grid_sizes"][0]
-            #     ms = inputs["merge_sizes"][0]
-            #     ms = int(ms.item()) if hasattr(ms, "item") else int(ms)
-            #     T, H, W = [int(x) for x in gs.tolist()]
-            #     return (T if T > 1 else 1) * (H // ms) * (W // ms), (T, H, W), ms
-
-            # n_img, (T,H,W), ms = n_img_from_inputs(inputs)
-            # print('ORIGINAL')
-            # print("PIL size:", (sample_images.size if hasattr(sample_images, "size") else type(sample_images)))
-            # print("grid_sizes:", (T,H,W), "merge:", ms, "n_img:", n_img)
-            
-            input_ids = inputs["input_ids"][0]
-            
-            # print("Printing input keys")
-            # print(inputs.keys())
-            
-            # print(f"Input_ids shape: {np.array(inputs['input_ids']).shape}")
-            
-            # Temp fix, not good
-            conversation[0]['content'][0]['data'] = sample_images
-            
             inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
 
             if "pixel_values" in inputs:
@@ -1121,102 +805,655 @@ def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augm
             with torch.inference_mode():
                 out = model(**inputs, return_dict=True)
                 logits = out.logits
-            
-            
-            # print("Exiting")
-            # sys.exit()
-                
-            # print('for orig')
-            target_parts, labels_per_sample = _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc)
-                
-            if len(total_parts["orig"]) == 0:
+                    
+            input_ids = inputs["input_ids"][0]
+            target_parts, labels = split_logit_by_parts(input_ids, logits, parts, image_token_id)    
+            if not total_parts["orig"]:
                 total_parts["orig"].append(target_parts)
             else:
                 for _part in parts:
                     for _key in total_parts["orig"][0][_part].keys():
                         total_parts["orig"][0][_part][_key].extend(target_parts[_part][_key])
-
+            total_token_labels.extend([labels])
             
+            '''
+            Of the form:
             
-            # 2. Conduct inference using the augmented images
-            for k, aug_images in sample_aug_image.items():
-                    # For each augmentation type
+            {
+                # aug1:
+                [
+                    # Setting 1
+                    [img1, img2, img3],
+                    # Setting 2
+                    [img1, img2, img3]
+                ],
+                # aug2:
+                [
+                    # Setting 1
+                    [img1, img2, img3],
+                    # Setting 2
+                    [img1, img2, img3]
+                ]
+            }
+            '''
+            
+            for aug_name, aug_matrix in sample_aug_images.items():
+                if aug_name not in total_parts:
+                    # Initialize the list for saving each setting
+                    total_parts[aug_name] = [None for _ in range(len(aug_matrix))]
+                for setting_idx, setting_images in enumerate(aug_matrix):
+                    conversation = [
+                    {"role": "user", "content": []},   # images
+                    {"role": "user", "content": [{"type": "text", "text": sample_inst}]},
+                    {"role": "user", "content": [{"type": "text", "text": sample_desc}]},
+                    ]
+            
+                    for _ in setting_images:
+                        conversation[0]["content"].append({"type": "image"})
+                        
+                    inputs = vis_processor(conversation=conversation, images=setting_images, return_tensors="pt")
+                    inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
 
-                    if k not in total_parts:
-                        # Initialize the list for saving each setting
-                        total_parts[k] = [None for _ in range(len(aug_images))]
-
-                    for _setting_idx, _aug_img in enumerate(aug_images):
+                    if "pixel_values" in inputs:
+                        inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
                         
-                        
-                        conversation = [{
-                            "role": "user",
-                            "content": [
-                                {"type": "image", "text_part": "image1", "data": None},
-                                {"type": "text", "text_part": "inst", "text": "<INST>" + sample_inst + "</INST>"},
-                                {"type": "text", "text_part": "desc", "text": "<DESC>" + sample_desc + "</DESC>"},
-                            ]
-                        }]
-                        
-
-                        
-                        # Need to change so it accepts multiple images
-                        # Format of encoder special tokens
-                        prompt = (
-                            "<IMG1>" + "<image>" + "</IMG1>\n"
-                            "<INST>" + sample_inst + "</INST>\n"
-                            "<DESC>" + sample_desc + "</DESC>"
-                        )
-
-                        inputs = vis_processor(images=[_aug_img], text=prompt, return_tensors="pt")
-                        # n_img, (T,H,W), ms = n_img_from_inputs(inputs)
-                        # print('AUG')
-                        # print("PIL size:", (_aug_img.size if hasattr(_aug_img, "size") else type(_aug_img)))
-                        # print("grid_sizes:", (T,H,W), "merge:", ms, "n_img:", n_img)
-                        
-                        # sys.exit()
-                        
-                        input_ids = inputs["input_ids"][0]
-                        
-                        # print("Printing input keys")
-                        # print(inputs.keys())
-                        
-                        # print(f"Input_ids shape: {np.array(inputs['input_ids']).shape}")
-                        
-                        # Temp fix, not good
-                        conversation[0]['content'][0]['data'] = _aug_img
-                        
-                        inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
-
-                        if "pixel_values" in inputs:
-                            inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
+                    with torch.inference_mode():
+                        out = model(**inputs, return_dict=True)
+                        logits = out.logits
                             
-                        with torch.inference_mode():
-                            out = model(**inputs, return_dict=True)
-                            logits = out.logits
-                            
-                        
-                        
-                        # print("Exiting")
-                        # sys.exit()
-                        # print(f"for aug: {k}")
-                        target_parts, labels_per_sample = _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc)
-                        
-                        
-                        if total_parts[k][_setting_idx] == None:
-                            total_parts[k][_setting_idx] = target_parts
-                        else:
-                            for _part in parts:
-                                # Insert (input_ids, probabilities, log_probabilities) from each part to the corresponding setting
-                                for _key in total_parts[k][_setting_idx][_part].keys():
-                                    total_parts[k][_setting_idx][_part][_key].extend(target_parts[_part][_key]) 
-            # print('exiting')
-            # sys.exit()
-                                    
-        # print(f"total_parts['org'] length: {len(total_parts['orig'])}")
-
-        return total_parts, total_token_labels    
-    
+                    input_ids = inputs["input_ids"][0]
+                    target_parts, labels = split_logit_by_parts(input_ids, logits, parts, image_token_id)
+                    
+                    if total_parts[aug_name][setting_idx] == None:
+                        total_parts[aug_name][setting_idx] = target_parts
+                    else:
+                        for _part in parts:
+                            # Insert (input_ids, probabilities, log_probabilities) from each part to the corresponding setting
+                            for _key in total_parts[aug_name][setting_idx][_part].keys():
+                                total_parts[aug_name][setting_idx][_part][_key].extend(target_parts[_part][_key]) 
+        
+        return total_parts, total_token_labels
+        
     else:
         raise NotImplementedError("Use Augmentation is False, not implimented yet")
         return None
+        
+                    
+                    
+
+        
+            
+            
+            
+            
+# def sanity_check_split(input_ids, logits, target_parts, labels, image_token_id, parts):
+#     seq_len = input_ids.numel()
+
+#     # ---- Basic structure ----
+#     assert isinstance(target_parts, dict), "target_parts must be a dict"
+#     assert isinstance(labels, list), "labels must be a list"
+#     assert len(labels) == seq_len, "labels length must equal seq_len"
+
+#     for p in parts:
+#         assert p in target_parts, f"Missing part: {p}"
+#         entry = target_parts[p]
+#         for k in ["input_ids", "probabilities", "log_probabilities"]:
+#             assert k in entry, f"{p} missing key {k}"
+#             assert len(entry[k]) == 1, f"{p}.{k} should have exactly one entry"
+
+#     # ---- Image mask consistency ----
+#     img_mask = (input_ids == image_token_id)
+#     img_count = int(img_mask.sum().item())
+#     rest_count = seq_len - img_count
+
+#     # labels must agree with image mask
+#     for i in range(seq_len):
+#         if img_mask[i]:
+#             assert labels[i] == "img", f"Label mismatch at pos {i}: expected 'img'"
+#         else:
+#             assert labels[i] == "inst_desc", f"Label mismatch at pos {i}: expected 'inst_desc'"
+
+#     # ---- Slice lengths must match masks ----
+#     if "img" in target_parts:
+#         L_img = target_parts["img"]["input_ids"][0].numel()
+#         assert L_img == img_count, f"img slice len {L_img} != img_count {img_count}"
+
+#     if "inst_desc" in target_parts:
+#         L_rest = target_parts["inst_desc"]["input_ids"][0].numel()
+#         assert L_rest == rest_count, f"inst_desc slice len {L_rest} != rest_count {rest_count}"
+
+#     if "img_inst_desc" in target_parts:
+#         L_full = target_parts["img_inst_desc"]["input_ids"][0].numel()
+#         assert L_full == seq_len, f"full slice len {L_full} != seq_len {seq_len}"
+
+#     # ---- Logits alignment ----
+#     vocab = logits.size(-1)
+#     for p in parts:
+#         probs = target_parts[p]["probabilities"][0]
+#         log_probs = target_parts[p]["log_probabilities"][0]
+#         ids = target_parts[p]["input_ids"][0]
+
+#         assert probs.shape[0] == ids.numel(), f"{p} probs rows != ids length"
+#         assert probs.shape[1] == vocab, f"{p} probs vocab mismatch"
+#         assert log_probs.shape == probs.shape, f"{p} log_probs shape mismatch"
+
+#     # ---- Probability sanity ----
+#     # (softmax rows should sum to ~1)
+#     # for p in parts:
+#     #     probs = target_parts[p]["probabilities"][0]
+#     #     if probs.numel() > 0:
+#     #         row_sums = probs.sum(dim=-1)
+#     #         assert torch.allclose(
+#     #             row_sums,
+#     #             torch.ones_like(row_sums),
+#     #             atol=1e-4,
+#     #         ), f"{p} probabilities do not sum to 1, sum is: {}"
+
+#     print("✓ Sanity check passed")
+            
+            
+            
+            
+            
+            
+            
+              
+            # # 1) image spans (one per <image> placeholder typically)
+            
+            # image_token_id = vis_processorcessor.image_token_id
+            # img_spans = find_all_image_token_spans(input_ids, image_token_id)
+
+            # # If you want "all images together" just merge them:
+            # if len(img_spans) == 0:
+            #     raise ValueError("No image token spans found (did the template include <image>?)")
+
+            # img_span_all = (img_spans[0][0], img_spans[-1][1])
+
+            # # 2) inst/desc body spans
+            # inst_span = tagged_span(tokenizer, input_ids, "<INST>", "</INST>")
+            # desc_span = tagged_span(tokenizer, input_ids, "<DESC>", "</DESC>")
+
+            # # 3) slice logits aligned to each token region
+            # img_ids,  img_logits  = slice_logits_for_tokens(input_ids, logits, img_span_all)
+            # inst_ids, inst_logits = slice_logits_for_tokens(input_ids, logits, inst_span)
+            # desc_ids, desc_logits = slice_logits_for_tokens(input_ids, logits, desc_span)
+                
+            # if len(total_parts["orig"]) == 0:
+            #     total_parts["orig"].append(target_parts)
+            # else:
+            #     for _part in parts:
+            #         for _key in total_parts["orig"][0][_part].keys():
+            #             total_parts["orig"][0][_part][_key].extend(target_parts[_part][_key])
+
+            
+            
+            # # 2. Conduct inference using the augmented images
+            # for image_set in sample_aug_image.items():
+            #     for k, aug_images in image_set.items():
+            #             # For each augmentation type
+
+            #             if k not in total_parts:
+            #                 # Initialize the list for saving each setting
+            #                 total_parts[k] = [None for _ in range(len(aug_images))]
+
+            #             for _setting_idx, _aug_img in enumerate(aug_images):
+                            
+                            
+            #                 conversation = [{
+            #                     "role": "user",
+            #                     "content": [
+            #                         {"type": "image", "text_part": "image1", "data": None},
+            #                         {"type": "text", "text_part": "inst", "text": "<INST>" + sample_inst + "</INST>"},
+            #                         {"type": "text", "text_part": "desc", "text": "<DESC>" + sample_desc + "</DESC>"},
+            #                     ]
+            #                 }]
+                            
+
+                            
+            #                 # Need to change so it accepts multiple images
+            #                 # Format of encoder special tokens
+            #                 prompt = (
+            #                     "<IMG1>" + "<image>" + "</IMG1>\n"
+            #                     "<INST>" + sample_inst + "</INST>\n"
+            #                     "<DESC>" + sample_desc + "</DESC>"
+            #                 )
+
+            #                 inputs = vis_processor(images=[_aug_img], text=prompt, return_tensors="pt")
+            #                 # n_img, (T,H,W), ms = n_img_from_inputs(inputs)
+            #                 # print('AUG')
+            #                 # print("PIL size:", (_aug_img.size if hasattr(_aug_img, "size") else type(_aug_img)))
+            #                 # print("grid_sizes:", (T,H,W), "merge:", ms, "n_img:", n_img)
+                            
+            #                 # sys.exit()
+                            
+            #                 input_ids = inputs["input_ids"][0]
+                            
+            #                 # print("Printing input keys")
+            #                 # print(inputs.keys())
+                            
+            #                 # print(f"Input_ids shape: {np.array(inputs['input_ids']).shape}")
+                            
+            #                 # Temp fix, not good
+            #                 conversation[0]['content'][0]['data'] = _aug_img
+                            
+            #                 inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
+
+            #                 if "pixel_values" in inputs:
+            #                     inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
+                                
+            #                 with torch.inference_mode():
+            #                     out = model(**inputs, return_dict=True)
+            #                     logits = out.logits
+                                
+                            
+                            
+            #                 # print("Exiting")
+            #                 # sys.exit()
+            #                 # print(f"for aug: {k}")
+            #                 target_parts, labels_per_sample = _get_parts_from_one_sample(conversation, prompt, input_ids, inputs, logits, tokenizer, vis_processor, parts, sample_inst, sample_desc)
+                            
+                            
+            #                 if total_parts[k][_setting_idx] == None:
+            #                     total_parts[k][_setting_idx] = target_parts
+            #                 else:
+            #                     for _part in parts:
+            #                         # Insert (input_ids, probabilities, log_probabilities) from each part to the corresponding setting
+            #                         for _key in total_parts[k][_setting_idx][_part].keys():
+            #                             total_parts[k][_setting_idx][_part][_key].extend(target_parts[_part][_key]) 
+            #     # print('exiting')
+            #     # sys.exit()
+                                        
+            # # print(f"total_parts['org'] length: {len(total_parts['orig'])}")
+
+        # return total_parts, total_token_labels    
+    
+    # else:
+    #     raise NotImplementedError("Use Augmentation is False, not implimented yet")
+    #     return None
+
+
+
+
+
+def find_subsequence(haystack: torch.Tensor, needle: torch.Tensor) -> int:
+    """Return the start index of `needle` inside `haystack`, or -1."""
+    if needle.numel() == 0 or haystack.numel() < needle.numel():
+        return -1
+    # sliding window compare
+    for i in range(haystack.numel() - needle.numel() + 1):
+        if torch.equal(haystack[i:i+needle.numel()], needle):
+            return i
+    return -1
+
+def token_ids(text: str, tokenizer, input_ids) -> torch.Tensor:
+    # IMPORTANT: add_special_tokens=False so we match literal markers
+    ids = tokenizer(text, add_special_tokens=False).input_ids
+    return torch.tensor(ids, device=input_ids.device, dtype=input_ids.dtype)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def mod_infer_batch_hulu(model, batch, tokenizer, vis_processor, parts, use_augmentation):
+#     """
+#     HuluMed batch inference that deterministically splits token-level outputs into parts:
+#       - img  : all <image> placeholder tokens (may be multiple contiguous runs; we keep them as a list)
+#       - inst : tokens inside <INST>...</INST> (body only)
+#       - desc : tokens inside <DESC>...</DESC> (body only)
+
+#     Returns:
+#       total_parts: dict mapping:
+#         - "orig" -> aggregated dict of parts across samples
+#         - each augmentation name -> list indexed by setting_idx, each entry aggregated across samples
+
+#       total_token_labels: list (optional; currently empty but kept for compatibility)
+
+#     Assumptions about `batch` when use_augmentation=True:
+#       batch["images"]     : List[sample_images], where sample_images is List[image] (multi-image per sample OK)
+#       batch["aug_images"] : List[sample_aug_images], where sample_aug_images is either:
+#           (A) dict[str, dict[int, List[image]]]  e.g. {"gaussian": {0: [...imgs...], 1: [...imgs...]}, ...}
+#           OR
+#           (B) dict[str, List[List[image]]]       e.g. {"gaussian": [[...imgs...],[...imgs...]], ...}
+#           OR
+#           (C) dict[str, List[image]]             e.g. {"gaussian": [...imgs...] } (single setting)
+#       batch["inst"]       : List[str]
+#       batch["desc"]       : List[str]
+
+#     Notes:
+#       - Uses vis_processor as the HuluMedProcessor (AutoProcessor.from_pretrained(...)).
+#       - Uses conversation=... and images=... (NOT text=conversation).
+#       - Aligns logits to tokens via the standard causal-LM shift: logits[t] predicts input_ids[t+1].
+#       - Stores probabilities and log_probabilities as requested:
+#             probs = torch.softmax(logits_part, dim=-1)
+#             log_probs = torch.log_softmax(logits_part, dim=-1)
+#     """
+
+#     # ---------------------- helpers: token spans ----------------------
+#     def find_subseq(haystack, needle, start=0):
+#         hay = haystack.tolist() if isinstance(haystack, torch.Tensor) else list(haystack)
+#         ned = needle.tolist() if isinstance(needle, torch.Tensor) else list(needle)
+#         n = len(ned)
+#         for i in range(start, len(hay) - n + 1):
+#             if hay[i : i + n] == ned:
+#                 return (i, i + n)
+#         return None
+
+#     def tagged_span(tokenizer_, input_ids_, open_tag, close_tag):
+#         ids = input_ids_.tolist() if isinstance(input_ids_, torch.Tensor) else list(input_ids_)
+
+#         open_ids = tokenizer_.encode(open_tag, add_special_tokens=False)
+#         close_ids = tokenizer_.encode(close_tag, add_special_tokens=False)
+
+#         op = find_subseq(ids, open_ids, start=0)
+#         if op is None:
+#             raise ValueError(f"Open tag not found: {open_tag}")
+
+#         cp = find_subseq(ids, close_ids, start=op[1])
+#         if cp is None:
+#             raise ValueError(f"Close tag not found: {close_tag}")
+
+#         # body only (exclude the tags themselves)
+#         return (op[1], cp[0])
+
+#     def find_all_image_token_spans(input_ids_, image_token_id_):
+#         """
+#         Returns list of (start, end) runs where input_ids == image_token_id.
+#         Multiple images can yield multiple runs (template-dependent).
+#         """
+#         ids = input_ids_.tolist() if isinstance(input_ids_, torch.Tensor) else list(input_ids_)
+#         spans = []
+#         i = 0
+#         while i < len(ids):
+#             if ids[i] == image_token_id_:
+#                 j = i
+#                 while j < len(ids) and ids[j] == image_token_id_:
+#                     j += 1
+#                 spans.append((i, j))
+#                 i = j
+#             else:
+#                 i += 1
+#         return spans
+
+#     def slice_logits_for_tokens(input_ids_, logits_, token_span):
+#         """
+#         token_span: (s,e) over input_ids tokens you want to evaluate.
+#         Returns:
+#           token_ids   = input_ids[s:e]
+#           token_logits= logits[s-1:e-1]  (aligned so each logit predicts the corresponding token)
+#         """
+#         if logits_.dim() == 3:
+#             logits_2d = logits_[0]  # [seq, vocab]
+#         else:
+#             logits_2d = logits_
+
+#         s, e = token_span
+#         if s == 0:
+#             s = 1  # cannot score token 0 (no previous logit predicts it)
+#         if e <= s:
+#             return input_ids_.new_empty((0,)), logits_2d.new_empty((0, logits_2d.size(-1)))
+
+#         token_ids = input_ids_[s:e]
+#         token_logits = logits_2d[s - 1 : e - 1, :]
+#         return token_ids, token_logits
+
+#     # ---------------------- helpers: accumulation ----------------------
+#     def _init_aggregate(parts_list: List[str]) -> Dict[str, Dict[str, List[torch.Tensor]]]:
+#         agg = {}
+#         for p in parts_list:
+#             agg[p] = {"input_ids": [], "probabilities": [], "log_probabilities": []}
+#         return agg
+
+#     def _append_part(agg, part_name: str, ids_tensor: torch.Tensor, logits_tensor: torch.Tensor):
+#         # Store tensors (keep on GPU unless you want to .cpu() them)
+#         agg[part_name]["input_ids"].append(ids_tensor)
+#         probs = torch.softmax(logits_tensor, dim=-1)
+#         log_probs = torch.log_softmax(logits_tensor, dim=-1)
+#         agg[part_name]["probabilities"].append(probs)
+#         agg[part_name]["log_probabilities"].append(log_probs)
+
+#     def _merge_aggregate(dst, src):
+#         # Extend lists
+#         for p in src.keys():
+#             for k in ["input_ids", "probabilities", "log_probabilities"]:
+#                 dst[p][k].extend(src[p][k])
+
+#     # ---------------------- helpers: normalize aug structure ----------------------
+#     def normalize_aug_settings(sample_aug_images_obj):
+#         """
+#         Normalize augmented images for one sample into:
+#           List[Tuple[aug_name, List[Tuple[setting_idx, images_list]]]]
+#         where images_list is a List[image] (multi-image per sample OK).
+#         Supports:
+#           A) dict[str, dict[int, List[image]]]
+#           B) dict[str, List[List[image]]]
+#           C) dict[str, List[image]]  (single setting)
+#         """
+#         if sample_aug_images_obj is None:
+#             return []
+
+#         if not isinstance(sample_aug_images_obj, dict):
+#             raise ValueError(f"aug_images per sample must be a dict, got: {type(sample_aug_images_obj)}")
+
+#         out = []
+#         for aug_name, aug_val in sample_aug_images_obj.items():
+#             settings = []
+
+#             # A) dict[int, List[image]]
+#             if isinstance(aug_val, dict):
+#                 for setting_idx in sorted(aug_val.keys()):
+#                     imgs = aug_val[setting_idx]
+#                     # allow single image (not list) -> wrap
+#                     if imgs is None:
+#                         continue
+#                     if not isinstance(imgs, (list, tuple)):
+#                         imgs = [imgs]
+#                     settings.append((int(setting_idx), list(imgs)))
+
+#             # B) list of settings, each is list of images
+#             elif isinstance(aug_val, (list, tuple)):
+#                 if len(aug_val) == 0:
+#                     settings = []
+#                 else:
+#                     # If it's a "single setting" list-of-images (C), detect by element type not being list/tuple
+#                     if not isinstance(aug_val[0], (list, tuple)):
+#                         settings.append((0, list(aug_val)))
+#                     else:
+#                         for setting_idx, imgs in enumerate(aug_val):
+#                             if imgs is None:
+#                                 continue
+#                             if not isinstance(imgs, (list, tuple)):
+#                                 imgs = [imgs]
+#                             settings.append((setting_idx, list(imgs)))
+#             else:
+#                 # single image
+#                 settings.append((0, [aug_val]))
+
+#             out.append((aug_name, settings))
+
+#         return out
+
+#     # ---------------------- core: infer one sample and split parts ----------------------
+#     def infer_one(sample_images, sample_inst, sample_desc) -> Dict[str, Dict[str, List[torch.Tensor]]]:
+#         """
+#         Returns an aggregate dict with keys in `parts`.
+#         For 'img', we aggregate across all image token runs.
+#         For 'inst'/'desc', we aggregate across their body spans.
+#         """
+#         # Build conversation
+#         conversation = [{"role": "user", "content": []}]
+#         for _ in sample_images:
+#             conversation[0]["content"].append({"type": "image"})
+#         # combine inst+desc in one text chunk (reduces template-inserted separators)
+#         conversation[0]["content"].append(
+#             {"type": "text", "text": f"<INST>{sample_inst}</INST>\n<DESC>{sample_desc}</DESC>"}
+#         )
+
+#         # Processor call (IMPORTANT)
+#         inputs = vis_processor(conversation=conversation, images=sample_images, return_tensors="pt")
+#         input_ids = inputs["input_ids"][0]
+
+#         # Move to CUDA
+#         inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
+#         if "pixel_values" in inputs:
+#             inputs["pixel_values"] = inputs["pixel_values"].to(torch.bfloat16)
+
+#         with torch.inference_mode():
+#             out = model(**inputs, return_dict=True)
+#             logits = out.logits  # [1, seq, vocab]
+
+#         # Sanity: align lengths
+#         seq_len = int(input_ids.numel())
+#         if logits.dim() != 3 or logits.size(1) != seq_len:
+#             raise ValueError(f"Mismatch: logits={tuple(logits.shape)}, input_ids_len={seq_len}")
+
+#         # Find spans
+#         image_token_id = vis_processor.image_token_id
+#         img_spans = find_all_image_token_spans(input_ids, image_token_id)
+#         if len(img_spans) == 0:
+#             raise ValueError("No image token spans found (template may not have inserted <image> tokens).")
+
+#         inst_span = tagged_span(tokenizer, input_ids, "<INST>", "</INST>")
+#         desc_span = tagged_span(tokenizer, input_ids, "<DESC>", "</DESC>")
+
+#         # Build aggregate for this sample
+#         agg = _init_aggregate(parts)
+
+#         # Fill requested parts
+#         for p in parts:
+#             if p == "img":
+#                 # aggregate across all image runs
+#                 for sp in img_spans:
+#                     ids_part, logits_part = slice_logits_for_tokens(input_ids, logits, sp)
+#                     if ids_part.numel() > 0:
+#                         _append_part(agg, "img", ids_part, logits_part)
+
+#             elif p == "inst":
+#                 ids_part, logits_part = slice_logits_for_tokens(input_ids, logits, inst_span)
+#                 if ids_part.numel() > 0:
+#                     _append_part(agg, "inst", ids_part, logits_part)
+
+#             elif p in ["desc", "desp"]:
+#                 ids_part, logits_part = slice_logits_for_tokens(input_ids, logits, desc_span)
+#                 if ids_part.numel() > 0:
+#                     _append_part(agg, p if p in agg else "desc", ids_part, logits_part)
+
+#             elif p == "inst_desc" or p == "inst_desp":
+#                 # body-only inst+desc, excluding the tags but including whatever lies between (newline)
+#                 merged_span = (inst_span[0], desc_span[1])
+#                 ids_part, logits_part = slice_logits_for_tokens(input_ids, logits, merged_span)
+#                 if ids_part.numel() > 0:
+#                     _append_part(agg, p, ids_part, logits_part)
+
+#             else:
+#                 raise ValueError(f"Unsupported part: {p}")
+
+#         return agg
+
+#     # ---------------------- main ----------------------
+#     if not use_augmentation:
+#         raise NotImplementedError("use_augmentation=False is not implemented yet.")
+
+#     images_of_batch = batch["images"]
+#     aug_images_of_batch = batch["aug_images"]
+#     insts_of_batch = batch["inst"]
+#     descs_of_batch = batch["desc"]
+
+#     # total_parts["orig"] is ONE aggregate across the whole batch (same as your earlier style)
+#     total_parts: Dict[str, Any] = {"orig": _init_aggregate(parts)}
+#     total_token_labels: List[Any] = []
+
+#     # For augmented: total_parts[aug_name][setting_idx] is an aggregate across the whole batch
+#     # (created lazily when first seen)
+
+#     for sample_images, sample_aug_images, sample_inst, sample_desc in zip(
+#         images_of_batch, aug_images_of_batch, insts_of_batch, descs_of_batch
+#     ):
+#         # Normalize single-image -> list
+#         if not isinstance(sample_images, (list, tuple)):
+#             sample_images = [sample_images]
+
+#         # ---- original ----
+#         orig_agg = infer_one(sample_images, sample_inst, sample_desc)
+#         _merge_aggregate(total_parts["orig"], orig_agg)
+
+#         # ---- augmented ----
+#         aug_norm = normalize_aug_settings(sample_aug_images)
+#         for aug_name, settings in aug_norm:
+#             if aug_name not in total_parts:
+#                 # create list of aggregates indexed by setting_idx dynamically
+#                 total_parts[aug_name] = {}
+
+#             for setting_idx, aug_imgs in settings:
+#                 if not isinstance(aug_imgs, (list, tuple)):
+#                     aug_imgs = [aug_imgs]
+
+#                 aug_agg = infer_one(list(aug_imgs), sample_inst, sample_desc)
+
+#                 if setting_idx not in total_parts[aug_name]:
+#                     total_parts[aug_name][setting_idx] = _init_aggregate(parts)
+
+#                 _merge_aggregate(total_parts[aug_name][setting_idx], aug_agg)
+
+#     # Optionally: convert per-aug dict-of-setting to list (dense) if you prefer
+#     # Here we keep dict for safety in case settings are sparse.
+
+#     return total_parts, total_token_labels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

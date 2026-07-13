@@ -166,15 +166,17 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                     entropy = -(token_probs * token_log_probs_clamped).sum().item()
                     
                     meta_metrics["entropies"][aug_type][aug_idx][_batch_idx].append(entropy)
-                    meta_metrics["renyi_1_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 1))
+                    meta_metrics["renyi_1_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 1).detach().cpu())
                     
                     if (
                         "max_k_no_norn_kl_div" in cfg.img_metrics.metrics_to_use 
                         or "max_k_no_norn_kl_div_tkn_vals" in cfg.img_metrics.get_proc_meta_metrics 
                         or "no_norm_probs" in cfg.img_metrics.get_raw_meta_metrics
+                        or "max_k_no_norn_kl_div_ripple" in cfg.img_metrics.metrics_to_use 
+                        or "max_k_no_norn_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics 
                     ):
                         # No_norm
-                        meta_metrics["no_norm_probs"][aug_type][aug_idx][_batch_idx].append(token_probs_clamped)
+                        meta_metrics["no_norm_probs"][aug_type][aug_idx][_batch_idx].append(token_probs_clamped.detach().cpu())
 
                     # Renyi_05
                     if (
@@ -185,11 +187,13 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "max_k_renyi_05_kl_div_tkn_vals" in cfg.img_metrics.get_proc_meta_metrics 
                         or "renyi_05_entro" in cfg.img_metrics.get_raw_meta_metrics 
                         or "renyi_05_probs" in cfg.img_metrics.get_raw_meta_metrics
+                        or "max_k_renyi_05_kl_div_ripple" in cfg.img_metrics.metrics_to_use
+                        or "max_k_renyi_05_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics 
                     ):
                         alpha=0.5
                         renyi_05 = (1 / (1-alpha)) * torch.log(torch.sum(torch.pow(token_probs_clamped, alpha))).item()
                         meta_metrics["renyi_05_entro"][aug_type][aug_idx][_batch_idx].append(renyi_05)
-                        meta_metrics["renyi_05_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 0.5))
+                        meta_metrics["renyi_05_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 0.5).detach().cpu())
 
                     # Renyi_2
                     if (
@@ -200,11 +204,13 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "max_k_renyi_2_kl_div_tkn_vals" in cfg.img_metrics.get_proc_meta_metrics 
                         or "renyi_2_entro" in cfg.img_metrics.get_raw_meta_metrics 
                         or "renyi_2_probs" in cfg.img_metrics.get_raw_meta_metrics
+                        or "max_k_renyi_2_kl_div_ripple" in cfg.img_metrics.metrics_to_use
+                        or "max_k_renyi_2_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics 
                     ):
                         alpha=2
                         renyi_2 = (1 / (1-alpha)) * torch.log(torch.sum(torch.pow(token_probs_clamped, alpha))).item()
                         meta_metrics["renyi_2_entro"][aug_type][aug_idx][_batch_idx].append(renyi_2)
-                        meta_metrics["renyi_2_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 2))
+                        meta_metrics["renyi_2_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, 2).detach().cpu())
 
                     # Renyi_inf
                     if (
@@ -213,13 +219,15 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                         or "gap_probs" in cfg.img_metrics.get_raw_meta_metrics 
                         or "max_probs" in cfg.img_metrics.get_raw_meta_metrics
                         or "renyi_inf_probs" in cfg.img_metrics.get_raw_meta_metrics
+                        or "max_k_renyi_inf_kl_div_ripple" in cfg.img_metrics.metrics_to_use 
+                        or "max_k_renyi_inf_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics 
                     ):
                         max_p = token_log_probs_clamped.max().item()
                         second_p = token_log_probs_clamped[token_log_probs_clamped != token_log_probs_clamped.max()].max().item()
                         gap_p = max_p - second_p
                         meta_metrics["gap_probs"][aug_type][aug_idx][_batch_idx].append(gap_p)
                         meta_metrics["max_probs"][aug_type][aug_idx][_batch_idx].append(max_p)
-                        meta_metrics["renyi_inf_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, "inf"))
+                        meta_metrics["renyi_inf_probs"][aug_type][aug_idx][_batch_idx].append(renyi_probs(token_probs_clamped, "inf").detach().cpu())
 
                     if (
                         "mink" in cfg.img_metrics.metrics_to_use
@@ -288,6 +296,10 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                     or "max_k_renyi_divergence_2" in cfg.img_metrics.metrics_to_use
                     or "max_k_renyi_divergence_4" in cfg.img_metrics.metrics_to_use
                     or "probabilities" in cfg.img_metrics.get_raw_meta_metrics
+                    or "max_k_renyi_divergence_025_ripple" in cfg.img_metrics.metrics_to_use
+                    or "max_k_renyi_divergence_05_ripple" in cfg.img_metrics.metrics_to_use
+                    or "max_k_renyi_divergence_2_ripple" in cfg.img_metrics.metrics_to_use
+                    or "max_k_renyi_divergence_4_ripple" in cfg.img_metrics.metrics_to_use
                 ):
                     meta_metrics["probabilities"][aug_type][aug_idx].append(aug_result[part]["probabilities"][_batch_idx].float().cpu().numpy())
                 

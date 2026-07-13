@@ -54,8 +54,9 @@ def save_run_meta(cfg):
 
         Requested token labels of first {cfg.img_metrics.get_token_labels} of each class
         Requested Raw Augmented Images of first {cfg.img_metrics.get_raw_images} of each class
-        Requested metrics: {cfg.img_metrics.get_raw_meta_metrics} of first {cfg.img_metrics.get_raw_meta_examples} of each class
-        Requested metrics: {cfg.img_metrics.get_proc_meta_metrics} of first {cfg.img_metrics.get_proc_meta_examples} of each class
+        print(f"Requested raw metrics values: {cfg.img_metrics.get_raw_meta_metrics}")
+        print(f"Requested process metrics values: {cfg.img_metrics.get_raw_meta_metrics}")
+        print(f"Will get {cfg.img_metrics.get_meta_examples} or maximum of member and nonmember lengths")
         """
     Path(save_path).write_text(txt, encoding="utf-8")
     return save_path

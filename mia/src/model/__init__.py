@@ -7,7 +7,8 @@ from minigpt.minigpt4.common.registry import registry
 from minigpt.minigpt4.common.config import Config
 from minigpt.minigpt4.conversation.interact import Interact, CONV_VISION_Vicuna0, CONV_VISION_LLama2, CONV_VISION_minigptv2
 from transformers import AutoModelForCausalLM, AutoProcessor
-
+from peft import PeftModel
+import torch
 
 def load_target_model(cfg):
     """
@@ -49,23 +50,38 @@ def load_target_model(cfg):
     
     elif cfg.target_model.type == "hulu_med":
 
+        # Load the original full Hulu-Med base model.
         model = AutoModelForCausalLM.from_pretrained(
             cfg.target_model.model_path,
             trust_remote_code=True,
-            torch_dtype="bfloat16",
+            torch_dtype=torch.bfloat16,
             device_map="auto",
             attn_implementation="sdpa",
-            # attn_implementation="flash_attention_2",
         )
 
-        image_processor = AutoProcessor.from_pretrained(
+        # Optionally apply your fine-tuned LoRA adapter.
+        adapter_path = cfg.target_model.get("adapter_path", None)
+
+        if adapter_path is not None:
+            print(f"Loading Hulu-Med LoRA adapter from: {adapter_path}")
+
+            model = PeftModel.from_pretrained(
+                model,
+                adapter_path,
+                is_trainable=False,
+            )
+
+        model.eval()
+
+        # Keep the processor tied to the original base model.
+        hulu_processor = AutoProcessor.from_pretrained(
             cfg.target_model.model_path,
-            trust_remote_code=True
+            trust_remote_code=True,
         )
 
-        tokenizer = image_processor.tokenizer
-        
-        return model, tokenizer, image_processor
+        tokenizer = hulu_processor.tokenizer
+
+        return model, tokenizer, hulu_processor
 
 
     else:

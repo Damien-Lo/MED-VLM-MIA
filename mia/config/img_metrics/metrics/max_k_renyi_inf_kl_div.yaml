@@ -12,6 +12,7 @@ ratio:
   - 0.7
   - 0.8
   - 0.9
-augmentation_accumilator: ["avg","max","none"]             #average or max
-augmentation_setting_version_accumilator: ["avg","max","none"]      #average or max
-  
+augmentation_accumilator: ["none"]             #average or max
+augmentation_setting_version_accumilator: ["none"]      #average or max
+# augmentation_accumilator: ["avg","max","none"]             #average or max
+# augmentation_setting_version_accumilator: ["avg","max","none"]      #average or max

@@ -138,8 +138,6 @@ def generate_a_batch_med_hulu(model, img_processor, batch, num_gen_tokens, use_a
                 add_generation_prompt=True,
                 return_tensors="pt"
             )
-                        
-            
             
             inputs = {k: v.cuda() if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
             if "pixel_values" in inputs:
@@ -343,15 +341,21 @@ class BatchProcessor_hulu_med:
                 "content": []
                 }
             ]
-    
-            conversation[0]['content'].append(
-                {
-                    "type":"image",
-                    "image": {
-                        "image_path": self.dataset[_idx]["image"],
+            
+            if self.dataset[_idx]["image_paths"] is None:
+                print(f'None found in batch {self.current_batch}, index {_idx}  ')
+                print('self.dataset[_idx]["image_paths"]: ')
+                print(f'{self.dataset[_idx]["image_paths"]}')
+            
+            for image_path in self.dataset[_idx]["image_paths"]:
+                conversation[0]['content'].append(
+                    {
+                        "type":"image",
+                        "image": {
+                            "image_path": image_path,
+                        }
                     }
-                }
-            )
+                )
             
             conversation[0]['content'].append(
                 {

@@ -46,4 +46,13 @@ augmentations:
     std:
       - 1.0
 
+  GaussianNoiseRipple:
+    use: false
+    mean: 
+      - 0.0
+    std:
+      - 1.0
+    start_patch:
+      - 0
+
       

@@ -1,7 +1,7 @@
 type: hulu_med
 # model_path: /local/scratch/clo37/models/Hulu-Med-32B
 model_path: ZJU-AI4H/Hulu-Med-32B
-
+adapter_path: null
 
 
 # for hulu_med: 

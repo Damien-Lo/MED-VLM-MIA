@@ -9,7 +9,7 @@ import numpy as np
 from collections import defaultdict
 import torch
 
-def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indices, cfg,
+def inference(model, dataset, meta_sampled_indices, cfg,
               tokenizer=None, vis_processor=None, gpu_id=None, chat_state=None):
     """
     For each batch
@@ -56,15 +56,11 @@ def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indice
         sampled_raw_meta[_part] = dict()
         
         
-    proc_meta_sample_map = defaultdict(list)
-    for idx in proc_meta_sampled_indices:
-        proc_meta_sample_map[int(idx/cfg.inference.batch_size)].append(idx % cfg.inference.batch_size)
-    print(f"Proc Meta Sample Map: {proc_meta_sample_map}")
-    
-    raw_meta_sample_map = defaultdict(list)
-    for idx in raw_meta_sampled_indices:
-        raw_meta_sample_map[int(idx/cfg.inference.batch_size)].append(idx % cfg.inference.batch_size)
-    print(f"Raw Meta Sample Map: {raw_meta_sample_map}")
+    meta_sample_map = defaultdict(list)
+    for idx in meta_sampled_indices:
+        meta_sample_map[int(idx/cfg.inference.batch_size)].append(idx % cfg.inference.batch_size)
+    print(f"Meta Sample Map: {meta_sample_map}")
+
         
     
     for b_idx, batch in enumerate(tqdm(batch_processor,
@@ -88,6 +84,7 @@ def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indice
             target_parts, total_token_labels = mod_infer_batch_hulu(
                 model, batch, tokenizer, vis_processor, parts, cfg.inference.use_augmentation)
 
+
         else:
             raise ValueError(f"Unknown model type {cfg.target_model.type}")
         
@@ -99,47 +96,106 @@ def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indice
                                                      part=_part,
                                                     cfg=cfg)
             
-            # print(_meta_metrics["renyi_05_probs"]['GaussianNoise'][0]) 
-            # print('exiting')
-            # sys.exit()             
-            
-            # Extract the raw meta metrics (losses, renyi_05_probs....)
-            if b_idx in raw_meta_sample_map:
+            if b_idx in meta_sample_map:
                 for metric_name, aug_dict in _meta_metrics.items():
                     if metric_name not in cfg.img_metrics.get_raw_meta_metrics:
                         continue
+
                     if metric_name not in sampled_raw_meta[_part]:
                         sampled_raw_meta[_part][metric_name] = dict()
+
                     for aug_name, value_array in aug_dict.items():
                         if aug_name not in sampled_raw_meta[_part][metric_name]:
-                            sampled_raw_meta[_part][metric_name][aug_name] = [[] for _ in range(len(value_array))]
-        
-        
-                        for setting_idx, setting in enumerate(value_array):
-                            for sample_idx, sample in enumerate(setting):
-                                if sample_idx in raw_meta_sample_map[b_idx]:                                    
-                                    sampled_raw_meta[_part][metric_name][aug_name][setting_idx].append(sample)
+                            sampled_raw_meta[_part][metric_name][aug_name] = list()
+
+                        for sample_idx in meta_sample_map[b_idx]:
+                            per_sample_all_settings = []
+                            for setting_idx, setting in enumerate(value_array):
+                                per_sample_all_settings.append(np.array(setting[sample_idx]).tolist())
+                            sampled_raw_meta[_part][metric_name][aug_name].append(per_sample_all_settings)
                         
 
                 
             
             # Get Processed Meta Values        
-            _pred, _proc_meta = get_img_metric_by_parts(_meta_metrics, cfg)
+            _pred, _proc_meta = get_img_metric_by_parts(_meta_metrics, cfg)         
             
-            for metric_name, metric_values in _pred.items():
-                if metric_name not in global_pred[_part]:
-                    # Initialize the dictionary
-                    if isinstance(metric_values, list):
-                        global_pred[_part][metric_name] = list()
-                    elif isinstance(metric_values, dict):
-                        global_pred[_part][metric_name] = dict()
-                        for metric_key in metric_values.keys():
-                            global_pred[_part][metric_name][metric_key] = list()
-                if isinstance(metric_values, list):
-                    global_pred[_part][metric_name].extend(metric_values)
-                elif isinstance(metric_values, dict):
-                    for _key, _value in metric_values.items():
-                        global_pred[_part][metric_name][_key].extend(_value)
+            #============================
+            # Storing _pred scores
+            #============================
+            # If first iteration and global_pred is empty, just add batch's metrics
+            if len(global_pred[_part]) == 0:
+                global_pred[_part] = _pred
+            else:
+                for metric_category, metrics in _pred.items():
+                    for metric_name, metric_values in metrics.items():
+                        if metric_category in set(['kld_metrics', 'renyi_div_metrics']):
+                            for aug, aug_settings in metric_values.items():
+                                for aug_setting, scores in aug_settings.items():
+                                    global_pred[_part][metric_category][metric_name][aug][aug_setting].extend(scores)
+                        elif metric_category in set(['baseline_metrics']):
+                            if metric_name in set(['aug_kl']):
+                                global_pred[_part][metric_category][metric_name].extend(metric_values)
+                            elif metric_name in set(['min_k', 'min_k_renyi_05_entro', 'min_k_renyi_1_entro','mink', 'max_k_renyi_1_entro', 'max_k_renyi_05_entro']):
+                                for setting, scores in metric_values.items():
+                                    global_pred[_part][metric_category][metric_name][setting].extend(scores)
+                            else:
+                                raise ValueError(f"Unknown baseline metric {metric_name}")
+                        else:
+                            raise ValueError(f"Unknown metric category {metric_category}")               
+                
+            #===================================
+            # Storing processed meta values
+            #===================================
+            # Final Structure of Meta Values:
+            '''
+            {
+                part: {
+                    metric_category: {
+                        metric_name: {
+                            aug_name:{
+                                aug_setting_params: [sample][kl_values]  # 3D array
+                            }
+                        }
+                    }
+                }
+            }
+            '''
+            if b_idx in meta_sample_map and cfg.img_metrics.get_meta_examples >= 0:
+                for metric_category, metrics in _proc_meta.items():
+                    if metric_category not in sampled_proc_meta[_part]:
+                        sampled_proc_meta[_part][metric_category] = dict()
+                    for metric_name, meta_dict in metrics.items():
+                        if metric_name not in sampled_proc_meta[_part][metric_category]:
+                            sampled_proc_meta[_part][metric_category][metric_name] = dict()
+                        # if metric_category in set(['kld_metrics', 'renyi_div_metrics']):
+                        for aug, settings in meta_dict.items():
+                            if aug not in sampled_proc_meta[_part][metric_category][metric_name]:
+                                sampled_proc_meta[_part][metric_category][metric_name][aug] = dict()
+                            for setting_params, raw_values in settings.items():
+                                if setting_params not in sampled_proc_meta[_part][metric_category][metric_name][aug]:
+                                    sampled_proc_meta[_part][metric_category][metric_name][aug][setting_params] = list()
+                                for sample_idx, sample_klds in enumerate(raw_values):
+                                    if sample_idx in meta_sample_map[b_idx]:
+                                        if isinstance(sample_klds, np.ndarray): 
+                                            sample_klds = sample_klds.tolist()
+                                        sampled_proc_meta[_part][metric_category][metric_name][aug][setting_params].append(sample_klds)       
+            
+                
+            # for metric_name, metric_values in _pred.items():
+            #     if metric_name not in global_pred[_part]:
+            #         # Initialize the dictionary
+            #         if isinstance(metric_values, list):
+            #             global_pred[_part][metric_name] = list()
+            #         elif isinstance(metric_values, dict):
+            #             global_pred[_part][metric_name] = dict()
+            #             for metric_key in metric_values.keys():
+            #                 global_pred[_part][metric_name][metric_key] = list()
+            #     if isinstance(metric_values, list):
+            #         global_pred[_part][metric_name].extend(metric_values)
+            #     elif isinstance(metric_values, dict):
+            #         for _key, _value in metric_values.items():
+            #             global_pred[_part][metric_name][_key].extend(_value)
                         
                     
             # Final Structure of Meta Values:
@@ -153,15 +209,15 @@ def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indice
                 }
             }
             '''
-            if b_idx in proc_meta_sample_map and cfg.img_metrics.get_proc_meta_examples >= 0:
-                for metric_name, meta_dict in _proc_meta.items():
-                    if metric_name not in sampled_proc_meta[_part]:
-                            sampled_proc_meta[_part][metric_name] = defaultdict(list)
+            # if b_idx in proc_meta_sample_map and cfg.img_metrics.get_meta_examples >= 0:
+            #     for metric_name, meta_dict in _proc_meta.items():
+            #         if metric_name not in sampled_proc_meta[_part]:
+            #                 sampled_proc_meta[_part][metric_name] = defaultdict(list)
                     
-                    for aug, meta in meta_dict.items():
-                        for sample_idx, kld_for_all_settings in enumerate(meta):
-                            if sample_idx in proc_meta_sample_map[b_idx]:
-                                sampled_proc_meta[_part][metric_name][aug].append(kld_for_all_settings)
+            #         for aug, meta in meta_dict.items():
+            #             for sample_idx, kld_for_all_settings in enumerate(meta):
+            #                 if sample_idx in proc_meta_sample_map[b_idx]:
+            #                     sampled_proc_meta[_part][metric_name][aug].append(kld_for_all_settings)
                     
                     
                             
@@ -171,15 +227,15 @@ def inference(model, dataset, raw_meta_sampled_indices, proc_meta_sampled_indice
     # if cfg.img_metrics.get_token_labels > 0 or cfg.img_metrics.get_proc_meta_values > 0:
     #     global_token_labels = [global_token_labels[i] for i in proc_meta_sampled_indices]
                 
-    if cfg.img_metrics.get_token_labels <= 0 or cfg.img_metrics.get_proc_meta_examples <= 0:
+    if cfg.img_metrics.get_token_labels <= 0 or cfg.img_metrics.get_meta_examples <= 0:
         global_token_labels = []
         sampled_proc_meta = {}
         
         
-    for part, metric_dict in sampled_proc_meta.items():
-        for metric_name, metric_values in metric_dict.items():
-            for aug, value_array in metric_values.items():
-                if isinstance(value_array, np.ndarray):
-                    sampled_proc_meta[part][metric_name][aug] = value_array.tolist()
+    # for part, metric_dict in sampled_proc_meta.items():
+    #     for metric_name, metric_values in metric_dict.items():
+    #         for aug, value_array in metric_values.items():
+    #             if isinstance(value_array, np.ndarray):
+    #                 sampled_proc_meta[part][metric_name][aug] = value_array.tolist()
         
     return global_pred, sampled_raw_meta, sampled_proc_meta, global_token_labels 
