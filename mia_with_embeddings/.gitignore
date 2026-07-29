@@ -1,0 +1,52 @@
+# Project specific
+results/
+LatestResults/
+.cache/
+logs/
+*.log
+*.err
+*.out
+/__pycache__/
+
+# Model checkpoints and weights
+*.pths
+*.pt
+*.ckpt
+*.bin
+*.safetensors
+checkpoints/
+weights/
+models/
+
+# Data files
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npy
+*.npz
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Hydra outputs
+outputs/
+.hydra/
+
+# Wandb
+wandb/
+
+# SLURM job files
+slurm-*.out
+*.slurm
+
+# Generated data
+generated_data/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class

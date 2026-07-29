@@ -1,0 +1,27 @@
+type: minigpt
+model:
+  arch: minigpt4
+  model_type: pretrain_llama2
+  freeze_vit: true
+  freeze_qformer: true
+  max_txt_len: 160
+  end_sym: "</s>"
+  low_resource: False
+  prompt_path: ""
+  # prompt_template: '[INST] {} [/INST] '
+  ckpt: ''
+
+gpu_id: 0
+
+datasets:
+  cc_sbu_align:
+    vis_processor:
+      train:
+        name: "blip2_image_eval"
+        image_size: 224
+    text_processor:
+      train:
+        name: "blip_caption"
+
+run:
+  task: image_text_pretrain

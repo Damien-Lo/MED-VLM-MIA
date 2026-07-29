@@ -1,10 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=finetuned_7B_mia_run
-#SBATCH --output=out_finetuned_7B_mia_run.log
+#SBATCH --job-name=vision_embeddings_mia_run_7B
+#SBATCH --output=out_finetuned_7B_mia_run_embeddings_get_vision.log
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=200G
+#SBATCH --partition=h200week
 
 # Valid entries for img_metrics.metrics_to_use (src/metrics/img_metrics.py):
 #   Baseline:        aug_kl, mink, mod_renyi_1_entro, mod_renyi_05_entro, mod_renyi_2_entro,
@@ -13,6 +14,14 @@
 #   Cross entropy:   cross_entropy_mink, cross_entropy_diff_mink
 #   KL divergence:   max_k_no_norn_kl_div, max_k_renyi_05_kl_div, max_k_renyi_1_kl_div,
 #                    max_k_renyi_2_kl_div, max_k_renyi_inf_kl_div
+#   Entropy-gated KL divergence: same per-token KL divergences as above, but instead
+#                    of averaging the top-k highest-divergence tokens, averages the
+#                    divergence at the k tokens with the LOWEST entropy on the original
+#                    (unperturbed) input -- i.e. the model's most confident, "deep member
+#                    well" tokens (src/metrics/proposed_metrics.py:entropy_gated_kl_div_mink):
+#                    entropy_gated_no_norn_kl_div, entropy_gated_renyi_05_kl_div,
+#                    entropy_gated_renyi_1_kl_div, entropy_gated_renyi_2_kl_div,
+#                    entropy_gated_renyi_inf_kl_div
 #   Renyi divergence: max_k_renyi_divergence_025, max_k_renyi_divergence_05,
 #                    max_k_renyi_divergence_2, max_k_renyi_divergence_4
 #   Ripple KL div:   max_k_no_norn_kl_div_ripple, max_k_renyi_05_kl_div_ripple,
@@ -21,12 +30,42 @@
 #   Ripple Renyi div: max_k_renyi_divergence_025_ripple, max_k_renyi_divergence_05_ripple,
 #                    max_k_renyi_divergence_2_ripple, max_k_renyi_divergence_4_ripple
 #
+# This is the embeddings variant of the model (src/metrics/vision_embedding_metrics.py),
+# so metrics_to_use also accepts these "vision_"-prefixed entries, computed on the raw
+# vision-encoder patch embeddings instead of LLM token probabilities. Each one is emitted
+# in two variants automatically ("vision" alone, and "vision_img_concat" concatenated with
+# the "img" part's scores -- the latter only if "img" is in img_metrics.parts):
+#   Vision KL divergence:   vision_max_k_no_norn_kl_div, vision_max_k_renyi_05_kl_div,
+#                    vision_max_k_renyi_1_kl_div, vision_max_k_renyi_2_kl_div,
+#                    vision_max_k_renyi_inf_kl_div
+#   Vision Renyi divergence: vision_max_k_renyi_divergence_025, vision_max_k_renyi_divergence_05,
+#                    vision_max_k_renyi_divergence_2, vision_max_k_renyi_divergence_4
+#   Vision ripple KL div:   vision_max_k_no_norn_kl_div_ripple, vision_max_k_renyi_05_kl_div_ripple,
+#                    vision_max_k_renyi_1_kl_div_ripple, vision_max_k_renyi_2_kl_div_ripple,
+#                    vision_max_k_renyi_inf_kl_div_ripple
+#   Vision ripple Renyi div: vision_max_k_renyi_divergence_025_ripple, vision_max_k_renyi_divergence_05_ripple,
+#                    vision_max_k_renyi_divergence_2_ripple, vision_max_k_renyi_divergence_4_ripple
+#   Vision baseline: vision_max_prob_gap, vision_max_k_renyi_1_entro, vision_max_k_renyi_2_entro,
+#                    vision_max_k_renyi_05_entro, vision_min_k_renyi_1_entro,
+#                    vision_min_k_renyi_2_entro, vision_min_k_renyi_05_entro
+#
 # Valid entries for img_metrics.get_proc_meta_metrics (gates in src/metrics/meta_metrics.py;
 # each only takes effect if the matching metric above is also in metrics_to_use):
 #   max_k_no_norn_kl_div_tkn_vals, max_k_no_norn_kl_div_tkn_vals_ripple,
 #   max_k_renyi_05_kl_div_tkn_vals, max_k_renyi_05_kl_div_tkn_vals_ripple,
 #   max_k_renyi_2_kl_div_tkn_vals, max_k_renyi_2_kl_div_tkn_vals_ripple,
 #   max_k_renyi_inf_kl_div_tkn_vals, max_k_renyi_inf_kl_div_tkn_vals_ripple
+#   entropy_gated_no_norn_kl_div_tkn_vals, entropy_gated_renyi_05_kl_div_tkn_vals,
+#   entropy_gated_renyi_1_kl_div_tkn_vals, entropy_gated_renyi_2_kl_div_tkn_vals,
+#   entropy_gated_renyi_inf_kl_div_tkn_vals
+# The entropy_gated_* metrics above also always write a *_tkn_order companion array to
+# proc_meta.json (entropy_gated_no_norn_kl_div_tkn_order, etc.) -- for each sample, the
+# full list of token indices in ascending original-entropy order, so any ratio's min-k
+# selection is just a prefix slice of that list (no separate config flag needed for it).
+# NOTE: there is no vision_ counterpart for get_proc_meta_metrics -- src/inference/loop.py:144
+# calls get_vision_embedding_metrics() and discards its per-token meta return entirely
+# (`batch_vision_pred, _ = ...`), so vision_*_tkn_vals are never written to proc_meta.json
+# regardless of what's listed here.
 
 
 # Load environment
@@ -70,6 +109,8 @@ export PYTHONPATH=$PYTHONPATH:/local/scratch/clo37/vlm_large_mia/
 
 epochs=(9 7 5 3 1)
 
+epochs=(9 5 1)
+
 
 export PYTHONPATH=$PYTHONPATH:${python_path}
 
@@ -79,35 +120,35 @@ for epoch in "${epochs[@]}"; do
 
     for ((run=0; run<1; run++)); do
       # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} \n\n=================== \n\n"
-      out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_get_raw_metrics/epoch_${epoch}/run_${run}
-      target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_get_raw_metrics/epoch_${epoch}/run_${run}/datasets/target_dataset.parquet
-      for ((set=0; set<${#STD_SETS[@]}; set++)); do
+      out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings/epoch_${epoch}/run_${run}
+      target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings/epoch_${epoch}/run_${run}/datasets/target_dataset.parquet
+      for ((set=start_set; set<${#STD_SETS[@]}; set++)); do
         # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} RUN ${run} STD $set: ${STD_SETS[$set]} \n\n=================== \n\n"
-        python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
+        python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
             job_meta_params.test_run=false \
-            job_meta_params.description="Getting the raw meta metrics for 7B on refinetuned hulumed with TCIA mamograms trained on 150 members with ${epoch} epochs" \
+            job_meta_params.description="MIA using vision embeddings for further analysis for 7B on refinetuned hulumed with TCIA mamograms trained on 150 members with ${epoch} epochs" \
             job_meta_params.job_type=evaluation \
             \
             path.output_dir=${out_dir}/gn_set${set} \
             \
             target_model="med_hulu" \
-            target_model.model_path='/local/scratch/clo37/models/Hulu-Med-7B' \
+            target_model.model_path='/local/scratch/clo37/models/Hulu-Med-7B-embeddings' \
             target_model.adapter_path="/local/scratch/clo37/models/Hulu-Med-7B-embeddings/finetuning/various_epochs_150_samples_training/epoch_${epoch}" \
             \
             data.save_datasets=false \
             data.target_set_size=300 \
             data.n_nm_ratio=0.5 \
             data.dataset=${target_dataset} \
-            data.pre_gen_descriptions=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_get_raw_metrics/epoch_${epoch}/run_${run}/baselines/datasets/generated_descriptions.json \
+            data.pre_gen_descriptions=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings/epoch_${epoch}/run_${run}/baselines/datasets/generated_descriptions.json \
             data.reference_datasets_list="" \
             data.reference_set_sample_distribution="[]" \
             \
             img_metrics.parts=["img"] \
-            img_metrics.metrics_to_use=[] \
-            img_metrics.get_raw_meta_metrics=['losses','probabilities','renyi_05_probs','renyi_inf_probs'] \
+            img_metrics.metrics_to_use=['max_k_no_norn_kl_div','max_k_renyi_inf_kl_div','max_k_renyi_divergence_4','vision_max_k_no_norn_kl_div','vision_max_k_renyi_divergence_05','vision_max_k_renyi_inf_kl_div','vision_max_k_renyi_divergence_4'] \
+            img_metrics.get_raw_meta_metrics=['probabilities'] \
             img_metrics.get_proc_meta_metrics=[] \
             \
-            img_metrics.get_meta_examples=1000 \
+            img_metrics.get_meta_examples=4 \
             img_metrics.get_token_labels=1000 \
             img_metrics.get_raw_images=0 \
             \
