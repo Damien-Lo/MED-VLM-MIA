@@ -213,11 +213,11 @@ def renyi_kl_div_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['max'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(list(all_settings_in_aug.values())), axis=0))
         if 'avg' in setting_version_accumilator:
             if 'avg' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['avg'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(list(all_settings_in_aug.values())), axis=0))
         aug_aggregated_per_sample_tokenwise_kl.append(setting_aggregated_per_sample_tokenwise_kl)
         
              
@@ -344,11 +344,11 @@ def renyi_divergence_maxk(probs, metric_cfg, cfg, eps=1e-12):
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['max'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(list(all_settings_in_aug.values())), axis=0))
         if 'avg' in setting_version_accumilator:
             if 'avg' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['avg'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(list(all_settings_in_aug.values())), axis=0))
         aug_aggregated_per_sample_tokenwise_kl.append(setting_aggregated_per_sample_tokenwise_kl)
         
              
@@ -487,11 +487,11 @@ def renyi_kl_div_ripple_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['max'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(list(all_settings_in_aug.values())), axis=0))
         if 'avg' in setting_version_accumilator:
             if 'avg' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['avg'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(list(all_settings_in_aug.values())), axis=0))
         aug_aggregated_per_sample_tokenwise_kl.append(setting_aggregated_per_sample_tokenwise_kl)
         
              
@@ -621,11 +621,11 @@ def renyi_divergence_ripple_maxk(probs, metric_cfg, cfg, eps=1e-12):
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['max'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['max'].append(np.max(np.array(list(all_settings_in_aug.values())), axis=0))
         if 'avg' in setting_version_accumilator:
             if 'avg' not in setting_aggregated_per_sample_tokenwise_kl:
                 setting_aggregated_per_sample_tokenwise_kl['avg'] = list()
-            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(all_settings_in_aug), axis=0))
+            setting_aggregated_per_sample_tokenwise_kl['avg'].append(np.mean(np.array(list(all_settings_in_aug.values())), axis=0))
         aug_aggregated_per_sample_tokenwise_kl.append(setting_aggregated_per_sample_tokenwise_kl)
         
              

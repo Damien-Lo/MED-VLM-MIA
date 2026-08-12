@@ -1,11 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=finetuned_baselines_7B
-#SBATCH --output=out_finetuned_baselines_7B.log
+#SBATCH --job-name=finetuned_baselines_14B
+#SBATCH --output=out_finetuned_baselines_14B.log
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=200G
-#SBATCH --partition=h200day
 
 
 # Load environment
@@ -61,28 +60,23 @@ modalities=(
   )
 
 
-epochs=(1 3 5 7 9)
-
-epochs=(5 1)
 
 export PYTHONPATH=$PYTHONPATH:${python_path}
 
-# for epoch in "${epochs[@]}"; do
-#   echo "Processing epoch: $epoch"
 
 for ((run=0; run<1; run++)); do
 # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} RUN: ${run} \n\n=================== \n\n"
-out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings_failed_BBC/run_${run}/baselines
-target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings_failed_BBC/run_${run}/datasets/target_dataset.parquet
-python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
+out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/endoscopy/run_0/baselines
+target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/endoscopy/run_0/datasets/target_dataset.parquet
+python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     job_meta_params.test_run=false \
-    job_meta_params.description="Baselines to see if adding vision embeddings improve performance" \
+    job_meta_params.description="Baselines for PubMedVision members and endoscopy non-members that pass the hard BBC filter" \
     job_meta_params.job_type=evaluation \
     \
     path.output_dir=${out_dir} \
     \
     target_model="med_hulu" \
-    target_model.model_path='/local/scratch/clo37/models/Hulu-Med-7B-embeddings' \
+    target_model.model_path='/local/scratch/clo37/models/Hulu-Med-14B' \
     \
     data.save_datasets=true \
     data.target_set_size=300 \
@@ -91,7 +85,7 @@ python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
     data.pre_gen_descriptions="" \
     \
     img_metrics.parts=["img"] \
-    img_metrics.metrics_to_use=['aug_kl','max_k_renyi_1_entro','max_k_renyi_05_entro','mink','vision_max_k_renyi_1_entro','vision_max_k_renyi_05_entro'] \
+    img_metrics.metrics_to_use=['aug_kl','max_k_renyi_1_entro','max_k_renyi_05_entro','mink'] \
     img_metrics.get_raw_meta_metrics=[] \
     img_metrics.get_proc_meta_metrics=[] \
     \
@@ -105,4 +99,3 @@ python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
     data.augmentations.RandomAffine.use=true \
     data.augmentations.ColorJitter.use=true
 done
-# done

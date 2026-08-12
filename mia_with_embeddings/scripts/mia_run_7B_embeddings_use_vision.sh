@@ -1,11 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=entropy_gated_test
-#SBATCH --output=out_entropy_gated_test.log
+#SBATCH --job-name=vision_embeddings_mia_run_7B
+#SBATCH --output=out_finetuned_7B_mia_run_embeddings_get_vision.log
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=200G
 #SBATCH --partition=h200week
+
+
+# TODO: NOTE: Currently, with no fixed seed for each std run, if sampling (meta or proc) is not 1000, then ALL runs will have different samples, so the results are not directly comparable. If you want to compare across runs, you should set a fixed seed for each run (e.g. 0, 1, 2, etc.) and use that same seed for all runs. This is especially important if you are using get_proc_meta_metrics, since the token-level metrics will be computed on different tokens for each run if the samples are different.
 
 # Valid entries for img_metrics.metrics_to_use (src/metrics/img_metrics.py):
 #   Baseline:        aug_kl, mink, mod_renyi_1_entro, mod_renyi_05_entro, mod_renyi_2_entro,
@@ -14,6 +17,14 @@
 #   Cross entropy:   cross_entropy_mink, cross_entropy_diff_mink
 #   KL divergence:   max_k_no_norn_kl_div, max_k_renyi_05_kl_div, max_k_renyi_1_kl_div,
 #                    max_k_renyi_2_kl_div, max_k_renyi_inf_kl_div
+#   Entropy-gated KL divergence: same per-token KL divergences as above, but instead
+#                    of averaging the top-k highest-divergence tokens, averages the
+#                    divergence at the k tokens with the LOWEST entropy on the original
+#                    (unperturbed) input -- i.e. the model's most confident, "deep member
+#                    well" tokens (src/metrics/proposed_metrics.py:entropy_gated_kl_div_mink):
+#                    entropy_gated_no_norn_kl_div, entropy_gated_renyi_05_kl_div,
+#                    entropy_gated_renyi_1_kl_div, entropy_gated_renyi_2_kl_div,
+#                    entropy_gated_renyi_inf_kl_div
 #   Renyi divergence: max_k_renyi_divergence_025, max_k_renyi_divergence_05,
 #                    max_k_renyi_divergence_2, max_k_renyi_divergence_4
 #   Ripple KL div:   max_k_no_norn_kl_div_ripple, max_k_renyi_05_kl_div_ripple,
@@ -47,6 +58,13 @@
 #   max_k_renyi_05_kl_div_tkn_vals, max_k_renyi_05_kl_div_tkn_vals_ripple,
 #   max_k_renyi_2_kl_div_tkn_vals, max_k_renyi_2_kl_div_tkn_vals_ripple,
 #   max_k_renyi_inf_kl_div_tkn_vals, max_k_renyi_inf_kl_div_tkn_vals_ripple
+#   entropy_gated_no_norn_kl_div_tkn_vals, entropy_gated_renyi_05_kl_div_tkn_vals,
+#   entropy_gated_renyi_1_kl_div_tkn_vals, entropy_gated_renyi_2_kl_div_tkn_vals,
+#   entropy_gated_renyi_inf_kl_div_tkn_vals
+# The entropy_gated_* metrics above also always write a *_tkn_order companion array to
+# proc_meta.json (entropy_gated_no_norn_kl_div_tkn_order, etc.) -- for each sample, the
+# full list of token indices in ascending original-entropy order, so any ratio's min-k
+# selection is just a prefix slice of that list (no separate config flag needed for it).
 # NOTE: there is no vision_ counterpart for get_proc_meta_metrics -- src/inference/loop.py:144
 # calls get_vision_embedding_metrics() and discards its per-token meta return entirely
 # (`batch_vision_pred, _ = ...`), so vision_*_tkn_vals are never written to proc_meta.json
@@ -99,58 +117,57 @@ epochs=(9 5 1)
 
 export PYTHONPATH=$PYTHONPATH:${python_path}
 
-for epoch in "${epochs[@]}"; do
+# for epoch in "${epochs[@]}"; do
 
-    echo "Processing epoch: $epoch"
+#     echo "Processing epoch: $epoch"
 
-    for ((run=0; run<1; run++)); do
-      # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} \n\n=================== \n\n"
-      out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_entropy_gated_test/epoch_${epoch}/run_${run}
-      target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_entropy_gated_test/epoch_${epoch}/run_${run}/datasets/target_dataset.parquet
-      for ((set=0; set<${#STD_SETS[@]}; set++)); do
-        # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} RUN ${run} STD $set: ${STD_SETS[$set]} \n\n=================== \n\n"
-        python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
-            job_meta_params.test_run=false \
-            job_meta_params.description="Test entropy-gated KLD metrics for 7B on refinetuned hulumed with TCIA mamograms trained on 150 members with ${epoch} epochs" \
-            job_meta_params.job_type=evaluation \
-            \
-            path.output_dir=${out_dir}/gn_set${set} \
-            \
-            target_model="med_hulu" \
-            target_model.model_path='/local/scratch/clo37/models/Hulu-Med-7B-embeddings' \
-            target_model.adapter_path="/local/scratch/clo37/models/Hulu-Med-7B-embeddings/finetuning/various_epochs_150_samples_training/epoch_${epoch}" \
-            \
-            data.save_datasets=false \
-            data.target_set_size=300 \
-            data.n_nm_ratio=0.5 \
-            data.dataset=${target_dataset} \
-            data.pre_gen_descriptions=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_21_entropy_gated_test/epoch_${epoch}/run_${run}/baselines/datasets/generated_descriptions.json \
-            data.reference_datasets_list="" \
-            data.reference_set_sample_distribution="[]" \
-            \
-            img_metrics.parts=["img"] \
-            img_metrics.metrics_to_use=["entropy_gated_no_norn_kl_div","entropy_gated_renyi_05_kl_div","entropy_gated_renyi_1_kl_div","entropy_gated_renyi_2_kl_div","entropy_gated_renyi_inf_kl_div"] \
-            img_metrics.get_raw_meta_metrics=[] \
-            img_metrics.get_proc_meta_metrics=['entropy_gated_no_norn_kl_div_tkn_vals','entropy_gated_renyi_05_kl_div_tkn_vals','entropy_gated_renyi_1_kl_div_tkn_vals','entropy_gated_renyi_2_kl_div_tkn_vals','entropy_gated_renyi_inf_kl_div_tkn_vals'] \
-            \
-            img_metrics.get_meta_examples=1000 \
-            img_metrics.get_token_labels=1000 \
-            img_metrics.get_raw_images=0 \
-            \
-            data.augmentations.RandomResize.use=false \
-            data.augmentations.RandomResize.size='[[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256]]' \
-            data.augmentations.RandomResize.scale='[[0.2,0.2],[0.4,0.4],[0.6,0.6],[0.8,0.8],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0]]' \
-            data.augmentations.RandomResize.ratio='[[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[0.5,0.5],[0.75,0.75],[1.0,1.0],[1.25,1.25],[1.5,1.5]]' \
-            data.augmentations.RandomRotation.use=false \
-            data.augmentations.RandomRotation.degrees='[0.1,0.2,0.3,0.4,0.5,5,30,45,60,90]' \
-            data.augmentations.GaussianNoise.use=true \
-            data.augmentations.GaussianNoise.mean='[0.0]' \
-            data.augmentations.GaussianNoise.std=${STD_SETS[$set]} \
-            data.augmentations.RandomAffine.use=false \
-            data.augmentations.ColorJitter.use=false
-      done
+  for ((run=0; run<1; run++)); do
+    # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} \n\n=================== \n\n"
+    out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings_failed_BBC/run_${run}/
+    target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings_failed_BBC/run_${run}/datasets/target_dataset.parquet
+    for ((set=0; set<${#STD_SETS[@]}; set++)); do
+      # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} RUN ${run} STD $set: ${STD_SETS[$set]} \n\n=================== \n\n"
+      python /home/clo37/priv/MED-VLM-MIA/mia_with_embeddings/mia.py \
+          job_meta_params.test_run=false \
+          job_meta_params.description="MIA using vision embeddings for further analysis for roco images that failed BBC to see if there is any improvement" \
+          job_meta_params.job_type=evaluation \
+          \
+          path.output_dir=${out_dir}/gn_set${set} \
+          \
+          target_model="med_hulu" \
+          target_model.model_path='/local/scratch/clo37/models/Hulu-Med-7B-embeddings' \
+          \
+          data.save_datasets=false \
+          data.target_set_size=300 \
+          data.n_nm_ratio=0.5 \
+          data.dataset=${target_dataset} \
+          data.pre_gen_descriptions=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_07_20_testing_vision_embeddings_failed_BBC/run_${run}/baselines/datasets/generated_descriptions.json \
+          data.reference_datasets_list="" \
+          data.reference_set_sample_distribution="[]" \
+          \
+          img_metrics.parts=["img"] \
+          img_metrics.metrics_to_use=['max_k_no_norn_kl_div','max_k_renyi_inf_kl_div','max_k_renyi_divergence_4','vision_max_k_no_norn_kl_div','vision_max_k_renyi_divergence_05','vision_max_k_renyi_inf_kl_div','vision_max_k_renyi_divergence_4'] \
+          img_metrics.get_raw_meta_metrics=[] \
+          img_metrics.get_proc_meta_metrics=['max_k_no_norn_kl_div_tkn_vals','max_k_renyi_inf_kl_div_tkn_vals','max_k_renyi_divergence_4_tkn_vals'] \
+          \
+          img_metrics.get_meta_examples=1000 \
+          img_metrics.get_token_labels=1000 \
+          img_metrics.get_raw_images=0 \
+          \
+          data.augmentations.RandomResize.use=false \
+          data.augmentations.RandomResize.size='[[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256],[256,256]]' \
+          data.augmentations.RandomResize.scale='[[0.2,0.2],[0.4,0.4],[0.6,0.6],[0.8,0.8],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0]]' \
+          data.augmentations.RandomResize.ratio='[[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[1.0,1.0],[0.5,0.5],[0.75,0.75],[1.0,1.0],[1.25,1.25],[1.5,1.5]]' \
+          data.augmentations.RandomRotation.use=false \
+          data.augmentations.RandomRotation.degrees='[0.1,0.2,0.3,0.4,0.5,5,30,45,60,90]' \
+          data.augmentations.GaussianNoise.use=true \
+          data.augmentations.GaussianNoise.mean='[0.0]' \
+          data.augmentations.GaussianNoise.std=${STD_SETS[$set]} \
+          data.augmentations.RandomAffine.use=false \
+          data.augmentations.ColorJitter.use=false
     done
-done
+  done
+# done
 
 
 
