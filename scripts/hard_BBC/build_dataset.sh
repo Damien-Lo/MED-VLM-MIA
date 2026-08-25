@@ -20,10 +20,10 @@ nonmember_dataset="/local/scratch/clo37/datasets/Binary_Classifer_Filtered_Sets/
 reference_dataset="/local/scratch/clo37/datasets/Binary_Classifer_Filtered_Sets/mri_sets/non_members_roco_prompt_gen_radiology_roco_distribution_lim1_1655_exs_hard.json"
 python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     job_meta_params.test_run=false \
-    job_meta_params.description="Building dataset for PubMedVision members and mri non-members after BBC filtered" \
+    job_meta_params.description="Building dataset for PubMedVision members and MRI non-members after BBC filtered" \
     job_meta_params.job_type='build_dataset' \
     \
-    path.output_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/mri/run_0 \
+    path.output_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/mri/run_2 \
     \
     target_model="med_hulu" \
     target_model.model_path='ZJU-AI4H/Hulu-Med-32B' \

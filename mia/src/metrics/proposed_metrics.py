@@ -198,8 +198,8 @@ def renyi_kl_div_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
                     # just keep it generalisabole to python lists
                     for sample in setting_values:
                         k_length = max(1, int(_ratio * len(sample)))
-                        # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                        sample_scores.append((-1 * np.mean(np.sort(sample)[-k_length:])).item()) 
+                        # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                        sample_scores.append((np.mean(np.sort(sample)[-k_length:])).item()) 
                         
                     result[aug][str(key)] = sample_scores
                     
@@ -260,8 +260,8 @@ def renyi_kl_div_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
             sample_scores = list()
             for sample in samples:
                 k_length = max(1, int(_ratio * len(sample)))
-                # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                sample_scores.append(float(-1 * np.mean(np.sort(sample)[-k_length:]))) 
+                # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                sample_scores.append(float(np.mean(np.sort(sample)[-k_length:]))) 
             result['aggregated'][key] = sample_scores 
     return result, meta
 
@@ -331,8 +331,8 @@ def renyi_divergence_maxk(probs, metric_cfg, cfg, eps=1e-12):
                     # just keep it generalisabole to python lists
                     for sample in setting_values:
                         k_length = max(1, int(_ratio * len(sample)))
-                        # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                        sample_scores.append((-1 * np.mean(np.sort(sample)[-k_length:])).item()) 
+                        # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                        sample_scores.append((np.mean(np.sort(sample)[-k_length:])).item()) 
                         
                     result[aug][str(key)] = sample_scores
         
@@ -391,8 +391,8 @@ def renyi_divergence_maxk(probs, metric_cfg, cfg, eps=1e-12):
             sample_scores = list()
             for sample in samples:
                 k_length = max(1, int(_ratio * len(sample)))
-                # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                sample_scores.append(float(-1 * np.mean(np.sort(sample)[-k_length:]))) 
+                # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                sample_scores.append(float(np.mean(np.sort(sample)[-k_length:]))) 
             result['aggregated'][key] = sample_scores 
     return result, meta
 
@@ -473,7 +473,7 @@ def renyi_kl_div_ripple_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
                                 continue
 
                             k_length = max(1, int(_ratio * len(sliced)))
-                            sample_scores.append((-1 * np.mean(np.sort(sliced)[-k_length:])).item())
+                            sample_scores.append((np.mean(np.sort(sliced)[-k_length:])).item())
 
                         result[aug][str(key)] = sample_scores
                     
@@ -534,8 +534,8 @@ def renyi_kl_div_ripple_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
             sample_scores = list()
             for sample in samples:
                 k_length = max(1, int(_ratio * len(sample)))
-                # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                sample_scores.append(float(-1 * np.mean(np.sort(sample)[-k_length:]))) 
+                # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                sample_scores.append(float(np.mean(np.sort(sample)[-k_length:]))) 
             result['aggregated'][key] = sample_scores 
     return result, meta
 
@@ -609,7 +609,7 @@ def renyi_divergence_ripple_maxk(probs, metric_cfg, cfg, eps=1e-12):
                                 continue
 
                             k_length = max(1, int(_ratio * len(sliced)))
-                            sample_scores.append((-1 * np.mean(np.sort(sliced)[-k_length:])).item())
+                            sample_scores.append((np.mean(np.sort(sliced)[-k_length:])).item())
 
                         result[aug][str(key)] = sample_scores
         
@@ -668,8 +668,8 @@ def renyi_divergence_ripple_maxk(probs, metric_cfg, cfg, eps=1e-12):
             sample_scores = list()
             for sample in samples:
                 k_length = max(1, int(_ratio * len(sample)))
-                # From the results of the LOGAN paper REGION II, we found that members have lower kld at the low std region, therefore we flip the score
-                sample_scores.append(float(-1 * np.mean(np.sort(sample)[-k_length:]))) 
+                # Traditional divergence-MIA convention: higher top-k KLD/Renyi divergence -> higher score -> predicted member (no flip).
+                sample_scores.append(float(np.mean(np.sort(sample)[-k_length:]))) 
             result['aggregated'][key] = sample_scores 
     return result, meta
 

@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=endo_mia_32B_hard
-#SBATCH --output=out_endo_mia_32B_hard.log
+#SBATCH --job-name=endo_mia_32B_hard_makeup
+#SBATCH --output=out_endo_mia_32B_hard_makeup.log
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -104,11 +104,11 @@ python_path='/local/scratch/clo37/med_vlm_mia/'
 
 export PYTHONPATH=$PYTHONPATH:/local/scratch/clo37/vlm_large_mia/
 for mod in "${modalities[@]}"; do
-  for ((run=0; run<7; run++)); do
+  for ((run=0; run<1; run++)); do
     printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${mod} RUN: ${run} \n\n=================== \n\n"
-    out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/${mod}/run_${run}
-    target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/${mod}/run_${run}/datasets/target_dataset.parquet
-    for ((set=0; set<${#STD_SETS[@]}; set++)); do
+    out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/endoscopy/run_0
+    target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/endoscopy/run_0/datasets/target_dataset.parquet
+    for ((set=4; set<7; set++)); do
       printf "\n>>>===================\n\nRUNING FOR MODALILTY: STD $set: ${STD_SETS[$set]} \n\n=================== \n\n"
       python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
           job_meta_params.test_run=false \
@@ -124,7 +124,7 @@ for mod in "${modalities[@]}"; do
           data.target_set_size=300 \
           data.n_nm_ratio=0.5 \
           data.dataset=${target_dataset} \
-          data.pre_gen_descriptions="/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/${mod}/run_${run}/baselines/datasets/generated_descriptions.json" \
+          data.pre_gen_descriptions="/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/endoscopy/run_0/baselines/datasets/generated_descriptions.json" \
           \
           img_metrics.parts=["img"] \
           img_metrics.metrics_to_use='["max_k_no_norn_kl_div","max_k_renyi_05_kl_div","max_k_renyi_1_kl_div","max_k_renyi_2_kl_div","max_k_renyi_inf_kl_div","max_k_renyi_divergence_025","max_k_renyi_divergence_05","max_k_renyi_divergence_2","max_k_renyi_divergence_4"]' \

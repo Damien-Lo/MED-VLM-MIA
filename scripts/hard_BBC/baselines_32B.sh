@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=finetuned_baselines_32B
-#SBATCH --output=out_finetuned_baselines_32B.log
+#SBATCH --job-name=finetuned_baselines_32B_mri
+#SBATCH --output=out_finetuned_baselines_32B_mri.log
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -66,8 +66,8 @@ export PYTHONPATH=$PYTHONPATH:${python_path}
 
 for ((run=0; run<1; run++)); do
 # printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${modalities[$mod]} RUN: ${run} \n\n=================== \n\n"
-out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/mri/run_0/run_0/baselines
-target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_04_multimodality_hard_BBC_filter/mri/run_0/datasets/target_dataset.parquet
+out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/mri/run_2/baselines
+target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/mri/run_2/datasets/target_dataset.parquet
 python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     job_meta_params.test_run=false \
     job_meta_params.description="Baselines for PubMedVision members and mri non-members that pass the hard BBC filter" \
@@ -91,7 +91,7 @@ python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
     \
     img_metrics.get_meta_examples=1000 \
     img_metrics.get_token_labels=1000 \
-    img_metrics.get_raw_images=5 \
+    img_metrics.get_raw_images=0 \
     \
     data.augmentations.RandomResize.use=false \
     data.augmentations.RandomRotation.use=true \
