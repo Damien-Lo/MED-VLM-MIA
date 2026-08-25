@@ -16,7 +16,7 @@ logs/
 *.safetensors
 checkpoints/
 weights/
-models/
+/models/
 
 # Data files
 *.h5
@@ -37,7 +37,7 @@ outputs/
 .hydra/
 
 # Wandb
-wandb/
+/wandb/
 
 # SLURM job files
 slurm-*.out
