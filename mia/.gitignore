@@ -16,7 +16,7 @@ logs/
 *.safetensors
 checkpoints/
 weights/
-models/
+/models/
 
 # Data files
 *.h5
