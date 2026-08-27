@@ -108,7 +108,7 @@ for mod in "${modalities[@]}"; do
     printf "\n>>>===================\n\nRUNING FOR MODALILTY: ${mod} RUN: ${run} \n\n=================== \n\n"
     out_dir=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/endoscopy/run_2
     target_dataset=/local/scratch/clo37/MED-VLM-MIA-DATA/results/2026_08_12_medical_hard_BBC_score_flip_redo/endoscopy/run_2/datasets/target_dataset.parquet
-    for ((set=26; set<${#STD_SETS[@]}; set++)); do
+    for ((set=29; set<${#STD_SETS[@]}; set++)); do
       printf "\n>>>===================\n\nRUNING FOR MODALILTY: STD $set: ${STD_SETS[$set]} \n\n=================== \n\n"
       python /home/clo37/priv/MED-VLM-MIA/mia/mia.py \
           job_meta_params.test_run=false \
