@@ -29,16 +29,33 @@ import random
 
 @hydra.main(version_base=None, config_path="./config", config_name="run_img")
 def main(cfg):
-    
+
+    # Reproducibility seed -- set before ANYTHING else in this run that could touch randomness
+    # (dataset building's member/nonmember/reference sampling for job_type=build_dataset, or the
+    # Gaussian noise augmentation draw for hyperparam_tuning/evaluation/tune_and_eval), so it's
+    # guaranteed to cover whichever this particular `python mia.py` invocation actually does.
+    # cfg.job_meta_params.seed is null by default (generate a fresh one); pass an explicit value
+    # to reproduce a specific past run -- the value actually used is always saved to
+    # run_parameters.txt below, whether that was auto-generated or user-supplied.
+    if cfg.job_meta_params.seed is None:
+        cfg.job_meta_params.seed = random.randint(0, 2**31 - 1)
+    seed = cfg.job_meta_params.seed
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
     print('''
           \n \n
           ==================================================
-                            STARTING RUN 
+                            STARTING RUN
           ==================================================
           \n \n
           '''
           )
-    
+    print(f"Reproducibility seed for this run: {seed}\n")
+
     if cfg.job_meta_params.test_run:
         print('''
           \n \n
@@ -70,6 +87,13 @@ def main(cfg):
         
     
     
+    # Called before the build_dataset branch (which exits early) too, not just before the MIA
+    # run below -- run_parameters.txt (seed included) should exist for every `python mia.py`
+    # invocation, dataset-building ones included, not just hyperparam_tuning/evaluation/
+    # tune_and_eval. This used to only run for the latter, so a build_dataset run's own seed
+    # (independent from whatever MIA run later consumes its output) was never recorded at all.
+    save_run_meta(cfg)
+
     if cfg.job_meta_params.job_type == "build_dataset":
         print('''
           \n \n
@@ -82,9 +106,7 @@ def main(cfg):
         build_full_target_set(cfg)
         print('Target Dataset Built and saved')
         sys.exit()
-    
-    save_run_meta(cfg)
-        
+
     print('''
           \n \n
           ==================================================

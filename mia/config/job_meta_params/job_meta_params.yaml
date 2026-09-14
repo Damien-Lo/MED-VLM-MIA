@@ -1,3 +1,11 @@
 test_run: false
 description: ""
 job_type: ""
+# Reproducibility seed for this run's random processes (np.random / torch / python random --
+# covers the Gaussian noise augmentation draw and anything else using those global RNGs).
+# null (default) means "generate a fresh random seed for this run" -- the actual value used is
+# always recorded in run_parameters.txt, so any run can be exactly reproduced later by passing
+# that same value back in via job_meta_params.seed=<value>. A build_dataset run and the MIA run
+# that consumes its output are separate `python mia.py` invocations, so each gets its own
+# independently-generated seed by default unless you explicitly set one for each.
+seed: null
