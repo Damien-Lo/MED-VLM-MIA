@@ -1,4 +1,5 @@
 dataset: ""
+reference_dataset: ""
 pre_gen_descriptions: ""
 target_set_size: 300
 n_nm_ratio: 0.5

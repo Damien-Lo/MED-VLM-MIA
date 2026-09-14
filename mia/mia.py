@@ -11,7 +11,7 @@ import os
 import json
 import hydra
 import torch
-from src.eval import evaluate
+from src.eval import evaluate, compute_tuning_separation, slice_preds
 from src.inference import inference
 from src.data import get_mod_infer_data
 from src.data import get_generation_data
@@ -179,8 +179,19 @@ def main(cfg):
         print("Evaluation selected, loading singlar target dataset from file...")
         _dataset = Dataset.from_parquet(cfg.data.dataset)
         print('Evaluation dataset sucessfully loaded from parquet \n')
+    elif cfg.job_meta_params.job_type == "tune_and_eval":
+        print("Tune-and-eval selected, loading pre-built target and reference datasets from file...")
+        # Both datasets are pre-built and frozen (see build_and_save_reference_set /
+        # build_full_target_set) -- no resampling here, unlike hyperparam_tuning. Target rows
+        # are placed first in the concatenation so they can be recovered later with a plain
+        # slice (see target_set_size below / slice_preds), without a second inference pass.
+        target_dataset = Dataset.from_parquet(cfg.data.dataset)
+        reference_dataset = Dataset.from_parquet(cfg.data.reference_dataset)
+        target_set_size = len(target_dataset)
+        _dataset = concatenate_datasets([target_dataset, reference_dataset])
+        print(f"Tune-and-eval dataset loaded: {target_set_size} target-set rows + {len(reference_dataset)} reference-set rows \n")
     else:
-        raise ValueError(f"'{cfg.job_meta_params.job_type}' is not a valid job_type, please use either 'hyperparam_tuning' or 'evaluation'. ")
+        raise ValueError(f"'{cfg.job_meta_params.job_type}' is not a valid job_type, please use either 'hyperparam_tuning', 'evaluation', or 'tune_and_eval'. ")
     
     
     _dataset = _dataset.add_column("indices", list(range(len(_dataset))))
@@ -239,19 +250,33 @@ def main(cfg):
         true_class_labels = true_class_labels[: (cfg.inference.batch_size * cfg.inference.test_number_of_batches)]
         
     labels_to_save = {"true_class_labels" : true_class_labels}
-    if cfg.job_meta_params.job_type == "hyperparam_tuning":
+    if cfg.job_meta_params.job_type in ("hyperparam_tuning", "tune_and_eval"):
         labels_to_save['tune_class_labels'] = _dataset['tune_label']
-    
+    if cfg.job_meta_params.job_type == "tune_and_eval":
+        # class_labels.json should describe just the target set here, matching the shape
+        # job_type=evaluation produces (preds.json/auc.json below are sliced to target-only
+        # too) -- tune_class_labels is kept full-length (target+reference) since that's what's
+        # needed later to split target-vs-reference for the tuning outputs.
+        labels_to_save['true_class_labels'] = true_class_labels[:target_set_size]
+
     #TODO: Need to fix, somehow make the sampling better, ensure the labels are assigned, returned and printed correctly
     # and try to only sample indeciies you really want
     # For evaluation, I obviously want to sample by members and non-members, for hyperparam turning, I want to sample by tune_class_labels member and nonmembers
     # In such a case, as the distribution of the dataset "members" and "non_members" could be different, I need to cap
     # the return based on the smaller dataset
-    
+
     member_idxs = np.where(np.array(true_class_labels) == 1)[0]
     non_member_idxs = np.where(np.array(true_class_labels) == 0)[0]
-    
-    
+
+    if cfg.job_meta_params.job_type == "tune_and_eval":
+        # Restrict raw/proc meta sampling to target-set rows only (indices 0..target_set_size-1,
+        # since target rows are always placed first in the tune_and_eval concatenation), so
+        # sampled_raw_meta/proc_meta stay target-set-only -- matching job_type=evaluation's
+        # output instead of mixing in reference-set rows.
+        member_idxs = member_idxs[member_idxs < target_set_size]
+        non_member_idxs = non_member_idxs[non_member_idxs < target_set_size]
+
+
     if cfg.img_metrics.get_meta_examples > 0:
         samples_to_take = min(cfg.img_metrics.get_meta_examples, len(member_idxs), len(non_member_idxs))
         print(f'Taking the minium of requested, number of members or number of non_members: {samples_to_take} samples')
@@ -328,9 +353,14 @@ def main(cfg):
           '''
           )
     
-    print("Saving preds to json....")
-    save_to_json(preds, "preds", cfg)
-    
+    if cfg.job_meta_params.job_type == "tune_and_eval":
+        # preds.json is written further down, sliced to target-set-only, so it matches the
+        # shape job_type=evaluation produces instead of the full target+reference combination.
+        print("Skipping raw preds.json save here (tune_and_eval writes a target-set-only preds.json below)....")
+    else:
+        print("Saving preds to json....")
+        save_to_json(preds, "preds", cfg)
+
     print("Saving sampled_raw_meta to json....")
     save_to_json(sampled_raw_meta, "sampled_raw_meta", cfg)
     
@@ -347,11 +377,30 @@ def main(cfg):
           )    
     # Evaluation
     if cfg.job_meta_params.job_type == "hyperparam_tuning":
-        auc, acc, auc_low = evaluate(preds, mod_infer_data["tune_label"], "img", cfg) 
+        auc, acc, auc_low = evaluate(preds, mod_infer_data["tune_label"], "img", cfg)
     elif cfg.job_meta_params.job_type == "evaluation":
-       auc, acc, auc_low = evaluate(preds, mod_infer_data["label"], "img", cfg) 
+       auc, acc, auc_low = evaluate(preds, mod_infer_data["label"], "img", cfg)
+    elif cfg.job_meta_params.job_type == "tune_and_eval":
+        # --- Tuning half: target-set vs reference-set divergence across the full noise range ---
+        print("Computing tuning separation (target-set vs reference-set) across the full noise range....")
+        tuning_raw_split, tuning_separation, tuning_best_by_setting = compute_tuning_separation(
+            preds, mod_infer_data["tune_label"], cfg
+        )
+        print("Saving tuning outputs to json....")
+        save_to_json(tuning_raw_split, "tuning_raw_scores", cfg)
+        save_to_json(
+            {"separation": tuning_separation, "best_by_setting": tuning_best_by_setting},
+            "tuning_separation", cfg
+        )
+
+        # --- Eval half: target-set-only member vs non-member, same shape as job_type=evaluation ---
+        print("Slicing target-set-only predictions for the real membership eval....")
+        target_preds = slice_preds(preds, target_set_size)
+        print("Saving preds to json....")
+        save_to_json(target_preds, "preds", cfg)
+        auc, acc, auc_low = evaluate(target_preds, mod_infer_data["label"][:target_set_size], "img", cfg)
     else:
-        raise ValueError(f"'{cfg.job_meta_params.job_type}' is not a valid job_type, please use either 'hyperparam_tuning' or 'evaluation'. ")       
+        raise ValueError(f"'{cfg.job_meta_params.job_type}' is not a valid job_type, please use either 'hyperparam_tuning', 'evaluation', or 'tune_and_eval'. ")
 
     # Save
     print("Saving evaluation results.....")

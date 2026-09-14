@@ -3,6 +3,7 @@ logging.basicConfig(level='ERROR')
 import numpy as np
 from tqdm import tqdm
 import json
+import ast
 from collections import defaultdict
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc, roc_curve
@@ -157,6 +158,153 @@ def evaluate(preds, labels, part, cfg):
 
     return auc_results, acc_results, auc_low_results_by_fpr
 
+
+def slice_preds(preds, n):
+    """
+    Recursively walks a preds-shaped nested dict (as produced by inference()) and slices every
+    leaf score list down to its first `n` entries. Used by job_type=tune_and_eval to recover
+    target-set-only predictions from a single combined [target-set rows..., reference-set
+    rows...] inference pass (target rows are always placed first in that concatenation), so
+    the eval output it writes is scored on exactly the same target-set samples/order
+    job_type=evaluation would produce, via the same evaluate() call and preds.json shape --
+    no second inference pass needed.
+    """
+    if isinstance(preds, dict):
+        return {k: slice_preds(v, n) for k, v in preds.items()}
+    if isinstance(preds, list):
+        return preds[:n]
+    return preds
+
+
+def compute_tuning_separation(preds, tune_labels, cfg=None):
+    """
+    Walks `preds` the same way evaluate() does, but scores each leaf (per-sample score list)
+    against tune_labels (1 = target-set sample, 0 = reference-set sample) instead of the real
+    member/nonmember label. For every leaf (metric/aug/setting), records both:
+      - gap = mean(target-set scores) - mean(reference-set scores)   (raw divergence
+        separation, i.e. the paper's Delta-D-bar(sigma) but for target-vs-reference)
+      - tune_auc = ROC-AUC discriminating target-set vs reference-set samples by that score
+        (the signal the existing hyperparam_tuning job_type already computes via evaluate())
+    plus the raw target/reference score split itself, for plotting divergence-vs-noise curves.
+
+    Returns (raw_split, separation, best_by_setting):
+      raw_split[part][category][metric][...] = {"target": [...], "reference": [...]}
+      separation[part][category][metric][...] = {"mean_target":.., "mean_reference":..,
+        "gap":.., "tune_auc":..}
+        (both mirror preds' own nesting -- kld_metrics/renyi_div_metrics keep the aug/setting
+        levels, baseline_metrics keep whatever sub-nesting that metric has, everything else is
+        a bare leaf.)
+      best_by_setting[part][category][metric][aug][k_ratio_str] = {
+          "best_std_by_gap": std, "gap": val, "best_std_by_tune_auc": std, "tune_auc": val
+      }
+        -- only populated for kld_metrics/renyi_div_metrics settings that parse as a
+        {'std':..., 'k_ratio':...} dict (i.e. the actual noise sweep, not 'aggregated' entries).
+    """
+    # Mirror evaluate()'s test_run truncation (eval.py ~line 84): under test_run, preds only
+    # cover the first (batch_size * test_number_of_batches) samples, so tune_labels -- which
+    # comes straight from the full untruncated dataset -- must be sliced to match, or the
+    # boolean index below fails with a length mismatch (e.g. 5 preds vs 450 labels).
+    used_tune_labels = tune_labels
+    if cfg is not None and cfg.job_meta_params.test_run:
+        used_tune_labels = tune_labels[:(cfg.inference.batch_size * cfg.inference.test_number_of_batches)]
+    tune_labels_arr = np.asarray(used_tune_labels, dtype=bool)
+
+    def _leaf(scores):
+        scores = np.asarray(scores, dtype=np.float64)
+        target_scores = scores[tune_labels_arr]
+        reference_scores = scores[~tune_labels_arr]
+        mean_t = float(np.mean(target_scores)) if target_scores.size else float('nan')
+        mean_r = float(np.mean(reference_scores)) if reference_scores.size else float('nan')
+        tune_auc_val = float('nan')
+        if target_scores.size and reference_scores.size and np.all(np.isfinite(scores)):
+            try:
+                _, _, tune_auc_val, _ = sweep(scores, tune_labels_arr)
+                tune_auc_val = float(tune_auc_val)
+            except Exception:
+                tune_auc_val = float('nan')
+        raw = {"target": target_scores.tolist(), "reference": reference_scores.tolist()}
+        sep = {"mean_target": mean_t, "mean_reference": mean_r, "gap": mean_t - mean_r, "tune_auc": tune_auc_val}
+        return raw, sep
+
+    def _parse_setting(setting_name):
+        try:
+            parsed = ast.literal_eval(setting_name)
+        except (ValueError, SyntaxError):
+            return None
+        return parsed if isinstance(parsed, dict) else None
+
+    raw_split, separation, best_by_setting = dict(), dict(), dict()
+
+    for part, part_pred in preds.items():
+        raw_split[part], separation[part], best_by_setting[part] = dict(), dict(), dict()
+
+        for metric_category, metrics in part_pred.items():
+            raw_split[part][metric_category] = dict()
+            separation[part][metric_category] = dict()
+            best_by_setting[part][metric_category] = dict()
+
+            for metric, metric_val in metrics.items():
+                if metric_category in {"kld_metrics", "renyi_div_metrics"}:
+                    raw_split[part][metric_category][metric] = dict()
+                    separation[part][metric_category][metric] = dict()
+                    best_by_setting[part][metric_category][metric] = dict()
+
+                    for aug, aug_settings in metric_val.items():
+                        raw_split[part][metric_category][metric][aug] = dict()
+                        separation[part][metric_category][metric][aug] = dict()
+
+                        by_k = defaultdict(list)  # k_ratio -> [(std, gap, tune_auc), ...]
+                        for setting, scores in aug_settings.items():
+                            raw, sep = _leaf(scores)
+                            raw_split[part][metric_category][metric][aug][setting] = raw
+                            separation[part][metric_category][metric][aug][setting] = sep
+
+                            setting_dict = _parse_setting(setting)
+                            if setting_dict is not None and 'std' in setting_dict and 'k_ratio' in setting_dict:
+                                by_k[setting_dict['k_ratio']].append(
+                                    (float(setting_dict['std']), sep['gap'], sep['tune_auc'])
+                                )
+
+                        k_result = dict()
+                        for k_ratio, points in by_k.items():
+                            finite_gap = [p for p in points if np.isfinite(p[1])]
+                            finite_auc = [p for p in points if np.isfinite(p[2])]
+                            entry = dict()
+                            if finite_gap:
+                                best_std, best_gap, _ = max(finite_gap, key=lambda p: abs(p[1]))
+                                entry["best_std_by_gap"] = best_std
+                                entry["gap"] = best_gap
+                            if finite_auc:
+                                best_std, _, best_auc = max(finite_auc, key=lambda p: p[2])
+                                entry["best_std_by_tune_auc"] = best_std
+                                entry["tune_auc"] = best_auc
+                            if entry:
+                                k_result[str(k_ratio)] = entry
+                        if k_result:
+                            best_by_setting[part][metric_category][metric][aug] = k_result
+
+                elif metric_category == "baseline_metrics":
+                    if metric == 'aug_kl':
+                        raw, sep = _leaf(metric_val)
+                        raw_split[part][metric_category][metric] = raw
+                        separation[part][metric_category][metric] = sep
+                    elif metric in ['mink', 'min_k_renyi_05_entro', 'min_k_renyi_1_entro',
+                                     'max_k_renyi_1_entro', 'max_k_renyi_05_entro']:
+                        raw_split[part][metric_category][metric] = dict()
+                        separation[part][metric_category][metric] = dict()
+                        for setting, scores in metric_val.items():
+                            raw, sep = _leaf(scores)
+                            raw_split[part][metric_category][metric][setting] = raw
+                            separation[part][metric_category][metric][setting] = sep
+                    # else: unrecognized baseline metric -- this is a diagnostics helper, not
+                    # the scoring path of record, so skip rather than raise.
+
+                else:
+                    raw, sep = _leaf(metric_val)
+                    raw_split[part][metric_category][metric] = raw
+                    separation[part][metric_category][metric] = sep
+
+    return raw_split, separation, best_by_setting
 
 
 
