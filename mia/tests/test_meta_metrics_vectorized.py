@@ -5,11 +5,19 @@ numerically identical results to the original per-token-loop implementation it r
 Motivation: profiling the flickr/LLaVA mixture sweep found get_meta_metrics_by_part costing
 ~16.5s/batch, almost entirely from a double Python loop (16 samples x ~576 image tokens) where
 each iteration called .item()/.cpu(), forcing a GPU sync every single time (~18,400 syncs/batch).
-The fix hoists the token-axis-only computations (entropy, renyi_1, no_norm, renyi_inf) out of the
-per-token loop into one vectorized op per *sample* -- keeping the per-sample loop intact, since
-sequence lengths genuinely aren't always uniform across a batch (confirmed empirically: 1/600
-samples in run_1's real data had 577 image tokens instead of 576) -- so this test specifically
-checks a ragged-length batch, not just a uniform one.
+Removing those sync calls alone only got this down to ~13s/batch on real data -- the ~18k-
+iteration Python loop structure itself (dict/list indexing, tensor slicing, redundant per-token
+clamp/log calls) was still the dominant cost. The actual fix: when the requested metrics are
+fully covered by the vectorizable set (no_norm/renyi_inf/entropy/renyi_1 -- true for the real
+production config), skip the per-token loop entirely and bulk-assign the whole sample's results
+in one call (slow_path_needed=False). Any other metric (renyi_05/2, mink, modified_entropies,
+per_token_CE_loss -- all indexed by a token's own observed id) still forces the original
+per-token loop (slow_path_needed=True), left completely unchanged.
+
+The per-sample loop itself is kept either way, since sequence lengths genuinely aren't always
+uniform across a batch (confirmed empirically: 1/600 samples in run_1's real data had 577 image
+tokens instead of 576) -- so this test checks both paths against both a uniform-length and a
+ragged-length batch (4 cases total).
 
 `get_meta_metrics_by_part_REFERENCE` below is byte-for-byte the pre-fix implementation (see git
 history on the MergeTuning branch, commit f941264, src/metrics/meta_metrics.py), kept here as a
@@ -111,9 +119,22 @@ BATCH_SIZE = 16
 SEQ_LEN = 24
 VOCAB_SIZE = 500
 
-cfg = OmegaConf.create({
+# Fast-path cfg: exactly the real production config (only no_norm/renyi_inf requested) --
+# exercises the fully-vectorized bulk-assignment branch (slow_path_needed=False).
+cfg_fast_path = OmegaConf.create({
     "img_metrics": {
         "metrics_to_use": ["max_k_no_norn_kl_div", "max_k_renyi_inf_kl_div"],
+        "get_proc_meta_metrics": [],
+        "get_raw_meta_metrics": [],
+    }
+})
+
+# Slow-path cfg: adds "mink" (a token_id-indexed metric that can't be vectorized the same way)
+# to force slow_path_needed=True, exercising the original per-token loop branch -- confirms it's
+# unaffected by the fast-path addition and by the _n_tokens slicing fix.
+cfg_slow_path = OmegaConf.create({
+    "img_metrics": {
+        "metrics_to_use": ["max_k_no_norn_kl_div", "max_k_renyi_inf_kl_div", "mink"],
         "get_proc_meta_metrics": [],
         "get_raw_meta_metrics": [],
     }
@@ -152,7 +173,7 @@ def compare(old_val, new_val, path):
     return None
 
 
-def run_test(one_sample_shorter, label):
+def run_test(one_sample_shorter, label, cfg):
     print(f"\n=== {label} ===")
     aug_result = make_synthetic_aug_result(one_sample_shorter=one_sample_shorter)
     total_parts = {"orig": [aug_result]}
@@ -175,7 +196,11 @@ def run_test(one_sample_shorter, label):
 
 
 if __name__ == "__main__":
-    ok1 = run_test(one_sample_shorter=False, label="uniform-length batch (typical case)")
-    ok2 = run_test(one_sample_shorter=True, label="ragged-length batch (1 sample shorter, matches the real ~0.17% edge case)")
-    print("\n=== OVERALL:", "PASS" if (ok1 and ok2) else "FAIL", "===")
-    sys.exit(0 if (ok1 and ok2) else 1)
+    results = [
+        run_test(one_sample_shorter=False, label="FAST PATH -- uniform-length batch (typical case)", cfg=cfg_fast_path),
+        run_test(one_sample_shorter=True, label="FAST PATH -- ragged-length batch (1 sample shorter, matches the real ~0.17% edge case)", cfg=cfg_fast_path),
+        run_test(one_sample_shorter=False, label="SLOW PATH -- uniform-length batch (mink forces the original per-token loop)", cfg=cfg_slow_path),
+        run_test(one_sample_shorter=True, label="SLOW PATH -- ragged-length batch (mink forces the original per-token loop)", cfg=cfg_slow_path),
+    ]
+    print("\n=== OVERALL:", "PASS" if all(results) else "FAIL", "===")
+    sys.exit(0 if all(results) else 1)

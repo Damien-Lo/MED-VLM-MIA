@@ -179,9 +179,58 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                 or "max_k_renyi_inf_kl_div_ripple" in cfg.img_metrics.metrics_to_use
                 or "max_k_renyi_inf_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics
             )
+            # True whenever ANY metric outside the vectorized set (renyi_05/2, mink/losses/
+            # all_prob, modified_entropies x3, per_token_CE_loss) is requested -- these all index
+            # by a token's own observed id (token_probs_clamped[token_id], etc.), so they can't
+            # be hoisted the same way and still need the per-token loop below. When this is
+            # False (our actual production config: only no_norm/renyi_inf requested), the whole
+            # per-token Python loop is skipped entirely in favor of a second pass of pure
+            # vectorized ops -- profiling showed that even with the GPU syncs already removed,
+            # the ~18k-iteration loop itself (dict/list indexing four levels deep, per-token
+            # tensor slicing, and recomputing token_probs_clamped/token_log_probs_clamped that
+            # only the slow-path metrics below actually need) was still costing ~13s/batch.
+            slow_path_needed = (
+                "max_k_renyi_05_kl_div" in cfg.img_metrics.metrics_to_use
+                or "mod_renyi_05_entro" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_05_entro" in cfg.img_metrics.metrics_to_use
+                or "min_k_renyi_05_entro" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_05_kl_div_tkn_vals" in cfg.img_metrics.get_proc_meta_metrics
+                or "renyi_05_entro" in cfg.img_metrics.get_raw_meta_metrics
+                or "renyi_05_probs" in cfg.img_metrics.get_raw_meta_metrics
+                or "max_k_renyi_05_kl_div_ripple" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_05_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics
+                or "max_k_renyi_2_kl_div" in cfg.img_metrics.metrics_to_use
+                or "mod_renyi_2_entro" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_2_entro" in cfg.img_metrics.metrics_to_use
+                or "min_k_renyi_2_entro" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_2_kl_div_tkn_vals" in cfg.img_metrics.get_proc_meta_metrics
+                or "renyi_2_entro" in cfg.img_metrics.get_raw_meta_metrics
+                or "renyi_2_probs" in cfg.img_metrics.get_raw_meta_metrics
+                or "max_k_renyi_2_kl_div_ripple" in cfg.img_metrics.metrics_to_use
+                or "max_k_renyi_2_kl_div_tkn_vals_ripple" in cfg.img_metrics.get_proc_meta_metrics
+                or "mink" in cfg.img_metrics.metrics_to_use
+                or "all_prob" in cfg.img_metrics.get_raw_meta_metrics
+                or "losses" in cfg.img_metrics.get_raw_meta_metrics
+                or "mod_renyi_1_entro" in cfg.img_metrics.metrics_to_use
+                or "modified_entropies" in cfg.img_metrics.get_raw_meta_metrics
+                or "modified_entropies_alpha_05" in cfg.img_metrics.get_raw_meta_metrics
+                or "modified_entropies_alpha_2" in cfg.img_metrics.get_raw_meta_metrics
+                or "cross_entropy_mink" in cfg.img_metrics.metrics_to_use
+                or "cross_entropy_diff_mink" in cfg.img_metrics.metrics_to_use
+                or "per_token_CE_loss" in cfg.img_metrics.get_raw_meta_metrics
+            )
 
             for _batch_idx in range(len(aug_result[part]["input_ids"])):
-                _all_probs = aug_result[part]["probabilities"][_batch_idx]        # [seq_len, vocab]
+                # The per-token loop below iterates input_ids[_batch_idx][1:] (N-1 positions,
+                # standard causal-shift alignment: probabilities[i] predicts input_ids[i+1]) and
+                # only ever indexes probabilities[_batch_idx][0:N-1] -- it never reads the last
+                # row. Slicing to match here is required for correctness, not just an
+                # optimization: unlike the old per-token loop (which simply never touched that
+                # extra row, harmlessly), the fast path below bulk-converts the whole precomputed
+                # tensor with .tolist()/.unbind(0), so an unsliced array would silently include
+                # one extra, wrong trailing element.
+                _n_tokens = len(aug_result[part]["input_ids"][_batch_idx]) - 1
+                _all_probs = aug_result[part]["probabilities"][_batch_idx][:_n_tokens]        # [seq_len, vocab]
                 _all_probs_clamped = torch.clamp(_all_probs, min=epsilon, max=1 - epsilon)
                 _all_log_probs_clamped = _all_probs_clamped.log()
 
@@ -202,6 +251,23 @@ def get_meta_metrics_by_part(total_parts, part, cfg):
                     _max_p_all_cpu = _max_p_all.detach().cpu()
                     _renyi_inf_all = renyi_probs(_all_probs_clamped, "inf").detach().cpu()
                 # --- end vectorized pre-computation ---
+
+                if not slow_path_needed:
+                    # Fully vectorized fast path: bulk-assign the whole sample's per-token
+                    # results in one call each instead of looping token-by-token in Python.
+                    # .tolist() for plain scalars, .unbind(0) for the per-token tensor slices
+                    # (no_norm_probs/renyi_1_probs/renyi_inf_probs each store one CPU tensor per
+                    # token downstream, same as the per-token loop below produces) -- both do the
+                    # list construction in one C-level call rather than ~600 Python appends.
+                    meta_metrics["entropies"][aug_type][aug_idx][_batch_idx] = _entropy_all.tolist()
+                    meta_metrics["renyi_1_probs"][aug_type][aug_idx][_batch_idx] = list(_renyi1_all.unbind(0))
+                    if no_norm_needed:
+                        meta_metrics["no_norm_probs"][aug_type][aug_idx][_batch_idx] = list(_no_norm_all.unbind(0))
+                    if renyi_inf_needed:
+                        meta_metrics["gap_probs"][aug_type][aug_idx][_batch_idx] = _gap_p_all.tolist()
+                        meta_metrics["max_probs"][aug_type][aug_idx][_batch_idx] = _max_p_all_cpu.tolist()
+                        meta_metrics["renyi_inf_probs"][aug_type][aug_idx][_batch_idx] = list(_renyi_inf_all.unbind(0))
+                    continue
 
                 for _token_idx, token_id in enumerate(aug_result[part]["input_ids"][_batch_idx][1:]):
                     # Theis is where the per-token metrics are computed
