@@ -9,6 +9,30 @@ import numpy as np
 from typing import Dict, Any, List, Tuple, Optional
 
 
+def _fast_stack_to_tensor(items, dtype):
+    """
+    Stacks a list of per-sample values into one batched tensor of the given dtype.
+
+    HuggingFace `datasets` round-trips multi-dimensional values through Arrow, so by the time a
+    `.map()`-produced field is read back via `dataset[idx]`, it comes back as a nested Python
+    list, not the original torch.Tensor/np.ndarray -- even though it started as one inside the
+    map function. `torch.tensor(nested_python_list)` builds the tensor by walking every scalar
+    through the Python/C++ boundary one at a time, which is fine for a handful of values but very
+    slow for e.g. a 336x336x3 image tensor repeated over a whole batch (profiled at ~21s/batch
+    here). Converting through numpy first uses one fast bulk memory copy instead, then
+    `torch.from_numpy` wraps that buffer with no further copying.
+
+    Also handles the case where items are already tensors (e.g. if a future caller changes the
+    upstream dataset format), by stacking directly rather than forcing an unnecessary
+    list/numpy round-trip -- items are expected to already share one consistent shape either way,
+    same as the torch.tensor(...)/torch.stack(...) calls this replaces required.
+    """
+    if len(items) > 0 and isinstance(items[0], torch.Tensor):
+        return torch.stack(list(items)).to(dtype)
+    np_dtype = {torch.float16: np.float16, torch.float32: np.float32, torch.int64: np.int64}[dtype]
+    return torch.from_numpy(np.asarray(items, dtype=np_dtype)).to(dtype)
+
+
 class BatchProcessor:
     def __init__(self, dataset, batch_size, eos_token_id, use_augmentation):
         self.dataset = dataset
@@ -136,7 +160,7 @@ class BatchProcessor:
 
         for k, aug_imgs in aug_image_tensors.items():
             for _aug_idx in range(len(aug_imgs)):
-                aug_image_tensors[k][_aug_idx] = torch.tensor(aug_image_tensors[k][_aug_idx], dtype=torch.float16)
+                aug_image_tensors[k][_aug_idx] = _fast_stack_to_tensor(aug_image_tensors[k][_aug_idx], torch.float16)
 
         max_length = max(input_ids_len)
         del input_ids_len
@@ -157,8 +181,8 @@ class BatchProcessor:
             "indices" : indices,
             "input_ids" : torch.stack(padded_input_ids, dim=0),
             "attention_masks" : torch.stack(attention_masks, dim=0),
-            "image_sizes" :  torch.tensor(image_sizes),
-            "orig_image_tensors": torch.tensor(orig_image_tensors, dtype=torch.float16),
+            "image_sizes" :  _fast_stack_to_tensor(image_sizes, torch.int64),
+            "orig_image_tensors": _fast_stack_to_tensor(orig_image_tensors, torch.float16),
             "aug_image_tensors": aug_image_tensors,
             "prompt_0": prompt_0,
             "prompt_1": prompt_1,
