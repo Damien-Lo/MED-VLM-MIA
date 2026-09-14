@@ -248,6 +248,22 @@ class BatchProcessor_minigpt:
             "desc": desc
         }
         
+#TODO(perf): BatchProcessor_hulu._get_augmented_batch below has the exact same per-row
+# self.dataset[_idx]["field"] access pattern that BatchProcessor._get_augmented_batch (LLaVA) had
+# -- profiled there at ~21-25s/batch, ~98% of that function's cost, from HuggingFace `datasets`
+# paying its own Python/Arrow marshaling overhead on every single-row __getitem__ call. Fixed for
+# LLaVA on perf/vectorize-batch-and-metrics (commit cd21617) via one batched slice access
+# (self.dataset[batch_begin:batch_end]) instead of `batch_size` individual calls -- the same fix
+# should apply here, unmodified in approach, since it's the identical Arrow-backed dataset access
+# problem, just for Hulu-Med's own dataset fields (orig_raw_images/aug_raw_images/inst/desc)
+# instead of LLaVA's (orig_image_tensors/aug_image_tensors/prompt_0/prompt_1/desc_shape).
+#
+# Separately: get_meta_metrics_by_part's fast path (same branch) only activates when
+# slow_path_needed is False -- i.e. only metrics in the vectorizable set (no_norm/renyi_inf) are
+# requested. The endoscopy/MRI noise-tuning scripts (scripts/hard_BBC/noise_level_tuning_*.sh)
+# request the full 9-metric sweep, which always triggers slow_path_needed=True, so that fix gives
+# zero benefit for Hulu-Med runs as currently configured -- worth deciding whether to narrow the
+# medical-modality metric set to match, or accept the per-token loop for those.
 class BatchProcessor_hulu:
     def __init__(self, dataset, batch_size, use_augmentation):
         self.dataset = dataset
