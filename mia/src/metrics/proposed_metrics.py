@@ -209,6 +209,20 @@ def renyi_kl_div_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
         # For each sample, aggrigate across the settings
         #TODO: for some reason, all_settings_in_aug is inhomogeneous, so can't np.array need to check whether that is an issue
         # or need to adapt structure
+        # CONFIRMED (2026-09-17, batch_size>1 testing): inhomogeneous because
+        # all_settings_in_aug[setting][sample_idx] is one array PER SAMPLE, and different samples
+        # have different generated-sequence lengths -- the np.array() calls below try to stack
+        # across SAMPLES (via the samples inside each setting's list), not just across settings,
+        # which is never guaranteed to be uniform-length. This stayed invisible as long as
+        # inference ran at batch_size=1, since each call into this function then only ever had
+        # exactly one sample (nothing to mismatch against). At batch_size>1 it throws a ValueError
+        # the first time a batch contains two differently-lengthed samples. Real fix: loop
+        # per-sample explicitly and stack only that one sample's values across settings
+        # (guaranteed same length -- same underlying sample/text, just re-scored at different
+        # noise settings), instead of handing the whole ragged {setting: [sample, kld]} structure
+        # to a single np.array() call. Not fixed yet -- see noise_level_tuning_mri_run1_perf.sh
+        # for the scoped workaround (forcing augmentation_accumilator=['none'] for the affected
+        # metric) used instead under time pressure; that avoids this code path but doesn't fix it.
         setting_aggregated_per_sample_tokenwise_kl = dict() # Shape: {max: [sample, kld], avg: [sample, kld]}
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
@@ -340,6 +354,20 @@ def renyi_divergence_maxk(probs, metric_cfg, cfg, eps=1e-12):
         # For each sample, aggrigate across the settings
         #TODO: for some reason, all_settings_in_aug is inhomogeneous, so can't np.array need to check whether that is an issue
         # or need to adapt structure
+        # CONFIRMED (2026-09-17, batch_size>1 testing): inhomogeneous because
+        # all_settings_in_aug[setting][sample_idx] is one array PER SAMPLE, and different samples
+        # have different generated-sequence lengths -- the np.array() calls below try to stack
+        # across SAMPLES (via the samples inside each setting's list), not just across settings,
+        # which is never guaranteed to be uniform-length. This stayed invisible as long as
+        # inference ran at batch_size=1, since each call into this function then only ever had
+        # exactly one sample (nothing to mismatch against). At batch_size>1 it throws a ValueError
+        # the first time a batch contains two differently-lengthed samples. Real fix: loop
+        # per-sample explicitly and stack only that one sample's values across settings
+        # (guaranteed same length -- same underlying sample/text, just re-scored at different
+        # noise settings), instead of handing the whole ragged {setting: [sample, kld]} structure
+        # to a single np.array() call. Not fixed yet -- see noise_level_tuning_mri_run1_perf.sh
+        # for the scoped workaround (forcing augmentation_accumilator=['none'] for the affected
+        # metric) used instead under time pressure; that avoids this code path but doesn't fix it.
         setting_aggregated_per_sample_tokenwise_kl = dict() # Shape: {max: [sample, kld], avg: [sample, kld]}
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
@@ -483,6 +511,20 @@ def renyi_kl_div_ripple_maxk(renyi_probs, metric_cfg, cfg, eps=1e-12):
         # For each sample, aggrigate across the settings
         #TODO: for some reason, all_settings_in_aug is inhomogeneous, so can't np.array need to check whether that is an issue
         # or need to adapt structure
+        # CONFIRMED (2026-09-17, batch_size>1 testing): inhomogeneous because
+        # all_settings_in_aug[setting][sample_idx] is one array PER SAMPLE, and different samples
+        # have different generated-sequence lengths -- the np.array() calls below try to stack
+        # across SAMPLES (via the samples inside each setting's list), not just across settings,
+        # which is never guaranteed to be uniform-length. This stayed invisible as long as
+        # inference ran at batch_size=1, since each call into this function then only ever had
+        # exactly one sample (nothing to mismatch against). At batch_size>1 it throws a ValueError
+        # the first time a batch contains two differently-lengthed samples. Real fix: loop
+        # per-sample explicitly and stack only that one sample's values across settings
+        # (guaranteed same length -- same underlying sample/text, just re-scored at different
+        # noise settings), instead of handing the whole ragged {setting: [sample, kld]} structure
+        # to a single np.array() call. Not fixed yet -- see noise_level_tuning_mri_run1_perf.sh
+        # for the scoped workaround (forcing augmentation_accumilator=['none'] for the affected
+        # metric) used instead under time pressure; that avoids this code path but doesn't fix it.
         setting_aggregated_per_sample_tokenwise_kl = dict() # Shape: {max: [sample, kld], avg: [sample, kld]}
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
@@ -617,6 +659,20 @@ def renyi_divergence_ripple_maxk(probs, metric_cfg, cfg, eps=1e-12):
         # For each sample, aggrigate across the settings
         #TODO: for some reason, all_settings_in_aug is inhomogeneous, so can't np.array need to check whether that is an issue
         # or need to adapt structure
+        # CONFIRMED (2026-09-17, batch_size>1 testing): inhomogeneous because
+        # all_settings_in_aug[setting][sample_idx] is one array PER SAMPLE, and different samples
+        # have different generated-sequence lengths -- the np.array() calls below try to stack
+        # across SAMPLES (via the samples inside each setting's list), not just across settings,
+        # which is never guaranteed to be uniform-length. This stayed invisible as long as
+        # inference ran at batch_size=1, since each call into this function then only ever had
+        # exactly one sample (nothing to mismatch against). At batch_size>1 it throws a ValueError
+        # the first time a batch contains two differently-lengthed samples. Real fix: loop
+        # per-sample explicitly and stack only that one sample's values across settings
+        # (guaranteed same length -- same underlying sample/text, just re-scored at different
+        # noise settings), instead of handing the whole ragged {setting: [sample, kld]} structure
+        # to a single np.array() call. Not fixed yet -- see noise_level_tuning_mri_run1_perf.sh
+        # for the scoped workaround (forcing augmentation_accumilator=['none'] for the affected
+        # metric) used instead under time pressure; that avoids this code path but doesn't fix it.
         setting_aggregated_per_sample_tokenwise_kl = dict() # Shape: {max: [sample, kld], avg: [sample, kld]}
         if 'max' in setting_version_accumilator:
             if 'max' not in setting_aggregated_per_sample_tokenwise_kl:
